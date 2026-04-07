@@ -3,13 +3,10 @@ package com.angeles.backend.controller;
 import com.angeles.backend.entity.Empleado;
 import com.angeles.backend.repository.EmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/empleados")
@@ -20,6 +17,6 @@ public class EmpleadoController {
 
     @GetMapping
     public List<Empleado> obtenerTodos(){
-        return empleadoRepository.findAll();
+        return empleadoRepository.findByFechaBajaIsNull();
     }
 }
