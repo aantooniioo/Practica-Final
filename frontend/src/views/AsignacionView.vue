@@ -34,6 +34,13 @@
 
       <button class="btn btn-success">Asignar</button>
 
+      <button 
+        type="button" 
+        class="btn btn-secondary ms-2"
+        @click="$router.push('/')">
+        Volver
+      </button>
+
     </form>
   </div>
 </template>
@@ -44,6 +51,8 @@ import { getProyectos } from "../services/proyectoService";
 import { asignarEmpleado } from "../services/empleadoProyectoService";
 
 export default {
+  name: "AsignacionView",
+
   data(){
     return{
       empleados: [],
@@ -64,6 +73,7 @@ export default {
   methods:{
     guardar(){
 
+      // 🔹 Validación básica
       if(!this.form.idEmpleado || !this.form.idProyecto){
         alert("Debes seleccionar empleado y proyecto");
         return;
@@ -72,6 +82,8 @@ export default {
       asignarEmpleado(this.form)
         .then(()=>{
           alert("Asignación realizada correctamente");
+
+          // Reset formulario
           this.form = {
             idEmpleado: "",
             idProyecto: "",
@@ -79,8 +91,7 @@ export default {
           };
         })
         .catch(err=>{
-          console.error(err);
-          alert("Error en la asignación");
+          alert(err.response?.data || "Error en la asignación");
         });
     }
   }
