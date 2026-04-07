@@ -4,6 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import EmpleadosView from '../views/EmpleadosView.vue'
 import AltaEmpleadoView from '../views/AltaEmpleadoView.vue'
 import ProyectosView from '@/views/ProyectosView.vue'
+import AltaProyectoView from '../views/AltaProyectoView.vue'
+import AsignacionView from '@/views/AsignacionView.vue'
 
 const routes = [
   {
@@ -23,6 +25,14 @@ const routes = [
   {
     path: '/proyectos',
     component: ProyectosView
+  },
+  {
+    path: '/alta-proyecto',
+    component: AltaProyectoView
+  },
+  {
+    path: '/asignacion',
+    component: AsignacionView
   }
 ]
 
