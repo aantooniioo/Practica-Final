@@ -19,6 +19,8 @@
                     <th>Email</th>
                     <th>Teléfono 1</th>
                     <th>Teléfono 2</th>
+                    <th>Estado Civil</th>
+                    <th>Formación</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -26,7 +28,7 @@
             <tbody>
                 <!-- Si no hay empleados -->
                 <tr v-if="empleados.length === 0">
-                    <td colspan="8" class="text-center">No hay empleados</td>
+                    <td colspan="10" class="text-center">No hay empleados</td>
                 </tr>
 
                 <!-- Lista -->
@@ -38,6 +40,22 @@
                     <td>{{ emp.email }}</td>
                     <td>{{ emp.telefono1 }}</td>
                     <td>{{ emp.telefono2 }}</td>
+
+                    <!-- Estado civil con Badge -->
+                     <td>
+                        <span
+                            :class="emp.estadoCivil === 'S' ? 'badge bg-primary' : 'badge bg-warning text-dark'">
+                            {{ formatearEstadoCivil(emp.estadoCivil) }}
+                        </span>
+                     </td>
+
+                     <!-- Formación con Badge -->
+                     <td>
+                        <span
+                            :class="emp.formacionUniversitaria === 'S' ? 'badge bg-success' : 'badge bg-secondary'">
+                            {{ formatearFormacion(emp.formacionUniversitaria) }}
+                        </span>
+                     </td>
 
                     <td>
                         <button 
@@ -68,6 +86,7 @@ export default {
         cargarEmpleados() {
             getEmpleados()
                 .then(res => {
+                    console.log("DATOS BACK:", res.data);
                     this.empleados = res.data;
                 })
                 .catch(error => {
@@ -85,10 +104,23 @@ export default {
                         console.error("Error al dar de baja:", error);
                     });
             }
+        },
+
+        formatearEstadoCivil(valor){
+            if(valor === "S") return "Soltero";
+            if(valor === "C") return "Casado";
+            return valor;
+        },
+
+        formatearFormacion(valor){
+            if(valor === "S") return "Sí";
+            if(valor === "N") return "No";
+            return valor;
         }
     },
 
     mounted() {
+        console.log("Cargando empleados...");
         this.cargarEmpleados();
     }
 };
