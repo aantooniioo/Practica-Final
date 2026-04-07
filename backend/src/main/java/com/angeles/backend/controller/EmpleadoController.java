@@ -19,4 +19,14 @@ public class EmpleadoController {
     public List<Empleado> obtenerTodos(){
         return empleadoRepository.findByFechaBajaIsNull();
     }
+
+    @PutMapping("/baja/{id}")
+    public void darDeBaja(@PathVariable Integer id){
+        Empleado emp = empleadoRepository.findById(id).orElse(null);
+
+        if(emp != null){
+            emp.setFechaBaja((java.time.LocalDate.now()));
+            empleadoRepository.save(emp);
+        }
+    }
 }
