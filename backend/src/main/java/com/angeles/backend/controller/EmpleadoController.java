@@ -5,6 +5,7 @@ import com.angeles.backend.repository.EmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -17,7 +18,15 @@ public class EmpleadoController {
 
     @GetMapping
     public List<Empleado> obtenerTodos(){
-        return empleadoRepository.findByFechaBajaIsNull();
+        return empleadoRepository.findAll()
+                .stream()
+                .filter(emp -> emp.getFechaBaja() == null)
+                .toList();
+    }
+
+    @PostMapping
+    public Empleado crearEmpleado(@RequestBody Empleado empleado){
+        return empleadoRepository.save(empleado);
     }
 
     @PutMapping("/baja/{id}")
@@ -25,7 +34,7 @@ public class EmpleadoController {
         Empleado emp = empleadoRepository.findById(id).orElse(null);
 
         if(emp != null){
-            emp.setFechaBaja((java.time.LocalDate.now()));
+            emp.setFechaBaja(LocalDate.now());
             empleadoRepository.save(emp);
         }
     }
