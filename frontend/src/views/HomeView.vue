@@ -1,33 +1,43 @@
 <template>
-    <div class="container mt-4">
-    <h2>Panel principal</h2>
+  <div class="container mt-4">
+    <h2 class="mb-4">Panel principal</h2>
 
-    <div class="d-flex gap-2 mt-3">
+    <div class="d-flex flex-wrap gap-3">
 
-        <button 
+      <!-- Empleados -->
+      <button 
         class="btn btn-primary"
         @click="$router.push('/empleados')">
-        Empleados
-        </button>
+        Gestión de empleados
+      </button>
 
-        <button 
+      <!-- Proyectos -->
+      <button 
         class="btn btn-secondary"
         @click="$router.push('/proyectos')">
-        Proyectos
-        </button>
+        Gestión de proyectos
+      </button>
 
-        <button 
+      <!-- Asignar -->
+      <button 
         class="btn btn-success"
         @click="$router.push('/asignacion')">
-        Asignar empleados
-        </button>
+        Asignar empleados a proyectos
+      </button>
+
+      <!-- Ver asignaciones -->
+      <button 
+        class="btn btn-dark"
+        @click="$router.push('/asignaciones')">
+        Ver asignaciones
+      </button>
 
     </div>
-</div>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'HomeView'
-};
+  name: "HomeView"
+}
 </script>
