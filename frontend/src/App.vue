@@ -1,139 +1,175 @@
 <template>
-  <v-app>
+  <v-app class="d-flex">
 
-    <!-- NAVBAR -->
-    <v-app-bar
-      color="secondary"
-      elevation="2"
-      class="navbar-pro"
+    <!-- SIDEBAR -->
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      width="250"
+      class="sidebar-pro"
     >
-
-      <!-- LOGO -->
-      <div class="logo-wrapper" @click="$router.push('/')">
+      <div class="sidebar-header">
         <img
           src="/src/assets/images/Logo_blanco_Future-2.png"
-          alt="Future Space Logo"
-          class="logo-img"
+          class="sidebar-logo"
         />
       </div>
 
-      <v-spacer></v-spacer>
+      <v-divider />
 
-      <!-- LINKS -->
-      <div class="nav-links">
+      <v-list nav density="comfortable">
 
-        <v-btn
-          variant="text"
-          :class="getActiveClass('/')"
+        <v-list-item
+          prepend-icon="mdi-view-dashboard"
+          title="Inicio"
           @click="$router.push('/')"
-        >
-          Inicio
-        </v-btn>
+          :active="$route.path === '/'"
+        />
 
-        <v-btn
-          variant="text"
-          :class="getActiveClass('/empleados')"
+        <v-list-item
+          prepend-icon="mdi-account-group"
+          title="Empleados"
           @click="$router.push('/empleados')"
-        >
-          Empleados
-        </v-btn>
+          :active="$route.path === '/empleados'"
+        />
 
-        <v-btn
-          variant="text"
-          :class="getActiveClass('/proyectos')"
+        <v-list-item
+          prepend-icon="mdi-briefcase"
+          title="Proyectos"
           @click="$router.push('/proyectos')"
-        >
-          Proyectos
-        </v-btn>
+          :active="$route.path === '/proyectos'"
+        />
 
-        <v-btn
-          variant="text"
-          :class="getActiveClass('/asignacion')"
+        <v-list-item
+          prepend-icon="mdi-link-variant"
+          title="Asignar"
           @click="$router.push('/asignacion')"
-        >
-          Asignar
-        </v-btn>
+          :active="$route.path === '/asignacion'"
+        />
 
-        <v-btn
-          variant="text"
-          :class="getActiveClass('/asignaciones')"
+        <v-list-item
+          prepend-icon="mdi-format-list-bulleted"
+          title="Asignaciones"
           @click="$router.push('/asignaciones')"
-        >
-          Ver Asignaciones
+          :active="$route.path === '/asignaciones'"
+        />
+
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- MAIN -->
+    <v-main class="app-background">
+
+      <!-- TOPBAR -->
+      <v-app-bar elevation="0" class="topbar-pro">
+
+        <v-btn icon @click="drawer = !drawer">
+          <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-      </div>
+        <span class="topbar-title ml-3">
+          Future Space
+        </span>
 
-    </v-app-bar>
+        <v-spacer />
 
-    <!-- CONTENIDO -->
-    <v-main class="app-background">
-      <router-view />
+        <div class="topbar-right">
+          <v-icon size="20">mdi-account-circle</v-icon>
+        </div>
+
+      </v-app-bar>
+
+      <v-container fluid class="mt-4">
+        <router-view />
+      </v-container>
+
     </v-main>
+
+    <!-- FOOTER -->
+    <FooterComponent />
 
   </v-app>
 </template>
 
 <script>
+import FooterComponent from './components/FooterComponent.vue';
+
 export default {
-  methods: {
-    // Marca el botón activo según la ruta actual
-    getActiveClass(route) {
-      return this.$route.path === route ? 'nav-active' : '';
-    }
+  components: { FooterComponent },
+
+  data() {
+    return {
+      drawer: true
+    };
   }
-}
+};
 </script>
 
 <style>
-/* ===== NAVBAR ===== */
-
-.navbar-pro {
-  padding: 0 16px;
+html, body, #app {
+  height: 100%;
 }
 
-/* LINKS */
-.nav-links {
+/* FONDO */
+.app-background {
+  background: linear-gradient(180deg, #0f172a, #111827);
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar-pro {
+  background-color: #020617;
+  color: #e2e8f0;
+}
+
+.sidebar-header {
   display: flex;
-  gap: 8px;
+  justify-content: center;
+  padding: 16px;
+}
+
+.sidebar-logo {
+  max-height: 50px;
+}
+
+/* TOPBAR */
+.topbar-pro {
+  background-color: #020617;
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.topbar-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  padding-right: 12px;
+}
+
+/* CARDS */
+.card-pro {
+  border-radius: 14px;
+  background-color: #1e293b;
+  color: #e2e8f0;
+  transition: 0.25s;
+}
+
+.card-pro:hover {
+  transform: translateY(-4px);
 }
 
 /* BOTONES */
-.nav-links .v-btn {
+.v-btn {
+  border-radius: 8px;
   text-transform: none;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  border-radius: 6px;
-  transition: 0.2s;
 }
 
-/* HOVER */
-.nav-links .v-btn:hover {
-  background-color: rgba(255,255,255,0.08);
-}
-
-/* ACTIVO */
-.nav-active {
-  background-color: rgba(255,255,255,0.15);
-  font-weight: 600;
-}
-
-/* ===== LOGO ===== */
-
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  height: 64px;
-}
-
-.logo-wrapper:hover {
-  opacity: 0.85;
-}
-
-.logo-img {
-  height: auto;
-  max-height: 55px;
-  width: auto;
+/* TABLAS */
+tbody tr:hover {
+  background-color: rgba(255,255,255,0.05);
 }
 </style>
