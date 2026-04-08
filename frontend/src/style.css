@@ -1,7 +1,72 @@
+/* ===== BASE ===== */
+
 body {
     background-color: #121212;
     color: white;
+    font-family: 'Inter', sans-serif;
 }
+
+/* Fondo principal */
+.app-background {
+    background: linear-gradient(135deg, #0b1a2b, #1f3a5f);
+    min-height: 100vh;
+}
+
+/* ===== NAVBAR / LOGO ===== */
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    height: 64px;
+    padding-left: 8px;
+    transition: 0.2s;
+}
+
+.logo-wrapper:hover {
+    opacity: 0.85;
+}
+
+/* Logo */
+.logo-img {
+    height: 40px;   /* MÁS GRANDE */
+    width: auto;
+}
+
+
+
+/* Nombre principal */
+.logo-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Subtítulo */
+.logo-subtitle {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* ===== TARJETAS ===== */
+
+.v-card {
+    border-radius: 12px;
+}
+
+/* Dashboard */
+.dashboard-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    background-color: #223d86;
+}
+
+/* ===== TABLAS ===== */
 
 .table {
     background-color: #1e1e1e !important;
@@ -16,11 +81,13 @@ body {
     border-color: #444 !important;
 }
 
-/* Hover en tablas */
+/* Hover filas */
 tr:hover {
     background-color: #1e1e1e;
     transition: 0.2s;
 }
+
+/* ===== BADGES ===== */
 
 .badge {
     color: white;
