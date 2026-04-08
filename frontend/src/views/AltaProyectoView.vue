@@ -1,32 +1,50 @@
 <template>
   <v-container>
 
-    <v-card>
+    <v-card class="pa-4 formulario-card">
       <v-card-title>Alta de Proyecto</v-card-title>
 
       <!-- Formulario -->
-      <v-form v-model="formValido">
+      <v-form v-model="formValido" ref="form">
 
-        <v-text-field
-          label="Descripción"
-          v-model="proyecto.descripcion"
-          :rules="[rules.requerido]"
-        />
+        <v-row>
 
-        <v-text-field
-          label="Fecha Inicio"
-          type="date"
-          v-model="proyecto.fechaInicio"
-          :rules="[rules.requerido]"
-        />
+          <v-col cols="12">
+            <v-text-field
+              label="Descripción"
+              v-model="proyecto.descripcion"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
 
-        <v-text-field
-          label="Lugar"
-          v-model="proyecto.lugar"
-          :rules="[rules.requerido]"
-        />
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="Fecha Inicio"
+              type="date"
+              v-model="proyecto.fechaInicio"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
 
-        <v-card-actions>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="Fecha Fin"
+              type="date"
+              v-model="proyecto.fechaFin"
+            />
+          </v-col>
+
+          <v-col cols="12">
+            <v-text-field
+              label="Lugar"
+              v-model="proyecto.lugar"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
+
+        </v-row>
+
+        <v-card-actions class="mt-4">
           <v-btn color="green" :disabled="!formValido" @click="guardar">
             Guardar
           </v-btn>
@@ -62,11 +80,9 @@ export default {
       proyecto:{},
       formValido:false,
 
-      // Controlar errores mostrados
       errorDialog:false,
       errorMensaje:"",
 
-      // Reglas de validación
       rules:{
         requerido: v => !!v || "Campo obligatorio"
       }
@@ -74,8 +90,11 @@ export default {
   },
 
   methods:{
-    // Guardar proyecto
     guardar(){
+
+      // Validar antes de enviar
+      if (!this.$refs.form.validate()) return;
+
       crearProyecto(this.proyecto)
         .then(()=>{
           this.$router.push("/proyectos");
@@ -88,3 +107,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.formulario-card {
+  max-width: 900px;
+  margin: 0 auto;
+}
+</style>

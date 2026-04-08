@@ -22,6 +22,16 @@
 
       </v-row>
 
+      <!-- Campo de búsqueda -->
+      <v-text-field
+        v-model="busqueda"
+        label="Buscar proyecto..."
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        clearable
+        class="mb-4"
+      />
+
       <!-- Tabla -->
       <v-table density="comfortable">
 
@@ -39,24 +49,22 @@
         <tbody>
 
           <!-- Sin datos -->
-          <tr v-if="proyectos.length === 0">
+          <tr v-if="proyectosFiltrados.length === 0">
             <td colspan="6" class="text-center py-6">
               No hay proyectos registrados
             </td>
           </tr>
 
           <!-- Lista -->
-          <tr v-for="p in proyectos" :key="p.idProyecto">
+          <tr v-for="p in proyectosFiltrados" :key="p.idProyecto">
 
             <td class="text-grey">{{ p.idProyecto }}</td>
 
-            <td>
-              <div>{{ p.descripcion }}</div>
-            </td>
+            <td>{{ p.descripcion }}</td>
 
             <td>{{ p.fechaInicio }}</td>
 
-            <!-- Estado del proyecto -->
+            <!-- Estado -->
             <td>
               <v-chip
                 size="small"
@@ -67,15 +75,25 @@
 
             <td>{{ p.lugar }}</td>
 
-            <!-- Acción -->
-            <td class="text-center">
+            <!-- Acciones -->
+            <td class="text-center acciones">
+
+              <v-btn
+                variant="text"
+                class="text-blue-lighten-2 text-caption"
+                @click="editarProyecto(p.idProyecto)">
+                <v-icon start size="18">mdi-pencil</v-icon>
+                Editar
+              </v-btn>
+
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
-                @click="abrirDialog(emp.idProyecto)">
+                @click="abrirDialog(p.idProyecto)">
                 <v-icon start size="18">mdi-delete</v-icon>
                 Baja
               </v-btn>
+
             </td>
 
           </tr>
@@ -89,50 +107,26 @@
     <!-- Dialog confirmación -->
     <v-dialog v-model="dialog" max-width="400">
       <v-card>
-
-        <v-card-title>
-          Confirmación
-        </v-card-title>
-
+        <v-card-title>Confirmación</v-card-title>
         <v-card-text>
           ¿Seguro que quieres dar de baja este proyecto?
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-
-          <v-btn @click="dialog = false">
-            Cancelar
-          </v-btn>
-
-          <v-btn color="red" @click="bajaConfirmada">
-            Aceptar
-          </v-btn>
+          <v-btn @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="red" @click="bajaConfirmada">Aceptar</v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
 
     <!-- Dialog error -->
     <v-dialog v-model="errorDialog" max-width="400">
       <v-card>
-
-        <v-card-title>
-          Error
-        </v-card-title>
-
-        <v-card-text>
-          {{ errorMensaje }}
-        </v-card-text>
-
+        <v-card-title>Error</v-card-title>
+        <v-card-text>{{ errorMensaje }}</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="primary" @click="errorDialog = false">
-            Aceptar
-          </v-btn>
+          <v-btn color="primary" @click="errorDialog = false">Aceptar</v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
 
@@ -146,6 +140,7 @@ export default {
   data() {
     return {
       proyectos: [],
+      busqueda: "",
       dialog: false,
       idSeleccionado: null,
       errorDialog: false,
@@ -153,23 +148,40 @@ export default {
     };
   },
 
+  computed: {
+    proyectosFiltrados() {
+      if (!this.busqueda) return this.proyectos;
+
+      const texto = this.busqueda.toLowerCase();
+
+      return this.proyectos.filter(p => {
+        const contenido = `
+          ${p.descripcion || ""}
+          ${p.lugar || ""}
+        `.toLowerCase();
+
+        return contenido.includes(texto);
+      });
+    }
+  },
+
   methods: {
 
-    // Cargar proyectos activos
     cargarProyectos() {
-      getProyectos()
-        .then(res => {
-          this.proyectos = res.data;
-        });
+      getProyectos().then(res => {
+        this.proyectos = res.data;
+      });
     },
 
-    // Abrir confirmación
+    editarProyecto(id) {
+      this.$router.push(`/editar-proyecto/${id}`);
+    },
+
     abrirDialog(id) {
       this.idSeleccionado = id;
       this.dialog = true;
     },
 
-    // Ejecutar baja
     bajaConfirmada() {
       bajaProyecto(this.idSeleccionado)
         .then(() => {
@@ -190,3 +202,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.acciones {
+  white-space: nowrap;
+}
+</style>
