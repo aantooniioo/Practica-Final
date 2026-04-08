@@ -22,6 +22,16 @@
 
       </v-row>
 
+      <!-- Campo de búsqueda -->
+      <v-text-field
+        v-model="busqueda"
+        label="Buscar empleado..."
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        clearable
+        class="mb-4"
+      />
+
       <!-- Tabla -->
       <v-table density="comfortable">
 
@@ -43,14 +53,14 @@
         <tbody>
 
           <!-- Sin datos -->
-          <tr v-if="empleados.length === 0">
-            <td colspan="7" class="text-center py-6">
+          <tr v-if="empleadosFiltrados.length === 0">
+            <td colspan="10" class="text-center py-6">
               No hay empleados registrados
             </td>
           </tr>
 
           <!-- Lista -->
-          <tr v-for="emp in empleados" :key="emp.idEmpleado">
+          <tr v-for="emp in empleadosFiltrados" :key="emp.idEmpleado">
 
             <td class="text-grey">{{ emp.idEmpleado }}</td>
 
@@ -84,8 +94,17 @@
               </v-chip>
             </td>
 
-            <!-- Acción -->
-            <td class="text-center">
+            <!-- Acciones -->
+            <td class="text-center acciones">
+
+              <v-btn
+                variant="text"
+                class="text-blue-lighten-2 text-caption"
+                @click="editarEmpleado(emp.idEmpleado)">
+                <v-icon start size="18">mdi-pencil</v-icon>
+                Editar
+              </v-btn>
+
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
@@ -93,6 +112,7 @@
                 <v-icon start size="18">mdi-delete</v-icon>
                 Baja
               </v-btn>
+
             </td>
 
           </tr>
@@ -155,11 +175,40 @@ export default {
   data() {
     return {
       empleados: [],
+      busqueda: "",
       dialog: false,
       idSeleccionado: null,
       errorDialog: false,
       errorMensaje: ""
     };
+  },
+
+  computed: {
+    empleadosFiltrados() {
+
+      // Si no hay búsqueda, devolver todos
+      if (!this.busqueda) return this.empleados;
+
+      // Pasar a minúsculas
+      const texto = this.busqueda.toLowerCase();
+
+      // Filtrar empleados
+      return this.empleados.filter(emp => {
+
+        // Unir todos los campos relevantes
+        const contenido = `
+          ${emp.nombre || ""}
+          ${emp.apellido1 || ""}
+          ${emp.apellido2 || ""}
+          ${emp.email || ""}
+          ${emp.telefono1 || ""}
+          ${emp.telefono2 || ""}
+        `.toLowerCase();
+
+        // Comprobar coincidencia
+        return contenido.includes(texto);
+      });
+    }
   },
 
   methods: {
@@ -170,6 +219,11 @@ export default {
         .then(res => {
           this.empleados = res.data;
         });
+    },
+
+    // Ir a pantalla de edición
+    editarEmpleado(id) {
+      this.$router.push(`/editar-empleado/${id}`);
     },
 
     // Abrir confirmación
@@ -213,3 +267,21 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+td {
+  padding: 8px 16px;
+}
+
+th {
+  font-weight: 600;
+}
+
+.acciones {
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+</style>

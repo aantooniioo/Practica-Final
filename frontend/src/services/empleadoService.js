@@ -16,3 +16,13 @@ export function bajaEmpleado(id){
 export function crearEmpleado(empleado){
     return axios.post(API_URL, empleado);
 }
+
+// Editar empleado
+
+export function getEmpleadoById(id){
+    return axios.get(`${API_URL}/${id}`);
+}
+
+export function editarEmpleado(id, data){
+    return axios.put(`/empleados/${id}`, data);
+}
