@@ -1,13 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Vistas
+import HomeView from '@/views/HomeView.vue'
 import EmpleadosView from '../views/EmpleadosView.vue'
 import AltaEmpleadoView from '../views/AltaEmpleadoView.vue'
 import ProyectosView from '@/views/ProyectosView.vue'
 import AltaProyectoView from '../views/AltaProyectoView.vue'
 import AsignacionView from '@/views/AsignacionView.vue'
+import AsignacionesListView from '@/views/AsignacionesListView.vue'
 
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView
+  },
   {
     path: '/',
     redirect: '/empleados'
@@ -33,6 +40,10 @@ const routes = [
   {
     path: '/asignacion',
     component: AsignacionView
+  },
+  {
+    path: '/asignaciones',
+    component: AsignacionesListView
   }
 ]
 

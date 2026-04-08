@@ -1,39 +1,50 @@
 <template>
-  <div class="container mt-4">
-    <h2 class="mb-4">Panel principal</h2>
+  <v-container class="mt-5">
 
-    <div class="d-flex flex-wrap gap-3">
+    <!-- Tarjeta principal -->
+    <v-card>
 
-      <!-- Empleados -->
-      <button 
-        class="btn btn-primary"
-        @click="$router.push('/empleados')">
-        Gestión de empleados
-      </button>
+      <!-- Título -->
+      <v-card-title class="text-h5">
+        Panel principal
+      </v-card-title>
 
-      <!-- Proyectos -->
-      <button 
-        class="btn btn-secondary"
-        @click="$router.push('/proyectos')">
-        Gestión de proyectos
-      </button>
+      <v-card-text>
+        <v-row>
 
-      <!-- Asignar -->
-      <button 
-        class="btn btn-success"
-        @click="$router.push('/asignacion')">
-        Asignar empleados a proyectos
-      </button>
+          <!-- Botón empleados -->
+          <v-col cols="12" md="3">
+            <v-btn block color="primary" @click="$router.push('/empleados')">
+              Empleados
+            </v-btn>
+          </v-col>
 
-      <!-- Ver asignaciones -->
-      <button 
-        class="btn btn-dark"
-        @click="$router.push('/asignaciones')">
-        Ver asignaciones
-      </button>
+          <!-- Botón proyectos -->
+          <v-col cols="12" md="3">
+            <v-btn block color="secondary" @click="$router.push('/proyectos')">
+              Proyectos
+            </v-btn>
+          </v-col>
 
-    </div>
-  </div>
+          <!-- Botón asignar -->
+          <v-col cols="12" md="3">
+            <v-btn block color="success" @click="$router.push('/asignacion')">
+              Asignar
+            </v-btn>
+          </v-col>
+
+          <!-- Botón ver asignaciones -->
+          <v-col cols="12" md="3">
+            <v-btn block color="black" @click="$router.push('/asignaciones')">
+              Ver asignaciones
+            </v-btn>
+          </v-col>
+
+        </v-row>
+      </v-card-text>
+
+    </v-card>
+  </v-container>
 </template>
 
 <script>
