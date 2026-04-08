@@ -1,119 +1,131 @@
 <template>
-    <div class="container mt-4">
-        <h2>Alta de Empleado</h2>
+  <v-container>
 
-        <form @submit.prevent="guardar">
+    <v-card class="pa-4">
 
-            <div class="mb-3">
-                <label>Nombre</label>
-                <input v-model="empleado.nombre" class="form-control" required />
-            </div>
+      <!-- Título -->
+      <v-card-title class="text-h5">
+        Alta de Empleado
+      </v-card-title>
 
-            <div class="mb-3">
-                <label>Apellido 1</label>
-                <input v-model="empleado.apellido1" class="form-control" required />
-            </div>
+      <v-card-text>
 
-            <div class="mb-3">
-                <label>Apellido 2</label>
-                <input v-model="empleado.apellido2" class="form-control" required />
-            </div>
+        <v-form @submit.prevent="guardar">
 
-            <div class="mb-3">
-                <label>Email</label>
-                <input v-model="empleado.email" class="form-control" required />
-            </div>
+          <!-- Campos -->
+          <v-text-field
+            label="Nombre"
+            v-model="empleado.nombre"
+            :rules="[rules.required]"
+          ></v-text-field>
 
-            <div class="mb-3">
-                <label>Teléfono 1</label>
-                <input v-model="empleado.telefono1" class="form-control" required />
-            </div>
+          <v-text-field
+            label="Apellido 1"
+            v-model="empleado.apellido1"
+            :rules="[rules.required]"
+          ></v-text-field>
 
-            <div class="mb-3">
-                <label>Teléfono 2</label>
-                <input v-model="empleado.telefono2" class="form-control" required />
-            </div>
+          <v-text-field
+            label="Apellido 2"
+            v-model="empleado.apellido2"
+          ></v-text-field>
 
-            <!-- ESTADO CIVIL -->
-            <div class="mb-3">
-                <label>Estado Civil</label>
-                <select v-model="empleado.estadoCivil" class="form-control">
-                    <option value="S">Soltero</option>
-                    <option value="C">Casado</option>
-                </select>
-            </div>
+          <v-text-field
+            label="Email"
+            v-model="empleado.email"
+            :rules="[rules.required, rules.email]"
+          ></v-text-field>
 
-            <!-- FORMACIÓN -->
-            <div class="mb-3">
-                <label>Formación Universitaria</label>
-                <select v-model="empleado.formacionUniversitaria" class="form-control">
-                    <option value="S">Sí</option>
-                    <option value="N">No</option>
-                </select>
-            </div>
+          <v-text-field label="Teléfono 1" v-model="empleado.telefono1"></v-text-field>
+          <v-text-field label="Teléfono 2" v-model="empleado.telefono2"></v-text-field>
 
-            <button class="btn btn-success">Guardar</button>
+          <!-- Selects -->
+          <v-select
+            label="Estado Civil"
+            :items="['S','C']"
+            v-model="empleado.estadoCivil"
+          ></v-select>
 
-            <button 
-                type="button" 
-                class="btn btn-secondary ms-2"
-                @click="$router.push('/empleados')">
-                Cancelar
-            </button>
+          <v-select
+            label="Formación Universitaria"
+            :items="['S','N']"
+            v-model="empleado.formacionUniversitaria"
+          ></v-select>
 
-        </form>
-    </div>
+          <!-- Botones -->
+          <v-btn color="success" type="submit" class="mt-3 mr-2">
+            Guardar
+          </v-btn>
+
+          <v-btn class="mt-3" @click="$router.push('/empleados')">
+            Volver
+          </v-btn>
+
+        </v-form>
+
+      </v-card-text>
+
+    </v-card>
+
+    <!-- Mensajes -->
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      {{ snackbarText }}
+    </v-snackbar>
+
+  </v-container>
 </template>
 
 <script>
 import { crearEmpleado } from "../services/empleadoService";
 
 export default {
-    name: "AltaEmpleadoView",
+  data(){
+    return{
+      empleado:{
+        nombre:"",
+        apellido1:"",
+        apellido2:"",
+        email:"",
+        telefono1:"",
+        telefono2:"",
+        estadoCivil:"",
+        formacionUniversitaria:""
+      },
 
-    data(){
-        return{
-            empleado:{
-                nombre:"",
-                apellido1:"",
-                apellido2:"",
-                email:"",
-                telefono1:"",
-                telefono2:"",
-                fechaAlta: new Date().toISOString().split("T")[0],
-                fechaBaja: null,
-                estadoCivil: "S",
-                formacionUniversitaria: "N"
-            }
-        }
+      // Reglas básicas de validación
+      rules:{
+        required: v => !!v || 'Campo obligatorio',
+        email: v => /.+@.+\..+/.test(v) || 'Email no válido'
+      },
+
+      // Control de mensajes
+      snackbar:false,
+      snackbarText:"",
+      snackbarColor:"success"
+    }
+  },
+
+  methods:{
+
+    // Muestra mensaje
+    mostrarMensaje(texto, color='success'){
+      this.snackbarText = texto;
+      this.snackbarColor = color;
+      this.snackbar = true;
     },
 
-    methods:{
-        guardar(){
-
-            // VALIDACIÓN
-            if(
-                !this.empleado.nombre ||
-                !this.empleado.apellido1 ||
-                !this.empleado.apellido2 ||
-                !this.empleado.email ||
-                !this.empleado.telefono1 ||
-                !this.empleado.telefono2
-            ){
-                alert("Es obligatorio introducir todos los datos para dar de alta un nuevo empleado");
-                return;
-            }
-
-            crearEmpleado(this.empleado)
-                .then(() => {
-                    alert("Empleado creado correctamente");
-                    this.$router.push('/empleados');
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert("Error al crear empleado");
-                });
-        }
+    // Guarda empleado
+    guardar(){
+      crearEmpleado(this.empleado)
+        .then(()=>{
+          this.mostrarMensaje("Empleado creado correctamente");
+          this.$router.push('/empleados');
+        })
+        .catch(()=>{
+          this.mostrarMensaje("Error al crear empleado","error");
+        });
     }
+
+  }
 }
 </script>
