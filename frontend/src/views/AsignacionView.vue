@@ -1,48 +1,53 @@
 <template>
-  <div class="container mt-4">
-    <h2>Asignar Empleado a Proyecto</h2>
+  <v-container class="mt-5">
+    <v-card>
+      <v-card-title class="text-h5">
+        Asignar Empleado a Proyecto
+      </v-card-title>
 
-    <form @submit.prevent="guardar">
+      <v-card-text>
 
-      <!-- EMPLEADO -->
-      <div class="mb-3">
-        <label>Empleado</label>
-        <select v-model="form.idEmpleado" class="form-control">
-          <option value="">Selecciona empleado</option>
-          <option v-for="e in empleados" :key="e.idEmpleado" :value="e.idEmpleado">
-            {{ e.nombre }} {{ e.apellido1 }}
-          </option>
-        </select>
-      </div>
+        <v-form @submit.prevent="guardar">
 
-      <!-- PROYECTO -->
-      <div class="mb-3">
-        <label>Proyecto</label>
-        <select v-model="form.idProyecto" class="form-control">
-          <option value="">Selecciona proyecto</option>
-          <option v-for="p in proyectos" :key="p.idProyecto" :value="p.idProyecto">
-            {{ p.descripcion }}
-          </option>
-        </select>
-      </div>
+          <!-- EMPLEADO -->
+          <v-select
+            label="Empleado"
+            :items="empleados"
+            item-title="nombreCompleto"
+            item-value="idEmpleado"
+            v-model="form.idEmpleado"
+          ></v-select>
 
-      <!-- FECHA -->
-      <div class="mb-3">
-        <label>Fecha Alta</label>
-        <input type="date" v-model="form.fechaAlta" class="form-control" />
-      </div>
+          <!-- PROYECTO -->
+          <v-select
+            label="Proyecto"
+            :items="proyectos"
+            item-title="descripcion"
+            item-value="idProyecto"
+            v-model="form.idProyecto"
+          ></v-select>
 
-      <button class="btn btn-success">Asignar</button>
+          <!-- FECHA -->
+          <v-text-field
+            label="Fecha Alta"
+            type="date"
+            v-model="form.fechaAlta"
+          ></v-text-field>
 
-      <button 
-        type="button" 
-        class="btn btn-secondary ms-2"
-        @click="$router.push('/')">
-        Volver
-      </button>
+          <v-btn color="success" type="submit" class="mt-3">
+            Asignar
+          </v-btn>
 
-    </form>
-  </div>
+        </v-form>
+
+      </v-card-text>
+    </v-card>
+
+    <!-- SNACKBAR (modal que sustituye alert) -->
+    <v-snackbar v-model="snackbar" :color="snackbarColor">
+      {{ snackbarText }}
+    </v-snackbar>
+  </v-container>
 </template>
 
 <script>
@@ -51,8 +56,6 @@ import { getProyectos } from "../services/proyectoService";
 import { asignarEmpleado } from "../services/empleadoProyectoService";
 
 export default {
-  name: "AsignacionView",
-
   data(){
     return{
       empleados: [],
@@ -61,29 +64,43 @@ export default {
         idEmpleado: "",
         idProyecto: "",
         fechaAlta: ""
-      }
+      },
+
+      snackbar: false,
+      snackbarText: "",
+      snackbarColor: "success"
     }
   },
 
   mounted(){
-    getEmpleados().then(res => this.empleados = res.data);
+    getEmpleados().then(res => {
+      this.empleados = res.data.map(e => ({
+        ...e,
+        nombreCompleto: e.nombre + " " + e.apellido1
+      }));
+    });
+
     getProyectos().then(res => this.proyectos = res.data);
   },
 
   methods:{
+    mostrarMensaje(texto, color="success"){
+      this.snackbarText = texto;
+      this.snackbarColor = color;
+      this.snackbar = true;
+    },
+
     guardar(){
 
-      // 🔹 Validación básica
       if(!this.form.idEmpleado || !this.form.idProyecto){
-        alert("Debes seleccionar empleado y proyecto");
+        this.mostrarMensaje("Debes seleccionar empleado y proyecto", "error");
         return;
       }
 
       asignarEmpleado(this.form)
         .then(()=>{
-          alert("Asignación realizada correctamente");
+          this.mostrarMensaje("Asignación realizada correctamente");
 
-          // Reset formulario
           this.form = {
             idEmpleado: "",
             idProyecto: "",
@@ -91,7 +108,7 @@ export default {
           };
         })
         .catch(err=>{
-          alert(err.response?.data || "Error en la asignación");
+          this.mostrarMensaje(err.response?.data || "Error en la asignación", "error");
         });
     }
   }
