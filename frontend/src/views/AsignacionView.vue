@@ -2,7 +2,7 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal -->
-    <v-card class="pa-5 elevation-4">
+    <v-card class="pa-4 formulario-card elevation-4">
 
       <!-- Título -->
       <v-card-title>
@@ -13,54 +13,62 @@
 
         <v-form>
 
-          <!-- Select de empleados -->
-          <v-select
-            label="Empleado"
-            :items="empleados"
-            item-title="nombreCompleto"
-            item-value="idEmpleado"
-            v-model="idEmpleado"
-          >
-            <!-- Personalizar cada opción -->
-            <template #item="{ props, item }">
+          <v-row>
 
-              <v-list-item
-                v-bind="props"
-                :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
+            <!-- Select de empleados -->
+            <v-col cols="12" md="6">
+              <v-select
+                label="Empleado"
+                :items="empleados"
+                item-title="nombreCompleto"
+                item-value="idEmpleado"
+                v-model="idEmpleado"
               >
-                <v-list-item-title>
+                <template #item="{ props, item }">
 
-                  {{ item?.raw?.nombreCompleto }}
+                  <v-list-item
+                    v-bind="props"
+                    :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
+                  >
+                    <v-list-item-title>
 
-                  <!-- Mostrar si ya está asignado -->
-                  <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
-                    (ya asignado)
-                  </span>
+                      {{ item?.raw?.nombreCompleto }}
 
-                </v-list-item-title>
-              </v-list-item>
+                      <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
+                        (ya asignado)
+                      </span>
 
-            </template>
-          </v-select>
+                    </v-list-item-title>
+                  </v-list-item>
 
-          <!-- Select de proyectos -->
-          <v-select
-            label="Proyecto"
-            :items="proyectos"
-            item-title="descripcion"
-            item-value="idProyecto"
-            v-model="idProyecto"
-          />
+                </template>
+              </v-select>
+            </v-col>
 
-          <!-- Fecha -->
-          <v-text-field
-            label="Fecha"
-            type="date"
-            v-model="fechaAlta"
-          />
+            <!-- Select de proyectos -->
+            <v-col cols="12" md="6">
+              <v-select
+                label="Proyecto"
+                :items="proyectos"
+                item-title="descripcion"
+                item-value="idProyecto"
+                v-model="idProyecto"
+              />
+            </v-col>
+
+            <!-- Fecha -->
+            <v-col cols="12" md="6">
+              <v-text-field
+                label="Fecha"
+                type="date"
+                v-model="fechaAlta"
+              />
+            </v-col>
+
+          </v-row>
 
           <!-- Botón -->
-          <v-card-actions>
+          <v-card-actions class="mt-4">
             <v-btn color="primary" @click="asignar">
               Asignar
             </v-btn>
@@ -72,7 +80,7 @@
 
     </v-card>
 
-    <!-- Dialog de error -->
+    <!-- Dialog error -->
     <v-dialog v-model="dialogError" max-width="400">
       <v-card>
 
@@ -147,36 +155,28 @@ export default {
 
   methods:{
 
-    // Cargar empleados activos
     cargarEmpleados(){
       getEmpleados().then(res => {
-
-        // Se construye nombre completo para mostrar en el select
         this.empleados = res.data.map(e => ({
           ...e,
           nombreCompleto: (e.nombre || '') + " " + (e.apellido1 || '')
         }));
-
       });
     },
 
-    // Cargar proyectos activos
     cargarProyectos(){
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    // Cargar asignaciones existentes
     cargarAsignaciones(){
       getAsignaciones().then(res => {
         this.asignaciones = res.data;
       });
     },
 
-    // Comprobar si ya existe la relación empleado-proyecto
     yaAsignado(idEmpleado, idProyecto){
-
       if(!idEmpleado || !idProyecto) return false;
 
       return this.asignaciones.some(a =>
@@ -184,17 +184,14 @@ export default {
       );
     },
 
-    // Ejecutar asignación
     asignar(){
 
-      // Validar campos obligatorios
       if(!this.idEmpleado || !this.idProyecto || !this.fechaAlta){
         this.mensajeError = "Debes rellenar todos los campos";
         this.dialogError = true;
         return;
       }
 
-      // Evitar duplicados
       if(this.yaAsignado(this.idEmpleado, this.idProyecto)){
         this.mensajeError = "El empleado ya está asignado a este proyecto";
         this.dialogError = true;
@@ -212,12 +209,10 @@ export default {
 
           this.dialogOk = true;
 
-          // Limpiar formulario
           this.idEmpleado = null;
           this.idProyecto = null;
           this.fechaAlta = null;
 
-          // Recargar datos
           this.cargarAsignaciones();
 
         })
@@ -229,7 +224,6 @@ export default {
 
   },
 
-  // Carga inicial de datos
   mounted(){
     this.cargarAsignaciones();
     this.cargarProyectos();
@@ -237,3 +231,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.formulario-card {
+  max-width: 900px;
+  margin: 0 auto;
+}
+</style>
