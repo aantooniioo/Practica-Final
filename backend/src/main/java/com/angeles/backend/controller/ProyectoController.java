@@ -21,6 +21,7 @@ public class ProyectoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
+    // Obtener proyectos activos
     @GetMapping
     public List<Proyecto> obtenerProyectos(){
         return proyectoRepository.findAll()
@@ -29,15 +30,31 @@ public class ProyectoController {
                 .toList();
     }
 
+    // Crear proyecto con validaciones
     @PostMapping
-    public Proyecto crearProyecto(@RequestBody Proyecto proyecto){
-        return proyectoRepository.save(proyecto);
+    public ResponseEntity<?> crearProyecto(@RequestBody Proyecto proyecto){
+
+        // Validar campos obligatorios
+        if(proyecto.getDescripcion() == null || proyecto.getDescripcion().isEmpty()){
+            return ResponseEntity.badRequest().body("La descripción es obligatoria");
+        }
+
+        if(proyecto.getFechaInicio() == null){
+            return ResponseEntity.badRequest().body("La fecha de inicio es obligatoria");
+        }
+
+        if(proyecto.getLugar() == null || proyecto.getLugar().isEmpty()){
+            return ResponseEntity.badRequest().body("El lugar es obligatorio");
+        }
+
+        return ResponseEntity.ok(proyectoRepository.save(proyecto));
     }
 
+    // Dar de baja con restricción
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
-        // Comprobamos si tiene empleados
+        // Comprobar si tiene empleados asignados
         int asignaciones = empleadoProyectoRepository.countByIdProyecto(id);
 
         if(asignaciones > 0){

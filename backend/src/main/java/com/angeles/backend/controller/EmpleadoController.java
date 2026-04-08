@@ -21,6 +21,7 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
+    // Obtener empleados activos
     @GetMapping
     public List<Empleado> obtenerTodos(){
         return empleadoRepository.findAll()
@@ -29,15 +30,31 @@ public class EmpleadoController {
                 .toList();
     }
 
+    // Crear empleado con validaciones básicas
     @PostMapping
-    public Empleado crearEmpleado(@RequestBody Empleado empleado){
-        return empleadoRepository.save(empleado);
+    public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado){
+
+        // Validar campos obligatorios
+        if(empleado.getNombre() == null || empleado.getNombre().isEmpty()){
+            return ResponseEntity.badRequest().body("El nombre es obligatorio");
+        }
+
+        if(empleado.getApellido1() == null || empleado.getApellido1().isEmpty()){
+            return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
+        }
+
+        if(empleado.getEmail() == null || empleado.getEmail().isEmpty()){
+            return ResponseEntity.badRequest().body("El email es obligatorio");
+        }
+
+        return ResponseEntity.ok(empleadoRepository.save(empleado));
     }
 
+    // Dar de baja con restricción de asignaciones
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
-        // Comprobamos si tiene proyectos
+        // Comprobar si tiene proyectos asignados
         int asignaciones = empleadoProyectoRepository.countByIdEmpleado(id);
 
         if(asignaciones > 0){
