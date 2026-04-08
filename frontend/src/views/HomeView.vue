@@ -1,118 +1,144 @@
 <template>
-  <v-container class="mt-8">
+  <v-container>
 
-    <!-- Título -->
-    <div class="mb-8">
-      <h1 class="text-h4 font-weight-bold">Panel de gestión</h1>
-      <p class="text-grey">
-        Acceso rápido a las secciones principales
-      </p>
-    </div>
+    <!-- HERO -->
+    <v-row class="mb-8">
+      <v-col cols="12">
+        <v-card class="pa-6 hero-card card-pro">
 
-    <!-- Tarjetas principales -->
-    <v-row class="mb-6" dense>
+          <h1 class="text-h4 font-weight-bold mb-2">
+            Bienvenido
+          </h1>
 
-      <!-- Empleados -->
+          <p class="text-grey mb-4">
+            Sistema de gestión interna de Future Space
+          </p>
+
+          <v-btn color="primary" @click="$router.push('/empleados')">
+            Empezar
+          </v-btn>
+
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- DASHBOARD -->
+    <v-row class="mb-8">
+
       <v-col cols="12" md="4">
-        <v-card class="pa-5 dashboard-card" @click="$router.push('/empleados')">
-          <v-row align="center">
-            <v-col cols="auto">
-              <v-icon size="36" class="text-blue">mdi-account-group</v-icon>
-            </v-col>
-            <v-col>
-              <h3 class="text-h6">Empleados</h3>
-              <p class="text-grey text-caption">Gestión de empleados</p>
-            </v-col>
-          </v-row>
+        <v-card class="pa-5 card-pro">
+          <div class="text-grey">Empleados</div>
+          <div class="text-h4 font-weight-bold">{{ empleados.length }}</div>
         </v-card>
       </v-col>
 
-      <!-- Proyectos -->
       <v-col cols="12" md="4">
-        <v-card class="pa-5 dashboard-card" @click="$router.push('/proyectos')">
-          <v-row align="center">
-            <v-col cols="auto">
-              <v-icon size="36" class="text-green">mdi-briefcase</v-icon>
-            </v-col>
-            <v-col>
-              <h3 class="text-h6">Proyectos</h3>
-              <p class="text-grey text-caption">Gestión de proyectos</p>
-            </v-col>
-          </v-row>
+        <v-card class="pa-5 card-pro">
+          <div class="text-grey">Proyectos</div>
+          <div class="text-h4 font-weight-bold">{{ proyectos.length }}</div>
         </v-card>
       </v-col>
 
-      <!-- Ver asignaciones -->
       <v-col cols="12" md="4">
-        <v-card class="pa-5 dashboard-card" @click="$router.push('/asignaciones')">
-          <v-row align="center">
-            <v-col cols="auto">
-              <v-icon size="36" class="text-orange">mdi-link</v-icon>
-            </v-col>
-            <v-col>
-              <h3 class="text-h6">Asignaciones</h3>
-              <p class="text-grey text-caption">Relación empleados-proyectos</p>
-            </v-col>
-          </v-row>
+        <v-card class="pa-5 card-pro">
+          <div class="text-grey">Asignaciones</div>
+          <div class="text-h4 font-weight-bold">{{ asignaciones.length }}</div>
         </v-card>
       </v-col>
 
     </v-row>
 
-    <!-- SEGUNDA FILA -->
-    <v-row dense>
+    <!-- CARRUSEL -->
+    <v-row class="mb-8">
+      <v-col cols="12">
 
-      <!-- Asignar -->
+        <v-carousel height="250" cycle interval="4000">
+
+          <v-carousel-item v-for="(item, i) in slides" :key="i">
+            <v-sheet class="carousel-item d-flex align-center justify-center">
+
+              <div class="text-center">
+                <h2>{{ item.titulo }}</h2>
+                <p>{{ item.texto }}</p>
+              </div>
+
+            </v-sheet>
+          </v-carousel-item>
+
+        </v-carousel>
+
+      </v-col>
+    </v-row>
+
+    <!-- SOBRE NOSOTROS -->
+    <v-row class="mb-8">
+
       <v-col cols="12" md="6">
-        <v-card class="pa-5 dashboard-card" @click="$router.push('/asignacion')">
-          <v-row align="center">
-            <v-col cols="auto">
-              <v-icon size="36" class="text-deep-orange">mdi-account-switch</v-icon>
-            </v-col>
-            <v-col>
-              <h3 class="text-h6">Asignar</h3>
-              <p class="text-grey text-caption">
-                Asignar empleados a proyectos
-              </p>
-            </v-col>
-          </v-row>
+        <v-img
+          src="https://images.unsplash.com/photo-1552664730-d307ca884978"
+          height="280"
+          cover
+        />
+      </v-col>
+
+      <v-col cols="12" md="6">
+
+        <h2 class="text-h5 text-white mb-3">
+          Future Space S.A.
+        </h2>
+
+        <p class="text-grey">
+          Future Space es una empresa tecnológica orientada al desarrollo de soluciones digitales.
+        </p>
+
+        <p class="text-grey mt-3">
+          Este sistema permite gestionar empleados, proyectos y asignaciones de forma clara.
+        </p>
+
+        <p class="text-grey mt-3">
+          Diseñado con una interfaz moderna para mejorar la eficiencia diaria.
+        </p>
+
+      </v-col>
+
+    </v-row>
+
+    <!-- VENTANITAS (IMPORTANTE) -->
+    <v-row class="mb-8">
+
+      <v-col cols="12" md="4">
+        <v-card class="card-pro hover-card">
+          <v-img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d" height="180" cover />
+          <v-card-text>
+            <h3>Gestión de empleados</h3>
+            <p class="text-grey text-body-2">
+              Administración completa del personal.
+            </p>
+          </v-card-text>
         </v-card>
       </v-col>
 
-      <!-- Acciones rápidas -->
-      <v-col cols="12" md="6">
-        <v-card class="pa-5 dashboard-card">
+      <v-col cols="12" md="4">
+        <v-card class="card-pro hover-card">
+          <v-img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" height="180" cover />
+          <v-card-text>
+            <h3>Gestión de proyectos</h3>
+            <p class="text-grey text-body-2">
+              Organización y seguimiento de proyectos.
+            </p>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-          <!-- Cabecera con icono -->
-          <v-row align="center" class="mb-3">
-            <v-col cols="auto">
-              <v-icon size="28" class="text-blue">mdi-flash</v-icon>
-            </v-col>
-            <v-col>
-              <h3 class="text-h6">Acciones rápidas</h3>
-            </v-col>
-          </v-row>
-
-          <!-- Botones -->
-          <v-btn
-            block
-            class="mb-2"
-            variant="tonal"
-            prepend-icon="mdi-account-plus"
-            @click="$router.push('/alta-empleado')"
-          >
-            Crear empleado
-          </v-btn>
-
-          <v-btn
-            block
-            variant="tonal"
-            prepend-icon="mdi-briefcase-plus"
-            @click="$router.push('/alta-proyecto')"
-          >
-            Crear proyecto
-          </v-btn>
-
+      <v-col cols="12" md="4">
+        <v-card class="card-pro hover-card">
+          <v-img src="https://images.unsplash.com/photo-1556761175-b413da4baf72" height="180" cover />
+          <v-card-text>
+            <h3>Asignaciones</h3>
+            <p class="text-grey text-body-2">
+              Relación eficiente entre empleados y proyectos.
+            </p>
+          </v-card-text>
         </v-card>
       </v-col>
 
@@ -122,19 +148,50 @@
 </template>
 
 <script>
+import axios from "axios";
+import { getEmpleados } from "../services/empleadoService";
+import { getProyectos } from "../services/proyectoService";
+
 export default {
-  name: "HomeView"
+  name: "HomeView",
+
+  data() {
+    return {
+      empleados: [],
+      proyectos: [],
+      asignaciones: [],
+      slides: [
+        { titulo: "Gestión eficiente", texto: "Control total del sistema" },
+        { titulo: "Centralización", texto: "Todo en un mismo lugar" },
+        { titulo: "Entorno profesional", texto: "Diseñado para empresa" }
+      ]
+    };
+  },
+
+  mounted() {
+    axios.get("http://localhost:8080/asignaciones")
+      .then(res => this.asignaciones = res.data);
+
+    getEmpleados().then(res => this.empleados = res.data);
+    getProyectos().then(res => this.proyectos = res.data);
+  }
 };
 </script>
 
 <style scoped>
-.dashboard-card {
-  cursor: pointer;
-  transition: all 0.2s ease;
+.hero-card {
+  background: linear-gradient(135deg, #1e293b, #334155);
 }
 
-.dashboard-card:hover {
-  transform: translateY(-4px);
-  background-color: rgba(255,255,255,0.03);
+.carousel-item {
+  height: 100%;
+  background: #0f172a;
+  color: white;
+}
+
+/* Hover cards */
+.hover-card:hover {
+  transform: translateY(-6px);
+  transition: 0.2s;
 }
 </style>
