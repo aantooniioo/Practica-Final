@@ -1,76 +1,53 @@
 <template>
   <v-container>
 
-    <v-card class="pa-4">
+    <v-card>
+      <v-card-title>Alta de Empleado</v-card-title>
 
-      <!-- Título -->
-      <v-card-title class="text-h5">
-        Alta de Empleado
-      </v-card-title>
+      <!-- Formulario controlado -->
+      <v-form v-model="formValido">
 
-      <v-card-text>
+        <v-text-field
+          label="Nombre"
+          v-model="empleado.nombre"
+          :rules="[rules.requerido]"
+        />
 
-        <v-form @submit.prevent="guardar">
+        <v-text-field
+          label="Apellido 1"
+          v-model="empleado.apellido1"
+          :rules="[rules.requerido]"
+        />
 
-          <!-- Campos -->
-          <v-text-field
-            label="Nombre"
-            v-model="empleado.nombre"
-            :rules="[rules.required]"
-          ></v-text-field>
+        <v-text-field
+          label="Email"
+          v-model="empleado.email"
+          :rules="[rules.requerido, rules.email]"
+        />
 
-          <v-text-field
-            label="Apellido 1"
-            v-model="empleado.apellido1"
-            :rules="[rules.required]"
-          ></v-text-field>
-
-          <v-text-field
-            label="Apellido 2"
-            v-model="empleado.apellido2"
-          ></v-text-field>
-
-          <v-text-field
-            label="Email"
-            v-model="empleado.email"
-            :rules="[rules.required, rules.email]"
-          ></v-text-field>
-
-          <v-text-field label="Teléfono 1" v-model="empleado.telefono1"></v-text-field>
-          <v-text-field label="Teléfono 2" v-model="empleado.telefono2"></v-text-field>
-
-          <!-- Selects -->
-          <v-select
-            label="Estado Civil"
-            :items="['S','C']"
-            v-model="empleado.estadoCivil"
-          ></v-select>
-
-          <v-select
-            label="Formación Universitaria"
-            :items="['S','N']"
-            v-model="empleado.formacionUniversitaria"
-          ></v-select>
-
-          <!-- Botones -->
-          <v-btn color="success" type="submit" class="mt-3 mr-2">
+        <v-card-actions>
+          <v-btn color="green" :disabled="!formValido" @click="guardar">
             Guardar
           </v-btn>
 
-          <v-btn class="mt-3" @click="$router.push('/empleados')">
-            Volver
+          <v-btn color="grey" @click="$router.push('/empleados')">
+            Cancelar
           </v-btn>
+        </v-card-actions>
 
-        </v-form>
-
-      </v-card-text>
-
+      </v-form>
     </v-card>
 
-    <!-- Mensajes -->
-    <v-snackbar v-model="snackbar" :color="snackbarColor">
-      {{ snackbarText }}
-    </v-snackbar>
+    <!-- Dialog de error -->
+    <v-dialog v-model="errorDialog" max-width="400">
+      <v-card>
+        <v-card-title>Error</v-card-title>
+        <v-card-text>{{ errorMensaje }}</v-card-text>
+        <v-card-actions>
+          <v-btn color="#3b82f6" @click="errorDialog = false">Aceptar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-container>
 </template>
@@ -81,51 +58,33 @@ import { crearEmpleado } from "../services/empleadoService";
 export default {
   data(){
     return{
-      empleado:{
-        nombre:"",
-        apellido1:"",
-        apellido2:"",
-        email:"",
-        telefono1:"",
-        telefono2:"",
-        estadoCivil:"",
-        formacionUniversitaria:""
-      },
+      empleado:{},
+      formValido:false,
 
-      // Reglas básicas de validación
+      // Controlar errores mostrados
+      errorDialog:false,
+      errorMensaje:"",
+
+      // Reglas de validación
       rules:{
-        required: v => !!v || 'Campo obligatorio',
-        email: v => /.+@.+\..+/.test(v) || 'Email no válido'
-      },
-
-      // Control de mensajes
-      snackbar:false,
-      snackbarText:"",
-      snackbarColor:"success"
+        requerido: v => !!v || "Campo obligatorio",
+        email: v => /.+@.+\..+/.test(v) || "Email inválido"
+      }
     }
   },
 
   methods:{
-
-    // Muestra mensaje
-    mostrarMensaje(texto, color='success'){
-      this.snackbarText = texto;
-      this.snackbarColor = color;
-      this.snackbar = true;
-    },
-
-    // Guarda empleado
+    // Guardar empleado en backend
     guardar(){
       crearEmpleado(this.empleado)
         .then(()=>{
-          this.mostrarMensaje("Empleado creado correctamente");
-          this.$router.push('/empleados');
+          this.$router.push("/empleados");
         })
-        .catch(()=>{
-          this.mostrarMensaje("Error al crear empleado","error");
+        .catch(error=>{
+          this.errorMensaje = error.response?.data || "Error al guardar";
+          this.errorDialog = true;
         });
     }
-
   }
 }
 </script>

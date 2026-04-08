@@ -1,60 +1,54 @@
 <template>
   <v-container>
 
-    <v-card class="pa-4">
+    <v-card>
+      <v-card-title>Alta de Proyecto</v-card-title>
 
-      <!-- Título -->
-      <v-card-title class="text-h5">
-        Alta de Proyecto
-      </v-card-title>
+      <!-- Formulario -->
+      <v-form v-model="formValido">
 
-      <v-card-text>
+        <v-text-field
+          label="Descripción"
+          v-model="proyecto.descripcion"
+          :rules="[rules.requerido]"
+        />
 
-        <v-form @submit.prevent="guardar">
+        <v-text-field
+          label="Fecha Inicio"
+          type="date"
+          v-model="proyecto.fechaInicio"
+          :rules="[rules.requerido]"
+        />
 
-          <v-text-field
-            label="Descripción"
-            v-model="proyecto.descripcion"
-            :rules="[rules.required]"
-          ></v-text-field>
+        <v-text-field
+          label="Lugar"
+          v-model="proyecto.lugar"
+          :rules="[rules.requerido]"
+        />
 
-          <v-text-field
-            label="Fecha Inicio"
-            type="date"
-            v-model="proyecto.fechaInicio"
-            :rules="[rules.required]"
-          ></v-text-field>
-
-          <v-text-field
-            label="Fecha Fin"
-            type="date"
-            v-model="proyecto.fechaFin"
-          ></v-text-field>
-
-          <v-text-field
-            label="Lugar"
-            v-model="proyecto.lugar"
-          ></v-text-field>
-
-          <!-- Botones -->
-          <v-btn color="success" type="submit" class="mt-3 mr-2">
+        <v-card-actions>
+          <v-btn color="green" :disabled="!formValido" @click="guardar">
             Guardar
           </v-btn>
 
-          <v-btn class="mt-3" @click="$router.push('/proyectos')">
-            Volver
+          <v-btn color="grey" @click="$router.push('/proyectos')">
+            Cancelar
           </v-btn>
+        </v-card-actions>
 
-        </v-form>
-
-      </v-card-text>
-
+      </v-form>
     </v-card>
 
-    <!-- Mensajes -->
-    <v-snackbar v-model="snackbar" :color="snackbarColor">
-      {{ snackbarText }}
-    </v-snackbar>
+    <!-- Dialog error -->
+    <v-dialog v-model="errorDialog" max-width="400">
+      <v-card>
+        <v-card-title>Error</v-card-title>
+        <v-card-text>{{ errorMensaje }}</v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="errorDialog = false">Aceptar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-container>
 </template>
@@ -65,42 +59,32 @@ import { crearProyecto } from "../services/proyectoService";
 export default {
   data(){
     return{
-      proyecto:{
-        descripcion:"",
-        fechaInicio:"",
-        fechaFin:"",
-        lugar:""
-      },
+      proyecto:{},
+      formValido:false,
 
+      // Controlar errores mostrados
+      errorDialog:false,
+      errorMensaje:"",
+
+      // Reglas de validación
       rules:{
-        required: v => !!v || 'Campo obligatorio'
-      },
-
-      snackbar:false,
-      snackbarText:"",
-      snackbarColor:"success"
+        requerido: v => !!v || "Campo obligatorio"
+      }
     }
   },
 
   methods:{
-
-    mostrarMensaje(texto, color='success'){
-      this.snackbarText = texto;
-      this.snackbarColor = color;
-      this.snackbar = true;
-    },
-
+    // Guardar proyecto
     guardar(){
       crearProyecto(this.proyecto)
         .then(()=>{
-          this.mostrarMensaje("Proyecto creado correctamente");
-          this.$router.push('/proyectos');
+          this.$router.push("/proyectos");
         })
-        .catch(()=>{
-          this.mostrarMensaje("Error al crear proyecto","error");
+        .catch(error=>{
+          this.errorMensaje = error.response?.data || "Error al guardar";
+          this.errorDialog = true;
         });
     }
-
   }
 }
 </script>

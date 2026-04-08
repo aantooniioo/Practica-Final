@@ -1,84 +1,100 @@
 <template>
-  <v-container>
+  <v-container class="mt-6">
 
-    <v-card>
+    <!-- Tarjeta principal -->
+    <v-card class="pa-5 elevation-4">
 
-      <!-- Título -->
-      <v-card-title class="text-h5">
-        Listado de Empleados
-      </v-card-title>
+      <!-- Cabecera -->
+      <v-row align="center" justify="space-between" class="mb-4">
 
-      <!-- Botón -->
-      <v-card-actions>
-        <v-btn color="primary" @click="$router.push('/alta-empleado')">
-          Alta empleado
-        </v-btn>
-      </v-card-actions>
+        <v-col cols="auto">
+          <h2 class="text-h5">Empleados</h2>
+        </v-col>
+
+        <v-col cols="auto">
+          <v-btn
+            color="#3b82f6"
+            elevation="2"
+            @click="$router.push('/alta-empleado')">
+            Nuevo empleado
+          </v-btn>
+        </v-col>
+
+      </v-row>
 
       <!-- Tabla -->
       <v-table density="comfortable">
 
-        <thead>
+        <thead class="bg-grey-darken-3">
           <tr>
             <th>ID</th>
             <th>Nombre</th>
             <th>Apellido 1</th>
             <th>Apellido 2</th>
-            <th>Email</th>
+            <th>Correo electrónico</th>
             <th>Teléfono 1</th>
-            <th>Teléfono 2</th>
-            <th>Estado Civil</th>
+            <th>Telefono 2</th>
+            <th>Estado</th>
             <th>Formación</th>
-            <th>Acciones</th>
+            <th class="text-center">Acciones</th>
           </tr>
         </thead>
 
         <tbody>
 
-          <!-- Mostrar mensaje si no hay empleados -->
+          <!-- Sin datos -->
           <tr v-if="empleados.length === 0">
-            <td colspan="10" class="text-center">
-              No hay empleados
+            <td colspan="7" class="text-center py-6">
+              No hay empleados registrados
             </td>
           </tr>
 
-          <!-- Mostrar lista de empleados -->
+          <!-- Lista -->
           <tr v-for="emp in empleados" :key="emp.idEmpleado">
-            <td>{{ emp.idEmpleado }}</td>
+
+            <td class="text-grey">{{ emp.idEmpleado }}</td>
+
             <td>{{ emp.nombre }}</td>
+
             <td>{{ emp.apellido1 }}</td>
+
             <td>{{ emp.apellido2 }}</td>
+
             <td>{{ emp.email }}</td>
+
             <td>{{ emp.telefono1 }}</td>
+
             <td>{{ emp.telefono2 }}</td>
 
-            <!-- Mostrar estado civil -->
+            <!-- Estado -->
             <td>
               <v-chip
-                :color="emp.estadoCivil === 'S' ? 'primary' : 'orange'"
-                size="small">
+                size="small"
+                :color="emp.estadoCivil === 'S' ? 'primary' : 'orange'">
                 {{ formatearEstadoCivil(emp.estadoCivil) }}
               </v-chip>
             </td>
 
-            <!-- Mostrar formación -->
+            <!-- Formación -->
             <td>
               <v-chip
-                :color="emp.formacionUniversitaria === 'S' ? 'green' : 'grey'"
-                size="small">
+                size="small"
+                :color="emp.formacionUniversitaria === 'S' ? 'green' : 'grey'">
                 {{ formatearFormacion(emp.formacionUniversitaria) }}
               </v-chip>
             </td>
 
-            <!-- Acción de baja -->
-            <td>
+            <!-- Acción -->
+            <td class="text-center">
               <v-btn
-                color="red"
-                size="small"
+                variant="text"
+                class="text-red-lighten-2 text-caption"
                 @click="abrirDialog(emp.idEmpleado)">
-                Dar de baja
+                <v-icon start size="18">mdi-delete</v-icon>
+                Baja
               </v-btn>
             </td>
+
           </tr>
 
         </tbody>
@@ -87,20 +103,19 @@
 
     </v-card>
 
-    <!-- Dialog de confirmación -->
+    <!-- Dialog confirmación -->
     <v-dialog v-model="dialog" max-width="400">
       <v-card>
-
-        <v-card-title>
-          Confirmación
-        </v-card-title>
+        <v-card-title>Confirmación</v-card-title>
 
         <v-card-text>
           ¿Seguro que quieres dar de baja este empleado?
         </v-card-text>
 
         <v-card-actions>
-          <v-btn color="grey" @click="dialog = false">
+          <v-spacer></v-spacer>
+
+          <v-btn @click="dialog = false">
             Cancelar
           </v-btn>
 
@@ -108,17 +123,13 @@
             Aceptar
           </v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
 
-    <!-- Dialog de error -->
+    <!-- Dialog error -->
     <v-dialog v-model="errorDialog" max-width="400">
       <v-card>
-
-        <v-card-title>
-          Error
-        </v-card-title>
+        <v-card-title>Error</v-card-title>
 
         <v-card-text>
           {{ errorMensaje }}
@@ -126,11 +137,11 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="errorDialog = false">
+
+          <v-btn color="#3b82f6" @click="errorDialog = false">
             Aceptar
           </v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
 
@@ -141,15 +152,11 @@
 import { getEmpleados, bajaEmpleado } from "../services/empleadoService";
 
 export default {
-  name: "EmpleadosView",
-
   data() {
     return {
       empleados: [],
       dialog: false,
       idSeleccionado: null,
-
-      // Controlar errores mostrados al usuario
       errorDialog: false,
       errorMensaje: ""
     };
@@ -157,24 +164,21 @@ export default {
 
   methods: {
 
-    // Cargar empleados desde el backend
+    // Cargar empleados activos
     cargarEmpleados() {
       getEmpleados()
         .then(res => {
           this.empleados = res.data;
-        })
-        .catch(error => {
-          console.error("Error al cargar empleados:", error);
         });
     },
 
-    // Abrir dialog y guardar el id seleccionado
+    // Abrir confirmación
     abrirDialog(id) {
       this.idSeleccionado = id;
       this.dialog = true;
     },
 
-    // Ejecutar la baja del empleado
+    // Ejecutar baja
     bajaConfirmada() {
       bajaEmpleado(this.idSeleccionado)
         .then(() => {
@@ -183,28 +187,27 @@ export default {
         })
         .catch(error => {
           this.dialog = false;
-
-          this.errorMensaje = error.response?.data || "Error al dar de baja";
+          this.errorMensaje = error.response?.data || "Error";
           this.errorDialog = true;
         });
     },
 
-    // Convertir estado civil a texto
-    formatearEstadoCivil(valor) {
-      if (valor === "S") return "Soltero";
-      if (valor === "C") return "Casado";
-      return valor;
+    // Formatear estado civil
+    formatearEstadoCivil(v) {
+      if (v === "S") return "Soltero";
+      if (v === "C") return "Casado";
+      return v;
     },
 
-    // Convertir formación a texto
-    formatearFormacion(valor) {
-      if (valor === "S") return "Sí";
-      if (valor === "N") return "No";
-      return valor;
+    // Formatear formación
+    formatearFormacion(v) {
+      if (v === "S") return "Sí";
+      if (v === "N") return "No";
+      return v;
     }
+
   },
 
-  // Ejecutar carga inicial
   mounted() {
     this.cargarEmpleados();
   }
