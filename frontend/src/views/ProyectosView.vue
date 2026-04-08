@@ -1,62 +1,127 @@
 <template>
-  <div class="container mt-4">
-    <h2 class="mb-4">Listado de Proyectos</h2>
+  <v-container>
 
-    <!-- Botón para ir al alta de proyecto -->
-    <button 
-      class="btn btn-primary mb-3"
-      @click="$router.push('/alta-proyecto')">
-      Alta proyecto
-    </button>
+    <v-card>
 
-    <table class="table table-bordered table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>ID</th>
-          <th>Descripción</th>
-          <th>Fecha Inicio</th>
-          <th>Fecha Fin</th>
-          <th>Lugar</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
+      <!-- Título -->
+      <v-card-title class="text-h5">
+        Listado de Proyectos
+      </v-card-title>
 
-      <tbody>
-        <!-- Si no hay proyectos -->
-        <tr v-if="proyectos.length === 0">
-          <td colspan="6" class="text-center">No hay proyectos</td>
-        </tr>
+      <!-- Botón -->
+      <v-card-actions>
+        <v-btn color="primary" @click="$router.push('/alta-proyecto')">
+          Alta proyecto
+        </v-btn>
+      </v-card-actions>
 
-        <!-- Listado de proyectos -->
-        <tr v-for="p in proyectos" :key="p.idProyecto">
-          <td>{{ p.idProyecto }}</td>
-          <td>{{ p.descripcion }}</td>
-          <td>{{ p.fechaInicio }}</td>
+      <!-- Tabla -->
+      <v-table density="comfortable">
 
-          <!-- Si no tiene fecha fin → proyecto en curso -->
-          <td>
-            <span v-if="p.fechaFin">
-              {{ p.fechaFin }}
-            </span>
-            <span v-else class="badge bg-info">
-              En curso
-            </span>
-          </td>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Lugar</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
 
-          <td>{{ p.lugar }}</td>
+        <tbody>
 
-          <!-- Acciones -->
-          <td>
-            <button 
-              class="btn btn-danger btn-sm"
-              @click="baja(p.idProyecto)">
-              Dar de baja
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <!-- Mostrar mensaje si no hay proyectos -->
+          <tr v-if="proyectos.length === 0">
+            <td colspan="6" class="text-center">
+              No hay proyectos
+            </td>
+          </tr>
+
+          <!-- Mostrar lista -->
+          <tr v-for="p in proyectos" :key="p.idProyecto">
+            <td>{{ p.idProyecto }}</td>
+            <td>{{ p.descripcion }}</td>
+            <td>{{ p.fechaInicio }}</td>
+
+            <!-- Mostrar estado del proyecto -->
+            <td>
+              <v-chip v-if="p.fechaFin" color="blue" size="small">
+                {{ p.fechaFin }}
+              </v-chip>
+
+              <v-chip v-else color="green" size="small">
+                En curso
+              </v-chip>
+            </td>
+
+            <td>{{ p.lugar }}</td>
+
+            <!-- Acción de baja -->
+            <td>
+              <v-btn
+                color="red"
+                size="small"
+                @click="abrirDialog(p.idProyecto)">
+                Dar de baja
+              </v-btn>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </v-table>
+
+    </v-card>
+
+    <!-- Dialog de confirmación -->
+    <v-dialog v-model="dialog" max-width="400">
+      <v-card>
+
+        <v-card-title>
+          Confirmación
+        </v-card-title>
+
+        <v-card-text>
+          ¿Seguro que quieres dar de baja este proyecto?
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="grey" @click="dialog = false">
+            Cancelar
+          </v-btn>
+
+          <v-btn color="red" @click="bajaConfirmada">
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+
+      </v-card>
+    </v-dialog>
+
+    <!-- Dialog de error -->
+    <v-dialog v-model="errorDialog" max-width="400">
+      <v-card>
+
+        <v-card-title>
+          Error
+        </v-card-title>
+
+        <v-card-text>
+          {{ errorMensaje }}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="errorDialog = false">
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+
+      </v-card>
+    </v-dialog>
+
+  </v-container>
 </template>
 
 <script>
@@ -67,12 +132,18 @@ export default {
 
   data() {
     return {
-      // Array donde se guardan los proyectos
-      proyectos: []
+      proyectos: [],
+      dialog: false,
+      idSeleccionado: null,
+
+      // Controlar errores mostrados al usuario
+      errorDialog: false,
+      errorMensaje: ""
     };
   },
 
   methods: {
+
     // Cargar proyectos desde backend
     cargarProyectos() {
       getProyectos()
@@ -84,22 +155,30 @@ export default {
         });
     },
 
-    // Dar de baja un proyecto (baja lógica)
-    baja(id) {
-      if (confirm("¿Seguro que quieres dar de baja este proyecto?")) {
-        bajaProyecto(id)
-          .then(() => {
-            // Recargar tabla tras la baja
-            this.cargarProyectos();
-          })
-          .catch(error => {
-            console.error("Error al dar de baja:", error);
-          });
-      }
+    // Abrir dialog y guardar el id seleccionado
+    abrirDialog(id) {
+      this.idSeleccionado = id;
+      this.dialog = true;
+    },
+
+    // Ejecutar la baja del proyecto
+    bajaConfirmada() {
+      bajaProyecto(this.idSeleccionado)
+        .then(() => {
+          this.dialog = false;
+          this.cargarProyectos();
+        })
+        .catch(error => {
+          this.dialog = false;
+
+          this.errorMensaje = error.response?.data || "Error al dar de baja";
+          this.errorDialog = true;
+        });
     }
+
   },
 
-  // Al montar la vista → cargar datos
+  // Ejecutar carga inicial
   mounted() {
     this.cargarProyectos();
   }
