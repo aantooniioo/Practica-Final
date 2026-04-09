@@ -2,7 +2,7 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal -->
-    <v-card class="pa-5 elevation-4">
+    <v-card class="pa-5 elevation-4 card-pro card-animated">
 
       <!-- Cabecera -->
       <v-row align="center" justify="space-between" class="mb-4">

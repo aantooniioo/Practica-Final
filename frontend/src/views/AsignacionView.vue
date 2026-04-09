@@ -2,10 +2,10 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal -->
-    <v-card class="pa-5 elevation-4">
+    <v-card class="pa-5 elevation-4 card-pro card-animated">
 
       <v-card-title>
-        Asignar empleado a proyecto
+        <h2 class="text-h5">Asignar empleado a proyecto</h2>
       </v-card-title>
 
       <v-card-text>

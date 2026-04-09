@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <v-card class="pa-4 formulario-card">
+    <v-card class="pa-4 formulario-card card-pro card-animated">
       <v-card-title>Alta de Empleado</v-card-title>
 
       <!-- Formulario -->

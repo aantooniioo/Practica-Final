@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <v-card class="pa-4 formulario-card">
+    <v-card class="pa-4 formulario-card card-pro card-animated">
       <v-card-title>Editar Empleado</v-card-title>
 
       <v-form v-model="formValido" ref="form">

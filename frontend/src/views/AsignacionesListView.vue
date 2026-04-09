@@ -1,11 +1,11 @@
 <template>
   <v-container class="mt-6">
 
-    <v-card class="pa-4 formulario-card elevation-4">
+    <v-card class="pa-4 formulario-card elevation-4 card-pro card-animated">
 
       <!-- Título -->
       <v-card-title class="text-h5">
-        Asignaciones
+        <h2 class="text-h5">Asignaciones</h2>
       </v-card-title>
 
       <!-- Buscador -->
