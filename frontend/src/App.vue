@@ -1,60 +1,42 @@
 <template>
-  <v-app class="d-flex">
+  <v-app>
 
     <!-- SIDEBAR -->
     <v-navigation-drawer
       v-model="drawer"
+      :permanent="!isMobile"
+      :temporary="isMobile"
+      :rail="mini"
       app
       width="250"
       class="sidebar-pro"
     >
+
+      <!-- LOGO -->
       <div class="sidebar-header">
         <img
           src="/src/assets/images/Logo_blanco_Future-2.png"
-          class="sidebar-logo"
+          :class="mini ? 'logo-mini' : 'logo-full'"
         />
       </div>
 
       <v-divider />
 
+      <!-- MENU -->
       <v-list nav density="comfortable">
 
         <v-list-item
-          prepend-icon="mdi-view-dashboard"
-          title="Inicio"
-          @click="$router.push('/')"
-          :active="$route.path === '/'"
-        />
-
-        <v-list-item
-          prepend-icon="mdi-account-group"
-          title="Empleados"
-          @click="$router.push('/empleados')"
-          :active="$route.path === '/empleados'"
-        />
-
-        <v-list-item
-          prepend-icon="mdi-briefcase"
-          title="Proyectos"
-          @click="$router.push('/proyectos')"
-          :active="$route.path === '/proyectos'"
-        />
-
-        <v-list-item
-          prepend-icon="mdi-link-variant"
-          title="Asignar"
-          @click="$router.push('/asignacion')"
-          :active="$route.path === '/asignacion'"
-        />
-
-        <v-list-item
-          prepend-icon="mdi-format-list-bulleted"
-          title="Asignaciones"
-          @click="$router.push('/asignaciones')"
-          :active="$route.path === '/asignaciones'"
+          v-for="item in menu"
+          :key="item.path"
+          :prepend-icon="item.icon"
+          :title="mini ? '' : item.title"
+          @click="ir(item.path)"
+          :active="$route.path === item.path"
+          class="menu-item"
         />
 
       </v-list>
+
     </v-navigation-drawer>
 
     <!-- MAIN -->
@@ -63,30 +45,58 @@
       <!-- TOPBAR -->
       <v-app-bar elevation="0" class="topbar-pro">
 
-        <v-btn icon @click="drawer = !drawer">
-          <v-icon>mdi-menu</v-icon>
+        <!-- BOTÓN INTELIGENTE -->
+        <v-btn icon @click="accionMenu">
+          <v-icon>
+            {{ !isMobile && mini ? 'mdi-chevron-right' : 'mdi-menu' }}
+          </v-icon>
         </v-btn>
 
-        <span class="topbar-title ml-3">
-          Future Space
-        </span>
+        <!-- LOGO TOP -->
+        <img
+          src="/src/assets/images/Logo_blanco_Future-2.png"
+          class="topbar-logo"
+        />
 
         <v-spacer />
 
-        <div class="topbar-right">
-          <v-icon size="20">mdi-account-circle</v-icon>
-        </div>
+        <!-- MENÚ USUARIO -->
+        <v-menu>
+
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props">
+              <v-icon>mdi-account-circle</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item title="Mi perfil" />
+            <v-list-item title="Configuración" />
+            <v-divider />
+            <v-list-item title="Cerrar sesión" />
+          </v-list>
+
+        </v-menu>
 
       </v-app-bar>
 
-      <v-container fluid class="mt-4">
-        <router-view />
-      </v-container>
+      <!-- CONTENIDO -->
+      <div class="main-content">
+
+        <v-container fluid class="mt-4">
+
+          <!-- ANIMACIÓN GLOBAL -->
+          <transition name="fade-slide" mode="out-in">
+            <router-view />
+          </transition>
+
+        </v-container>
+
+        <FooterComponent />
+
+      </div>
 
     </v-main>
-
-    <!-- FOOTER -->
-    <FooterComponent />
 
   </v-app>
 </template>
@@ -99,27 +109,106 @@ export default {
 
   data() {
     return {
-      drawer: true
+      drawer: true,
+      mini: false,
+      isMobile: false,
+
+      menu: [
+        { title: "Inicio", path: "/", icon: "mdi-view-dashboard" },
+        { title: "Empleados", path: "/empleados", icon: "mdi-account-group" },
+        { title: "Proyectos", path: "/proyectos", icon: "mdi-briefcase" },
+        { title: "Asignar", path: "/asignacion", icon: "mdi-link-variant" },
+        { title: "Asignaciones", path: "/asignaciones", icon: "mdi-format-list-bulleted" },
+        { title: "Estadísticas", path: "/estadisticas", icon: "mdi-chart-bar" }
+      ]
     };
+  },
+
+  methods: {
+
+    detectarPantalla() {
+      this.isMobile = window.innerWidth < 960;
+
+      if (this.isMobile) {
+        this.drawer = false;
+        this.mini = false;
+      } else {
+        this.drawer = true;
+      }
+    },
+
+    accionMenu() {
+      if (this.isMobile) {
+        // móvil → abrir/cerrar sidebar
+        this.drawer = !this.drawer;
+      } else {
+        // PC → mini sidebar
+        this.mini = !this.mini;
+      }
+    },
+
+    ir(ruta) {
+      this.$router.push(ruta);
+
+      if (this.isMobile) {
+        this.drawer = false;
+      }
+    }
+
+  },
+
+  mounted() {
+    this.detectarPantalla();
+    window.addEventListener("resize", this.detectarPantalla);
   }
 };
 </script>
 
 <style>
-html, body, #app {
-  height: 100%;
+
+/* ===== ANIMACIÓN GLOBAL ===== */
+
+.fade-slide-enter-active {
+  transition: all 0.25s ease;
 }
 
-/* FONDO */
+.fade-slide-leave-active {
+  transition: all 0.15s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ===== BASE ===== */
+
 .app-background {
-  background: linear-gradient(180deg, #0f172a, #111827);
-  min-height: 100vh;
+  background: linear-gradient(180deg, #001021, #012033);
 }
 
-/* SIDEBAR */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px);
+}
+
+.main-content > .v-container {
+  flex: 1;
+}
+
+/* ===== SIDEBAR ===== */
+
 .sidebar-pro {
   background-color: #020617;
   color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-header {
@@ -128,48 +217,68 @@ html, body, #app {
   padding: 16px;
 }
 
-.sidebar-logo {
-  max-height: 50px;
+.logo-full {
+  height: 40px;
+  transition: 0.2s;
 }
 
-/* TOPBAR */
+.logo-mini {
+  height: 36px;
+  width: 36px;
+  object-fit: cover;
+  object-position: left;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* ===== MENU ===== */
+
+.menu-item {
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: rgba(255,255,255,0.08);
+}
+
+.menu-item.v-list-item--active {
+  background-color: rgba(59,130,246,0.25);
+  border-left: 3px solid #3b82f6;
+}
+
+/* ===== TOPBAR ===== */
+
 .topbar-pro {
   background-color: #020617;
   color: white;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.topbar-title {
-  font-weight: 600;
-  font-size: 14px;
+.topbar-logo {
+  height: 35px;
+  margin-left: 10px;
 }
 
-.topbar-right {
-  display: flex;
-  align-items: center;
-  padding-right: 12px;
+/* ===== ANIMACIÓN CARDS ===== */
+
+.card-animated {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeUp 0.4s ease forwards;
 }
 
-/* CARDS */
-.card-pro {
-  border-radius: 14px;
-  background-color: #1e293b;
-  color: #e2e8f0;
-  transition: 0.25s;
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.card-pro:hover {
-  transform: translateY(-4px);
-}
+/* efecto cascada */
+.card-animated:nth-child(1) { animation-delay: 0.05s; }
+.card-animated:nth-child(2) { animation-delay: 0.1s; }
+.card-animated:nth-child(3) { animation-delay: 0.15s; }
+.card-animated:nth-child(4) { animation-delay: 0.2s; }
+.card-animated:nth-child(5) { animation-delay: 0.25s; }
+.card-animated:nth-child(6) { animation-delay: 0.3s; }
 
-/* BOTONES */
-.v-btn {
-  border-radius: 8px;
-  text-transform: none;
-}
-
-/* TABLAS */
-tbody tr:hover {
-  background-color: rgba(255,255,255,0.05);
-}
 </style>
