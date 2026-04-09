@@ -10,6 +10,7 @@ import AltaProyectoView from '../views/AltaProyectoView.vue'
 import AsignacionView from '@/views/AsignacionView.vue'
 import AsignacionesListView from '@/views/AsignacionesListView.vue'
 import FooterComponent from '@/components/FooterComponent.vue'
+import EstadisticasView from '@/views/EstadisticasView.vue'
 
 const routes = [
   {
@@ -56,6 +57,11 @@ const routes = [
   {
     path: '/asignaciones',
     component: AsignacionesListView
+  },
+  {
+    path: '/estadisticas',
+    name: 'estadisticas',
+    component: EstadisticasView
   },
   {
     path: '/footer',
