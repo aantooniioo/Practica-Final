@@ -19,7 +19,7 @@
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Fecha Inicio"
+              label="Fecha inicio"
               type="date"
               v-model="proyecto.fechaInicio"
               :rules="[rules.requerido]"
@@ -27,14 +27,6 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-text-field
-              label="Fecha Fin"
-              type="date"
-              v-model="proyecto.fechaFin"
-            />
-          </v-col>
-
-          <v-col cols="12">
             <v-text-field
               label="Lugar"
               v-model="proyecto.lugar"
@@ -57,31 +49,18 @@
       </v-form>
     </v-card>
 
-    <!-- Dialog error -->
-    <v-dialog v-model="errorDialog" max-width="400">
-      <v-card>
-        <v-card-title>Error</v-card-title>
-        <v-card-text>{{ errorMensaje }}</v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="errorDialog = false">Aceptar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script>
 import { crearProyecto } from "../services/proyectoService";
+import Swal from "sweetalert2";
 
 export default {
   data(){
     return{
       proyecto:{},
       formValido:false,
-
-      errorDialog:false,
-      errorMensaje:"",
 
       rules:{
         requerido: v => !!v || "Campo obligatorio"
@@ -92,17 +71,32 @@ export default {
   methods:{
     guardar(){
 
-      // Validar antes de enviar
       if (!this.$refs.form.validate()) return;
 
       crearProyecto(this.proyecto)
         .then(()=>{
+
+          Swal.fire({
+            icon: "success",
+            title: "Proyecto creado",
+            text: "Se ha registrado correctamente",
+            timer: 1500,
+            showConfirmButton: false
+          });
+
           this.$router.push("/proyectos");
+
         })
         .catch(error=>{
-          this.errorMensaje = error.response?.data || "Error al guardar";
-          this.errorDialog = true;
+
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response?.data || "Error al guardar"
+          });
+
         });
+
     }
   }
 }

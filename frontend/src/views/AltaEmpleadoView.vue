@@ -4,7 +4,7 @@
     <v-card class="pa-4 formulario-card">
       <v-card-title>Alta de Empleado</v-card-title>
 
-      <!-- Formulario controlado -->
+      <!-- Formulario -->
       <v-form v-model="formValido" ref="form">
 
         <v-row>
@@ -62,6 +62,8 @@
               label="Estado civil"
               v-model="empleado.estadoCivil"
               :items="estados"
+              item-title="title"
+              item-value="value"
               :rules="[rules.requerido]"
             />
           </v-col>
@@ -71,6 +73,8 @@
               label="Formación universitaria"
               v-model="empleado.formacionUniversitaria"
               :items="formaciones"
+              item-title="title"
+              item-value="value"
               :rules="[rules.requerido]"
             />
           </v-col>
@@ -90,31 +94,18 @@
       </v-form>
     </v-card>
 
-    <!-- Dialog de error -->
-    <v-dialog v-model="errorDialog" max-width="400">
-      <v-card>
-        <v-card-title>Error</v-card-title>
-        <v-card-text>{{ errorMensaje }}</v-card-text>
-        <v-card-actions>
-          <v-btn color="#3b82f6" @click="errorDialog = false">Aceptar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script>
 import { crearEmpleado } from "../services/empleadoService";
+import Swal from "sweetalert2";
 
 export default {
   data(){
     return{
       empleado:{},
       formValido:false,
-
-      errorDialog:false,
-      errorMensaje:"",
 
       estados:[
         { title:"Soltero", value:"S" },
@@ -136,16 +127,33 @@ export default {
 
   methods:{
     guardar(){
+
       if (!this.$refs.form.validate()) return;
 
       crearEmpleado(this.empleado)
         .then(()=>{
+
+          Swal.fire({
+            icon: "success",
+            title: "Empleado creado",
+            text: "Se ha registrado correctamente",
+            timer: 1500,
+            showConfirmButton: false
+          });
+
           this.$router.push("/empleados");
+
         })
         .catch(error=>{
-          this.errorMensaje = error.response?.data || "Error al guardar";
-          this.errorDialog = true;
+
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response?.data || "Error al guardar"
+          });
+
         });
+
     }
   }
 }

@@ -22,7 +22,7 @@
 
       </v-row>
 
-      <!-- Campo de búsqueda -->
+      <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
         label="Buscar proyecto..."
@@ -58,13 +58,12 @@
           <!-- Lista -->
           <tr v-for="p in proyectosFiltrados" :key="p.idProyecto">
 
-            <td class="text-grey">{{ p.idProyecto }}</td>
+            <td>{{ p.idProyecto }}</td>
 
             <td>{{ p.descripcion }}</td>
 
             <td>{{ p.fechaInicio }}</td>
 
-            <!-- Estado -->
             <td>
               <v-chip
                 size="small"
@@ -76,12 +75,12 @@
             <td>{{ p.lugar }}</td>
 
             <!-- Acciones -->
-            <td class="text-center acciones">
+            <td class="text-center">
 
               <v-btn
                 variant="text"
-                class="text-blue-lighten-2 text-caption"
-                @click="editarProyecto(p.idProyecto)">
+                class="text-blue text-caption"
+                @click="$router.push(`/editar-proyecto/${p.idProyecto}`)">
                 <v-icon start size="18">mdi-pencil</v-icon>
                 Editar
               </v-btn>
@@ -89,7 +88,7 @@
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
-                @click="abrirDialog(p.idProyecto)">
+                @click="confirmarBaja(p.idProyecto)">
                 <v-icon start size="18">mdi-delete</v-icon>
                 Baja
               </v-btn>
@@ -104,57 +103,30 @@
 
     </v-card>
 
-    <!-- Dialog confirmación -->
-    <v-dialog v-model="dialog" max-width="400">
-      <v-card>
-        <v-card-title>Confirmación</v-card-title>
-        <v-card-text>
-          ¿Seguro que quieres dar de baja este proyecto?
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="red" @click="bajaConfirmada">Aceptar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Dialog error -->
-    <v-dialog v-model="errorDialog" max-width="400">
-      <v-card>
-        <v-card-title>Error</v-card-title>
-        <v-card-text>{{ errorMensaje }}</v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="errorDialog = false">Aceptar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script>
 import { getProyectos, bajaProyecto } from "../services/proyectoService";
+import Swal from "sweetalert2";
 
 export default {
   data() {
     return {
       proyectos: [],
-      busqueda: "",
-      dialog: false,
-      idSeleccionado: null,
-      errorDialog: false,
-      errorMensaje: ""
+      busqueda: ""
     };
   },
 
   computed: {
     proyectosFiltrados() {
+
       if (!this.busqueda) return this.proyectos;
 
       const texto = this.busqueda.toLowerCase();
 
       return this.proyectos.filter(p => {
+
         const contenido = `
           ${p.descripcion || ""}
           ${p.lugar || ""}
@@ -167,32 +139,53 @@ export default {
 
   methods: {
 
+    // Cargar proyectos
     cargarProyectos() {
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    editarProyecto(id) {
-      this.$router.push(`/editar-proyecto/${id}`);
-    },
+    // SweetAlert confirmación
+    confirmarBaja(id) {
 
-    abrirDialog(id) {
-      this.idSeleccionado = id;
-      this.dialog = true;
-    },
+      Swal.fire({
+        title: "¿Dar de baja?",
+        text: "El proyecto dejará de estar activo",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, dar de baja"
+      }).then(result => {
 
-    bajaConfirmada() {
-      bajaProyecto(this.idSeleccionado)
-        .then(() => {
-          this.dialog = false;
-          this.cargarProyectos();
-        })
-        .catch(error => {
-          this.dialog = false;
-          this.errorMensaje = error.response?.data || "Error";
-          this.errorDialog = true;
-        });
+        if (result.isConfirmed) {
+
+          bajaProyecto(id)
+            .then(() => {
+
+              Swal.fire({
+                icon: "success",
+                title: "Proyecto dado de baja",
+                timer: 1500,
+                showConfirmButton: false
+              });
+
+              this.cargarProyectos();
+            })
+            .catch(error => {
+
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.response?.data || "Error inesperado"
+              });
+
+            });
+
+        }
+
+      });
     }
 
   },
@@ -202,9 +195,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.acciones {
-  white-space: nowrap;
-}
-</style>

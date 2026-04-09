@@ -2,9 +2,8 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal -->
-    <v-card class="pa-4 formulario-card elevation-4">
+    <v-card class="pa-5 elevation-4">
 
-      <!-- Título -->
       <v-card-title>
         Asignar empleado a proyecto
       </v-card-title>
@@ -13,62 +12,50 @@
 
         <v-form>
 
-          <v-row>
-
-            <!-- Select de empleados -->
-            <v-col cols="12" md="6">
-              <v-select
-                label="Empleado"
-                :items="empleados"
-                item-title="nombreCompleto"
-                item-value="idEmpleado"
-                v-model="idEmpleado"
+          <!-- Select empleados -->
+          <v-select
+            label="Empleado"
+            :items="empleados"
+            item-title="nombreCompleto"
+            item-value="idEmpleado"
+            v-model="idEmpleado"
+          >
+            <template #item="{ props, item }">
+              <v-list-item
+                v-bind="props"
+                :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
               >
-                <template #item="{ props, item }">
+                <v-list-item-title>
 
-                  <v-list-item
-                    v-bind="props"
-                    :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
-                  >
-                    <v-list-item-title>
+                  {{ item?.raw?.nombreCompleto }}
 
-                      {{ item?.raw?.nombreCompleto }}
+                  <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
+                    (ya asignado)
+                  </span>
 
-                      <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
-                        (ya asignado)
-                      </span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-select>
 
-                    </v-list-item-title>
-                  </v-list-item>
+          <!-- Select proyectos -->
+          <v-select
+            label="Proyecto"
+            :items="proyectos"
+            item-title="descripcion"
+            item-value="idProyecto"
+            v-model="idProyecto"
+          />
 
-                </template>
-              </v-select>
-            </v-col>
-
-            <!-- Select de proyectos -->
-            <v-col cols="12" md="6">
-              <v-select
-                label="Proyecto"
-                :items="proyectos"
-                item-title="descripcion"
-                item-value="idProyecto"
-                v-model="idProyecto"
-              />
-            </v-col>
-
-            <!-- Fecha -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                label="Fecha"
-                type="date"
-                v-model="fechaAlta"
-              />
-            </v-col>
-
-          </v-row>
+          <!-- Fecha -->
+          <v-text-field
+            label="Fecha"
+            type="date"
+            v-model="fechaAlta"
+          />
 
           <!-- Botón -->
-          <v-card-actions class="mt-4">
+          <v-card-actions>
             <v-btn color="primary" @click="asignar">
               Asignar
             </v-btn>
@@ -80,52 +67,6 @@
 
     </v-card>
 
-    <!-- Dialog error -->
-    <v-dialog v-model="dialogError" max-width="400">
-      <v-card>
-
-        <v-card-title>
-          Error
-        </v-card-title>
-
-        <v-card-text>
-          {{ mensajeError }}
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="primary" @click="dialogError = false">
-            Aceptar
-          </v-btn>
-        </v-card-actions>
-
-      </v-card>
-    </v-dialog>
-
-    <!-- Dialog de éxito -->
-    <v-dialog v-model="dialogOk" max-width="400">
-      <v-card>
-
-        <v-card-title>
-          Correcto
-        </v-card-title>
-
-        <v-card-text>
-          Asignación realizada correctamente
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="primary" @click="dialogOk = false">
-            Aceptar
-          </v-btn>
-        </v-card-actions>
-
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
@@ -133,6 +74,7 @@
 import { getEmpleados } from "../services/empleadoService";
 import { getProyectos } from "../services/proyectoService";
 import { asignarEmpleadoProyecto, getAsignaciones } from "../services/empleadoProyectoService";
+import Swal from "sweetalert2";
 
 export default {
   name: "AsignacionView",
@@ -142,19 +84,15 @@ export default {
       empleados: [],
       proyectos: [],
       asignaciones: [],
-
       idEmpleado: null,
       idProyecto: null,
-      fechaAlta: null,
-
-      dialogError: false,
-      mensajeError: "",
-      dialogOk: false
+      fechaAlta: null
     }
   },
 
   methods:{
 
+    // Cargar empleados
     cargarEmpleados(){
       getEmpleados().then(res => {
         this.empleados = res.data.map(e => ({
@@ -164,19 +102,23 @@ export default {
       });
     },
 
+    // Cargar proyectos
     cargarProyectos(){
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
+    // Cargar asignaciones
     cargarAsignaciones(){
       getAsignaciones().then(res => {
         this.asignaciones = res.data;
       });
     },
 
+    // Comprobar si ya está asignado
     yaAsignado(idEmpleado, idProyecto){
+
       if(!idEmpleado || !idProyecto) return false;
 
       return this.asignaciones.some(a =>
@@ -184,17 +126,26 @@ export default {
       );
     },
 
+    // Asignar con SweetAlert
     asignar(){
 
+      // Validación campos
       if(!this.idEmpleado || !this.idProyecto || !this.fechaAlta){
-        this.mensajeError = "Debes rellenar todos los campos";
-        this.dialogError = true;
+        Swal.fire({
+          icon: "warning",
+          title: "Campos incompletos",
+          text: "Debes rellenar todos los campos"
+        });
         return;
       }
 
+      // Validación duplicado
       if(this.yaAsignado(this.idEmpleado, this.idProyecto)){
-        this.mensajeError = "El empleado ya está asignado a este proyecto";
-        this.dialogError = true;
+        Swal.fire({
+          icon: "error",
+          title: "Asignación duplicada",
+          text: "El empleado ya está asignado a este proyecto"
+        });
         return;
       }
 
@@ -207,8 +158,15 @@ export default {
       asignarEmpleadoProyecto(datos)
         .then(()=>{
 
-          this.dialogOk = true;
+          Swal.fire({
+            icon: "success",
+            title: "Asignación realizada",
+            text: "El empleado ha sido asignado correctamente",
+            timer: 1500,
+            showConfirmButton: false
+          });
 
+          // Reset formulario
           this.idEmpleado = null;
           this.idProyecto = null;
           this.fechaAlta = null;
@@ -217,8 +175,11 @@ export default {
 
         })
         .catch(error=>{
-          this.mensajeError = error.response?.data || "Error al asignar";
-          this.dialogError = true;
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response?.data || "Error al asignar"
+          });
         });
     }
 
@@ -231,10 +192,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.formulario-card {
-  max-width: 900px;
-  margin: 0 auto;
-}
-</style>

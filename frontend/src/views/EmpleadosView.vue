@@ -22,7 +22,7 @@
 
       </v-row>
 
-      <!-- Campo de búsqueda -->
+      <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
         label="Buscar empleado..."
@@ -41,9 +41,9 @@
             <th>Nombre</th>
             <th>Apellido 1</th>
             <th>Apellido 2</th>
-            <th>Correo electrónico</th>
+            <th>Email</th>
             <th>Teléfono 1</th>
-            <th>Telefono 2</th>
+            <th>Teléfono 2</th>
             <th>Estado</th>
             <th>Formación</th>
             <th class="text-center">Acciones</th>
@@ -62,18 +62,12 @@
           <!-- Lista -->
           <tr v-for="emp in empleadosFiltrados" :key="emp.idEmpleado">
 
-            <td class="text-grey">{{ emp.idEmpleado }}</td>
-
+            <td>{{ emp.idEmpleado }}</td>
             <td>{{ emp.nombre }}</td>
-
             <td>{{ emp.apellido1 }}</td>
-
             <td>{{ emp.apellido2 }}</td>
-
             <td>{{ emp.email }}</td>
-
             <td>{{ emp.telefono1 }}</td>
-
             <td>{{ emp.telefono2 }}</td>
 
             <!-- Estado -->
@@ -95,12 +89,12 @@
             </td>
 
             <!-- Acciones -->
-            <td class="text-center acciones">
+            <td class="text-center">
 
               <v-btn
                 variant="text"
-                class="text-blue-lighten-2 text-caption"
-                @click="editarEmpleado(emp.idEmpleado)">
+                class="text-blue text-caption"
+                @click="$router.push(`/editar-empleado/${emp.idEmpleado}`)">
                 <v-icon start size="18">mdi-pencil</v-icon>
                 Editar
               </v-btn>
@@ -108,7 +102,7 @@
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
-                @click="abrirDialog(emp.idEmpleado)">
+                @click="confirmarBaja(emp.idEmpleado)">
                 <v-icon start size="18">mdi-delete</v-icon>
                 Baja
               </v-btn>
@@ -123,79 +117,30 @@
 
     </v-card>
 
-    <!-- Dialog confirmación -->
-    <v-dialog v-model="dialog" max-width="400">
-      <v-card>
-        <v-card-title>Confirmación</v-card-title>
-
-        <v-card-text>
-          ¿Seguro que quieres dar de baja este empleado?
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn @click="dialog = false">
-            Cancelar
-          </v-btn>
-
-          <v-btn color="red" @click="bajaConfirmada">
-            Aceptar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Dialog error -->
-    <v-dialog v-model="errorDialog" max-width="400">
-      <v-card>
-        <v-card-title>Error</v-card-title>
-
-        <v-card-text>
-          {{ errorMensaje }}
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="#3b82f6" @click="errorDialog = false">
-            Aceptar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script>
 import { getEmpleados, bajaEmpleado } from "../services/empleadoService";
+import Swal from "sweetalert2";
 
 export default {
   data() {
     return {
       empleados: [],
-      busqueda: "",
-      dialog: false,
-      idSeleccionado: null,
-      errorDialog: false,
-      errorMensaje: ""
+      busqueda: ""
     };
   },
 
   computed: {
     empleadosFiltrados() {
 
-      // Si no hay búsqueda, devolver todos
       if (!this.busqueda) return this.empleados;
 
-      // Pasar a minúsculas
       const texto = this.busqueda.toLowerCase();
 
-      // Filtrar empleados
       return this.empleados.filter(emp => {
 
-        // Unir todos los campos relevantes
         const contenido = `
           ${emp.nombre || ""}
           ${emp.apellido1 || ""}
@@ -205,7 +150,6 @@ export default {
           ${emp.telefono2 || ""}
         `.toLowerCase();
 
-        // Comprobar coincidencia
         return contenido.includes(texto);
       });
     }
@@ -213,47 +157,61 @@ export default {
 
   methods: {
 
-    // Cargar empleados activos
+    // Cargar empleados
     cargarEmpleados() {
-      getEmpleados()
-        .then(res => {
-          this.empleados = res.data;
-        });
+      getEmpleados().then(res => {
+        this.empleados = res.data;
+      });
     },
 
-    // Ir a pantalla de edición
-    editarEmpleado(id) {
-      this.$router.push(`/editar-empleado/${id}`);
+    // Confirmación SweetAlert
+    confirmarBaja(id) {
+
+      Swal.fire({
+        title: "¿Dar de baja?",
+        text: "El empleado pasará a estar inactivo",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, dar de baja"
+      }).then(result => {
+
+        if (result.isConfirmed) {
+
+          bajaEmpleado(id)
+            .then(() => {
+
+              Swal.fire({
+                icon: "success",
+                title: "Empleado dado de baja",
+                timer: 1500,
+                showConfirmButton: false
+              });
+
+              this.cargarEmpleados();
+            })
+            .catch(error => {
+
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.response?.data || "Error inesperado"
+              });
+
+            });
+
+        }
+
+      });
     },
 
-    // Abrir confirmación
-    abrirDialog(id) {
-      this.idSeleccionado = id;
-      this.dialog = true;
-    },
-
-    // Ejecutar baja
-    bajaConfirmada() {
-      bajaEmpleado(this.idSeleccionado)
-        .then(() => {
-          this.dialog = false;
-          this.cargarEmpleados();
-        })
-        .catch(error => {
-          this.dialog = false;
-          this.errorMensaje = error.response?.data || "Error";
-          this.errorDialog = true;
-        });
-    },
-
-    // Formatear estado civil
     formatearEstadoCivil(v) {
       if (v === "S") return "Soltero";
       if (v === "C") return "Casado";
       return v;
     },
 
-    // Formatear formación
     formatearFormacion(v) {
       if (v === "S") return "Sí";
       if (v === "N") return "No";
@@ -267,21 +225,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-td {
-  padding: 8px 16px;
-}
-
-th {
-  font-weight: 600;
-}
-
-.acciones {
-  white-space: nowrap;
-}
-
-tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-</style>
