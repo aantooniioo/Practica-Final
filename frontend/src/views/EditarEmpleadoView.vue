@@ -2,7 +2,7 @@
   <v-container>
 
     <v-card class="pa-4 formulario-card card-pro card-animated">
-      <v-card-title>Editar Empleado</v-card-title>
+      <v-card-title>{{ $t("editar_empleado.titulo") }}</v-card-title>
 
       <v-form v-model="formValido" ref="form">
 
@@ -10,7 +10,7 @@
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Nombre"
+              :label="$t('editar_empleado.nombre')"
               v-model="empleado.nombre"
               :rules="[rules.requerido]"
             />
@@ -18,7 +18,7 @@
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Apellido 1"
+              :label="$t('editar_empleado.apellido1')"
               v-model="empleado.apellido1"
               :rules="[rules.requerido]"
             />
@@ -26,15 +26,14 @@
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Apellido 2"
+              :label="$t('editar_empleado.apellido2')"
               v-model="empleado.apellido2"
-              :rules="[rules.requerido]"
             />
           </v-col>
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Email"
+              :label="$t('editar_empleado.email')"
               v-model="empleado.email"
               :rules="[rules.requerido, rules.email]"
             />
@@ -42,35 +41,16 @@
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Teléfono 1"
+              :label="$t('editar_empleado.telefono1')"
               v-model="empleado.telefono1"
-              :rules="[rules.requerido, rules.telefono]"
+              :rules="[rules.telefono]"
             />
           </v-col>
 
           <v-col cols="12" md="6">
             <v-text-field
-              label="Teléfono 2"
+              :label="$t('editar_empleado.telefono2')"
               v-model="empleado.telefono2"
-              :rules="[rules.requerido, rules.telefono]"
-            />
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-select
-              label="Estado civil"
-              v-model="empleado.estadoCivil"
-              :items="estados"
-              :rules="[rules.requerido]"
-            />
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-select
-              label="Formación universitaria"
-              v-model="empleado.formacionUniversitaria"
-              :items="formaciones"
-              :rules="[rules.requerido]"
             />
           </v-col>
 
@@ -78,11 +58,11 @@
 
         <v-card-actions class="mt-4">
           <v-btn color="green" :disabled="!formValido" @click="guardar">
-            Guardar cambios
+            {{ $t("editar_empleado.guardar") }}
           </v-btn>
 
           <v-btn color="grey" @click="$router.push('/empleados')">
-            Cancelar
+            {{ $t("editar_empleado.cancelar") }}
           </v-btn>
         </v-card-actions>
 
@@ -101,53 +81,40 @@ export default {
       empleado:{},
       formValido:false,
 
-      estados:[
-        { title:"Soltero", value:"S" },
-        { title:"Casado", value:"C" }
-      ],
-
-      formaciones:[
-        { title:"Sí", value:"S" },
-        { title:"No", value:"N" }
-      ],
-
       rules:{
-        requerido: v => !!v || "Campo obligatorio",
-        email: v => /.+@.+\..+/.test(v) || "Email inválido",
-        telefono: v => /^[0-9]{9}$/.test(v) || "Teléfono inválido"
+        requerido: v => !!v || this.$t("validaciones.requerido"),
+        email: v => /.+@.+\..+/.test(v) || this.$t("validaciones.email"),
+        telefono: v => /^[0-9]{9}$/.test(v) || this.$t("validaciones.telefono")
       }
     }
   },
 
-  methods: {
+  methods:{
 
-    // Cargar empleado por id
-    cargarEmpleado() {
-      const id = this.$route.params.id;
+    cargarEmpleado(){
+      const id = this.$route.params.idEmpleado;
 
       getEmpleadoById(id)
-        .then(res => {
+        .then(res=>{
           this.empleado = res.data;
         });
     },
 
-    // Guardar cambios
-    guardar() {
-
+    guardar(){
       if (!this.$refs.form.validate()) return;
 
-      editarEmpleado(this.$route.params.id, this.empleado)
-        .then(() => {
+      editarEmpleado(this.$route.params.idEmpleado, this.empleado)
+        .then(()=>{
           this.$router.push("/empleados");
         });
     }
 
   },
 
-  mounted() {
+  mounted(){
     this.cargarEmpleado();
   }
-}
+};
 </script>
 
 <style scoped>

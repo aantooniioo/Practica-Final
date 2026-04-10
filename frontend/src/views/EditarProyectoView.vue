@@ -2,74 +2,74 @@
   <v-container>
 
     <v-card class="pa-4 formulario-card card-pro card-animated">
-      <v-card-title>Editar Proyecto</v-card-title>
+      <v-card-title>{{ $t("editar_proyecto.titulo") }}</v-card-title>
 
       <v-form v-model="formValido" ref="form">
 
-        <v-text-field
-          label="Descripción"
-          v-model="proyecto.descripcion"
-          :rules="[rules.requerido]"
-        />
+        <v-row>
 
-        <v-text-field
-          label="Fecha Inicio"
-          type="date"
-          v-model="proyecto.fechaInicio"
-          :rules="[rules.requerido]"
-        />
+          <v-col cols="12">
+            <v-text-field
+              :label="$t('editar_proyecto.descripcion')"
+              v-model="proyecto.descripcion"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
 
-        <v-text-field
-          label="Fecha Fin"
-          type="date"
-          v-model="proyecto.fechaFin"
-        />
+          <v-col cols="12" md="6">
+            <v-text-field
+              :label="$t('editar_proyecto.fecha_inicio')"
+              type="date"
+              v-model="proyecto.fechaInicio"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
 
-        <v-text-field
-          label="Lugar"
-          v-model="proyecto.lugar"
-          :rules="[rules.requerido]"
-        />
+          <v-col cols="12" md="6">
+            <v-text-field
+              :label="$t('editar_proyecto.fecha_fin')"
+              type="date"
+              v-model="proyecto.fechaFin"
+            />
+          </v-col>
 
-        <v-card-actions>
+          <v-col cols="12">
+            <v-text-field
+              :label="$t('editar_proyecto.lugar')"
+              v-model="proyecto.lugar"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
+
+        </v-row>
+
+        <v-card-actions class="mt-4">
           <v-btn color="green" :disabled="!formValido" @click="guardar">
-            Guardar cambios
+            {{ $t("editar_proyecto.guardar") }}
           </v-btn>
 
           <v-btn color="grey" @click="$router.push('/proyectos')">
-            Cancelar
+            {{ $t("editar_proyecto.cancelar") }}
           </v-btn>
         </v-card-actions>
 
       </v-form>
     </v-card>
 
-    <v-dialog v-model="errorDialog" max-width="400">
-      <v-card>
-        <v-card-title>Error</v-card-title>
-        <v-card-text>{{ errorMensaje }}</v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="errorDialog = false">Aceptar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
 <script>
-import { getProyectoById, actualizarProyecto } from "../services/proyectoService";
+import { getProyectoById, editarProyecto } from "../services/proyectoService";
 
 export default {
   data(){
     return{
       proyecto:{},
       formValido:false,
-      errorDialog:false,
-      errorMensaje:"",
 
       rules:{
-        requerido: v => !!v || "Campo obligatorio"
+        requerido: v => !!v || this.$t("validaciones.requerido")
       }
     }
   },
@@ -77,7 +77,7 @@ export default {
   methods:{
 
     cargarProyecto(){
-      const id = this.$route.params.id;
+      const id = this.$route.params.idProyecto;
 
       getProyectoById(id)
         .then(res=>{
@@ -88,13 +88,9 @@ export default {
     guardar(){
       if (!this.$refs.form.validate()) return;
 
-      actualizarProyecto(this.$route.params.id, this.proyecto)
+      editarProyecto(this.$route.params.idProyecto, this.proyecto)
         .then(()=>{
           this.$router.push("/proyectos");
-        })
-        .catch(error=>{
-          this.errorMensaje = error.response?.data || "Error al actualizar";
-          this.errorDialog = true;
         });
     }
 
@@ -105,3 +101,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.formulario-card {
+  max-width: 900px;
+  margin: 0 auto;
+}
+</style>
