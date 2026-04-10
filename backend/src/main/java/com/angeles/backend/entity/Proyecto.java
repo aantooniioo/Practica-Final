@@ -3,33 +3,39 @@ package com.angeles.backend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Representa un proyecto de la empresa
 @Entity
 @Table(name = "PR_PROYECTOS")
 public class Proyecto {
 
+    // Identificador del proyecto (autogenerado)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PROYECTO")
     private Integer idProyecto;
 
+    // Información principal del proyecto
     @Column(name = "TX_DESCRIPCIÓN", nullable = false)
     private String descripcion;
 
+    @Column(name = "TX_LUGAR")
+    private String lugar;
+
+    // Fechas del proyecto
     @Column(name = "F_INICIO", nullable = false)
     private LocalDate fechaInicio;
 
     @Column(name = "F_FIN")
     private LocalDate fechaFin;
 
-    @Column(name = "TX_LUGAR")
-    private String lugar;
-
     @Column(name = "F_BAJA")
     private LocalDate fechaBaja;
 
+    // Constructor vacío requerido por JPA
     public Proyecto(){}
 
-    // getters y setters
+    // Getters y setters
+
     public Integer getIdProyecto() { return idProyecto; }
     public void setIdProyecto(Integer idProyecto) { this.idProyecto = idProyecto; }
 

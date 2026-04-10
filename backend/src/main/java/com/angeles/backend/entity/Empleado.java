@@ -3,14 +3,17 @@ package com.angeles.backend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Representa un empleado de la empresa
 @Entity
 @Table(name = "EM_EMPLEADOS")
 public class Empleado {
 
+    // Identificador del empleado
     @Id
     @Column(name = "ID_EMPLEADO")
     private Integer idEmpleado;
 
+    // Datos personales
     @Column(name = "TX_NIF")
     private String nif;
 
@@ -26,6 +29,7 @@ public class Empleado {
     @Column(name = "F_NACIMIENTO", nullable = false)
     private LocalDate fechaNacimiento;
 
+    // Datos de contacto
     @Column(name = "N_TELEFONO1", nullable = false)
     private String telefono1;
 
@@ -35,20 +39,24 @@ public class Empleado {
     @Column(name = "TX_EMAIL", nullable = false)
     private String email;
 
+    // Fechas de gestión
     @Column(name = "F_ALTA", nullable = false)
     private LocalDate fechaAlta;
 
-    // 🔥 IMPORTANTE: quitar nullable = false
     @Column(name = "F_BAJA")
     private LocalDate fechaBaja;
 
+    // Información adicional
     @Column(name = "CX_EDOCIVIL", nullable = false)
     private String estadoCivil;
 
     @Column(name = "B_FORMACIONU", nullable = false)
     private String formacionUniversitaria;
 
+    // Constructor vacío requerido por JPA
     public Empleado() {}
+
+    // Getters y setters
 
     public Integer getIdEmpleado() { return idEmpleado; }
     public void setIdEmpleado(Integer idEmpleado) { this.idEmpleado = idEmpleado; }

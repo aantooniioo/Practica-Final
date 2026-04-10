@@ -21,18 +21,19 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // ✅ Obtener empleados activos
+    // Obtiene todos los empleados activos (sin fecha de baja)
     @GetMapping
     public List<Empleado> obtenerTodos(){
-        return empleadoRepository.findAll()
+        return empleadoRepository.findByFechaBajaIsNull()
                 .stream()
                 .filter(emp -> emp.getFechaBaja() == null)
                 .toList();
     }
 
-    // ✅ OBTENER POR ID (IMPORTANTE)
+    // Obtiene un empleado por su id
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Integer id){
+
         Empleado emp = empleadoRepository.findById(id).orElse(null);
 
         if(emp == null){
@@ -42,18 +43,21 @@ public class EmpleadoController {
         return ResponseEntity.ok(emp);
     }
 
-    // ✅ CREAR
+    // Crea un nuevo empleado con validaciones básicas
     @PostMapping
     public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado){
 
+        // Validar nombre obligatorio
         if(empleado.getNombre() == null || empleado.getNombre().isEmpty()){
             return ResponseEntity.badRequest().body("El nombre es obligatorio");
         }
 
+        // Validar primer apellido obligatorio
         if(empleado.getApellido1() == null || empleado.getApellido1().isEmpty()){
             return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
         }
 
+        // Validar email obligatorio
         if(empleado.getEmail() == null || empleado.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("El email es obligatorio");
         }
@@ -61,7 +65,7 @@ public class EmpleadoController {
         return ResponseEntity.ok(empleadoRepository.save(empleado));
     }
 
-    // ✅ EDITAR (CLAVE)
+    // Actualiza los datos de un empleado existente
     @PutMapping("/{id}")
     public ResponseEntity<?> editarEmpleado(@PathVariable Integer id, @RequestBody Empleado datos){
 
@@ -71,20 +75,22 @@ public class EmpleadoController {
             return ResponseEntity.notFound().build();
         }
 
-        // Validaciones
+        // Validar nombre obligatorio
         if(datos.getNombre() == null || datos.getNombre().isEmpty()){
             return ResponseEntity.badRequest().body("El nombre es obligatorio");
         }
 
+        // Validar primer apellido obligatorio
         if(datos.getApellido1() == null || datos.getApellido1().isEmpty()){
             return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
         }
 
+        // Validar email obligatorio
         if(datos.getEmail() == null || datos.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("El email es obligatorio");
         }
 
-        // Actualizar datos
+        // Actualiza los campos del empleado
         emp.setNombre(datos.getNombre());
         emp.setApellido1(datos.getApellido1());
         emp.setApellido2(datos.getApellido2());
@@ -99,10 +105,11 @@ public class EmpleadoController {
         return ResponseEntity.ok(emp);
     }
 
-    // ✅ BAJA
+    // Da de baja un empleado si no tiene asignaciones
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
+        // Comprueba si el empleado tiene proyectos asignados
         int asignaciones = empleadoProyectoRepository.countByIdEmpleado(id);
 
         if(asignaciones > 0){

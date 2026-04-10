@@ -21,18 +21,19 @@ public class ProyectoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // ✅ Obtener proyectos activos
+    // Obtiene todos los proyectos activos (sin fecha de baja)
     @GetMapping
     public List<Proyecto> obtenerProyectos(){
-        return proyectoRepository.findAll()
+        return proyectoRepository.findByFechaBajaIsNull()
                 .stream()
                 .filter(p -> p.getFechaBaja() == null)
                 .toList();
     }
 
-    // ✅ Obtener proyecto por ID (IMPORTANTE PARA EDITAR)
+    // Obtiene un proyecto por su id
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProyectoPorId(@PathVariable Integer id){
+
         Proyecto proyecto = proyectoRepository.findById(id).orElse(null);
 
         if(proyecto == null){
@@ -42,18 +43,21 @@ public class ProyectoController {
         return ResponseEntity.ok(proyecto);
     }
 
-    // ✅ Crear proyecto
+    // Crea un nuevo proyecto con validaciones básicas
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody Proyecto proyecto){
 
+        // Validar descripción obligatoria
         if(proyecto.getDescripcion() == null || proyecto.getDescripcion().isEmpty()){
             return ResponseEntity.badRequest().body("La descripción es obligatoria");
         }
 
+        // Validar fecha de inicio
         if(proyecto.getFechaInicio() == null){
             return ResponseEntity.badRequest().body("La fecha de inicio es obligatoria");
         }
 
+        // Validar lugar obligatorio
         if(proyecto.getLugar() == null || proyecto.getLugar().isEmpty()){
             return ResponseEntity.badRequest().body("El lugar es obligatorio");
         }
@@ -61,7 +65,7 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoRepository.save(proyecto));
     }
 
-    // ✅ EDITAR PROYECTO (LO QUE TE FALTABA)
+    // Actualiza los datos de un proyecto existente
     @PutMapping("/{id}")
     public ResponseEntity<?> editarProyecto(@PathVariable Integer id, @RequestBody Proyecto datos){
 
@@ -71,20 +75,22 @@ public class ProyectoController {
             return ResponseEntity.notFound().build();
         }
 
-        // Validaciones
+        // Validar descripción obligatoria
         if(datos.getDescripcion() == null || datos.getDescripcion().isEmpty()){
             return ResponseEntity.badRequest().body("La descripción es obligatoria");
         }
 
+        // Validar fecha de inicio
         if(datos.getFechaInicio() == null){
             return ResponseEntity.badRequest().body("La fecha de inicio es obligatoria");
         }
 
+        // Validar lugar obligatorio
         if(datos.getLugar() == null || datos.getLugar().isEmpty()){
             return ResponseEntity.badRequest().body("El lugar es obligatorio");
         }
 
-        // Actualizar campos
+        // Actualiza los campos del proyecto
         proyecto.setDescripcion(datos.getDescripcion());
         proyecto.setFechaInicio(datos.getFechaInicio());
         proyecto.setFechaFin(datos.getFechaFin());
@@ -95,10 +101,11 @@ public class ProyectoController {
         return ResponseEntity.ok(proyecto);
     }
 
-    // ✅ Dar de baja
+    // Da de baja un proyecto si no tiene empleados asignados
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
+        // Comprueba si el proyecto tiene empleados asignados
         int asignaciones = empleadoProyectoRepository.countByIdProyecto(id);
 
         if(asignaciones > 0){
@@ -107,11 +114,11 @@ public class ProyectoController {
                     .body("No se puede dar de baja el proyecto porque tiene empleados asignados");
         }
 
-        Proyecto p = proyectoRepository.findById(id).orElse(null);
+        Proyecto proyecto = proyectoRepository.findById(id).orElse(null);
 
-        if(p != null){
-            p.setFechaBaja(LocalDate.now());
-            proyectoRepository.save(p);
+        if(proyecto != null){
+            proyecto.setFechaBaja(LocalDate.now());
+            proyectoRepository.save(proyecto);
             return ResponseEntity.ok().build();
         }
 

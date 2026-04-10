@@ -3,10 +3,13 @@ package com.angeles.backend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Representa la asignación de un empleado a un proyecto
 @Entity
 @Table(name = "PR_EMPLEADOS_PROYECTO")
 @IdClass(EmpleadoProyectoId.class)
 public class EmpleadoProyecto {
+
+    // Clave compuesta: idProyecto + idEmpleado
 
     @Id
     @Column(name = "ID_PROYECTO")
@@ -16,10 +19,14 @@ public class EmpleadoProyecto {
     @Column(name = "ID_EMPLEADO")
     private Integer idEmpleado;
 
+    // Fecha en la que el empleado fue asignado al proyecto
     @Column(name = "F_ALTA")
     private LocalDate fechaAlta;
 
+    // Constructor vacío requerido por JPA
     public EmpleadoProyecto() {}
+
+    // Getters y setters
 
     public Integer getIdProyecto() {
         return idProyecto;

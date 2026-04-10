@@ -14,19 +14,20 @@ import java.util.List;
 public class EmpleadoProyectoController {
 
     @Autowired
-    private EmpleadoProyectoRepository repo;
+    private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // 🔹 GET → listar asignaciones
+    // Obtiene todas las asignaciones existentes
     @GetMapping
     public List<EmpleadoProyecto> listar(){
-        return repo.findAll();
+        return empleadoProyectoRepository.findAll();
     }
 
-    // 🔹 POST → asignar empleado a proyecto (con validación)
+    // Asigna un empleado a un proyecto con validación de duplicados
     @PostMapping
     public ResponseEntity<?> asignar(@RequestBody EmpleadoProyecto ep){
 
-        boolean existe = repo.existsByIdEmpleadoAndIdProyecto(
+        // Comprueba si ya existe la asignación
+        boolean existe = empleadoProyectoRepository.existsByIdEmpleadoAndIdProyecto(
                 ep.getIdEmpleado(),
                 ep.getIdProyecto()
         );
@@ -37,6 +38,6 @@ public class EmpleadoProyectoController {
                     .body("El empleado ya está asignado a este proyecto");
         }
 
-        return ResponseEntity.ok(repo.save(ep));
+        return ResponseEntity.ok(empleadoProyectoRepository.save(ep));
     }
 }
