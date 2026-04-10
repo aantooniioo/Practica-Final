@@ -21,7 +21,7 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // Obtener empleados activos
+    // ✅ Obtener empleados activos
     @GetMapping
     public List<Empleado> obtenerTodos(){
         return empleadoRepository.findAll()
@@ -30,11 +30,22 @@ public class EmpleadoController {
                 .toList();
     }
 
-    // Crear empleado con validaciones básicas
+    // ✅ OBTENER POR ID (IMPORTANTE)
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerPorId(@PathVariable Integer id){
+        Empleado emp = empleadoRepository.findById(id).orElse(null);
+
+        if(emp == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(emp);
+    }
+
+    // ✅ CREAR
     @PostMapping
     public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado){
 
-        // Validar campos obligatorios
         if(empleado.getNombre() == null || empleado.getNombre().isEmpty()){
             return ResponseEntity.badRequest().body("El nombre es obligatorio");
         }
@@ -50,11 +61,48 @@ public class EmpleadoController {
         return ResponseEntity.ok(empleadoRepository.save(empleado));
     }
 
-    // Dar de baja con restricción de asignaciones
+    // ✅ EDITAR (CLAVE)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarEmpleado(@PathVariable Integer id, @RequestBody Empleado datos){
+
+        Empleado emp = empleadoRepository.findById(id).orElse(null);
+
+        if(emp == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        // Validaciones
+        if(datos.getNombre() == null || datos.getNombre().isEmpty()){
+            return ResponseEntity.badRequest().body("El nombre es obligatorio");
+        }
+
+        if(datos.getApellido1() == null || datos.getApellido1().isEmpty()){
+            return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
+        }
+
+        if(datos.getEmail() == null || datos.getEmail().isEmpty()){
+            return ResponseEntity.badRequest().body("El email es obligatorio");
+        }
+
+        // Actualizar datos
+        emp.setNombre(datos.getNombre());
+        emp.setApellido1(datos.getApellido1());
+        emp.setApellido2(datos.getApellido2());
+        emp.setEmail(datos.getEmail());
+        emp.setTelefono1(datos.getTelefono1());
+        emp.setTelefono2(datos.getTelefono2());
+        emp.setEstadoCivil(datos.getEstadoCivil());
+        emp.setFormacionUniversitaria(datos.getFormacionUniversitaria());
+
+        empleadoRepository.save(emp);
+
+        return ResponseEntity.ok(emp);
+    }
+
+    // ✅ BAJA
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
-        // Comprobar si tiene proyectos asignados
         int asignaciones = empleadoProyectoRepository.countByIdEmpleado(id);
 
         if(asignaciones > 0){

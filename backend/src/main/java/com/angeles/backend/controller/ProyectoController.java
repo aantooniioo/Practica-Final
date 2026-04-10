@@ -21,7 +21,7 @@ public class ProyectoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // Obtener proyectos activos
+    // ✅ Obtener proyectos activos
     @GetMapping
     public List<Proyecto> obtenerProyectos(){
         return proyectoRepository.findAll()
@@ -30,11 +30,22 @@ public class ProyectoController {
                 .toList();
     }
 
-    // Crear proyecto con validaciones
+    // ✅ Obtener proyecto por ID (IMPORTANTE PARA EDITAR)
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerProyectoPorId(@PathVariable Integer id){
+        Proyecto proyecto = proyectoRepository.findById(id).orElse(null);
+
+        if(proyecto == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(proyecto);
+    }
+
+    // ✅ Crear proyecto
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody Proyecto proyecto){
 
-        // Validar campos obligatorios
         if(proyecto.getDescripcion() == null || proyecto.getDescripcion().isEmpty()){
             return ResponseEntity.badRequest().body("La descripción es obligatoria");
         }
@@ -50,11 +61,44 @@ public class ProyectoController {
         return ResponseEntity.ok(proyectoRepository.save(proyecto));
     }
 
-    // Dar de baja con restricción
+    // ✅ EDITAR PROYECTO (LO QUE TE FALTABA)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarProyecto(@PathVariable Integer id, @RequestBody Proyecto datos){
+
+        Proyecto proyecto = proyectoRepository.findById(id).orElse(null);
+
+        if(proyecto == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        // Validaciones
+        if(datos.getDescripcion() == null || datos.getDescripcion().isEmpty()){
+            return ResponseEntity.badRequest().body("La descripción es obligatoria");
+        }
+
+        if(datos.getFechaInicio() == null){
+            return ResponseEntity.badRequest().body("La fecha de inicio es obligatoria");
+        }
+
+        if(datos.getLugar() == null || datos.getLugar().isEmpty()){
+            return ResponseEntity.badRequest().body("El lugar es obligatorio");
+        }
+
+        // Actualizar campos
+        proyecto.setDescripcion(datos.getDescripcion());
+        proyecto.setFechaInicio(datos.getFechaInicio());
+        proyecto.setFechaFin(datos.getFechaFin());
+        proyecto.setLugar(datos.getLugar());
+
+        proyectoRepository.save(proyecto);
+
+        return ResponseEntity.ok(proyecto);
+    }
+
+    // ✅ Dar de baja
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
-        // Comprobar si tiene empleados asignados
         int asignaciones = empleadoProyectoRepository.countByIdProyecto(id);
 
         if(asignaciones > 0){
