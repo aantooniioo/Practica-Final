@@ -15,7 +15,7 @@
       <!-- LOGO -->
       <div class="sidebar-header">
         <img
-          src="/src/assets/images/Logo_blanco_Future-2.png"
+          :src="logo"
           :class="mini ? 'logo-mini' : 'logo-full'"
         />
       </div>
@@ -45,24 +45,37 @@
       <!-- TOPBAR -->
       <v-app-bar elevation="0" class="topbar-pro">
 
-        <!-- BOTÓN INTELIGENTE -->
+        <!-- BOTÓN SIDEBAR -->
         <v-btn icon @click="accionMenu">
           <v-icon>
             {{ !isMobile && mini ? 'mdi-chevron-right' : 'mdi-menu' }}
           </v-icon>
         </v-btn>
 
-        <!-- LOGO TOP -->
+        <!-- LOGO -->
         <img
-          src="/src/assets/images/Logo_blanco_Future-2.png"
+          :src="logo"
           class="topbar-logo"
         />
 
         <v-spacer />
 
+        <!-- SELECTOR IDIOMA -->
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props">
+              <v-icon>mdi-translate</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item @click="cambiarIdioma('es')" title="Español" />
+            <v-list-item @click="cambiarIdioma('en')" title="English" />
+          </v-list>
+        </v-menu>
+
         <!-- MENÚ USUARIO -->
         <v-menu>
-
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props">
               <v-icon>mdi-account-circle</v-icon>
@@ -70,12 +83,11 @@
           </template>
 
           <v-list>
-            <v-list-item title="Mi perfil" />
-            <v-list-item title="Configuración" />
+            <v-list-item :title="$t('menu.perfil')" />
+            <v-list-item :title="$t('menu.configuracion')" />
             <v-divider />
-            <v-list-item title="Cerrar sesión" />
+            <v-list-item :title="$t('menu.logout')" />
           </v-list>
-
         </v-menu>
 
       </v-app-bar>
@@ -85,7 +97,6 @@
 
         <v-container fluid class="mt-4">
 
-          <!-- ANIMACIÓN GLOBAL -->
           <transition name="fade-slide" mode="out-in">
             <router-view />
           </transition>
@@ -102,7 +113,8 @@
 </template>
 
 <script>
-import FooterComponent from './components/FooterComponent.vue';
+import FooterComponent from './components/FooterComponent.vue'
+import logo from '@/assets/images/Logo_blanco_Future-2.png'
 
 export default {
   components: { FooterComponent },
@@ -112,16 +124,22 @@ export default {
       drawer: true,
       mini: false,
       isMobile: false,
-
-      menu: [
-        { title: "Inicio", path: "/", icon: "mdi-view-dashboard" },
-        { title: "Empleados", path: "/empleados", icon: "mdi-account-group" },
-        { title: "Proyectos", path: "/proyectos", icon: "mdi-briefcase" },
-        { title: "Asignar", path: "/asignacion", icon: "mdi-link-variant" },
-        { title: "Asignaciones", path: "/asignaciones", icon: "mdi-format-list-bulleted" },
-        { title: "Estadísticas", path: "/estadisticas", icon: "mdi-chart-bar" }
-      ]
+      logo // lo usamos directamente en el template
     };
+  },
+
+  computed: {
+    // Menú preparado para i18n
+    menu() {
+      return [
+        { title: this.$t ? this.$t('menu.inicio') : "Inicio", path: "/", icon: "mdi-view-dashboard" },
+        { title: this.$t ? this.$t('menu.empleados') : "Empleados", path: "/empleados", icon: "mdi-account-group" },
+        { title: this.$t ? this.$t('menu.proyectos') : "Proyectos", path: "/proyectos", icon: "mdi-briefcase" },
+        { title: this.$t ? this.$t('menu.asignar') : "Asignar", path: "/asignacion", icon: "mdi-link-variant" },
+        { title: this.$t ? this.$t('menu.asignaciones') : "Asignaciones", path: "/asignaciones", icon: "mdi-format-list-bulleted" },
+        { title: this.$t ? this.$t('menu.estadisticas') : "Estadísticas", path: "/estadisticas", icon: "mdi-chart-bar" }
+      ];
+    }
   },
 
   methods: {
@@ -139,10 +157,8 @@ export default {
 
     accionMenu() {
       if (this.isMobile) {
-        // móvil → abrir/cerrar sidebar
         this.drawer = !this.drawer;
       } else {
-        // PC → mini sidebar
         this.mini = !this.mini;
       }
     },
@@ -152,6 +168,14 @@ export default {
 
       if (this.isMobile) {
         this.drawer = false;
+      }
+    },
+
+    // Cambio de idioma (solo actúa si i18n está activo)
+    cambiarIdioma(lang) {
+      if (this.$i18n) {
+        this.$i18n.locale = lang;
+        localStorage.setItem('lang', lang);
       }
     }
 
@@ -219,7 +243,6 @@ export default {
 
 .logo-full {
   height: 40px;
-  transition: 0.2s;
 }
 
 .logo-mini {
@@ -232,10 +255,6 @@ export default {
 }
 
 /* ===== MENU ===== */
-
-.menu-item {
-  transition: all 0.2s ease;
-}
 
 .menu-item:hover {
   background-color: rgba(255,255,255,0.08);
@@ -257,28 +276,5 @@ export default {
   height: 35px;
   margin-left: 10px;
 }
-
-/* ===== ANIMACIÓN CARDS ===== */
-
-.card-animated {
-  opacity: 0;
-  transform: translateY(15px);
-  animation: fadeUp 0.4s ease forwards;
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* efecto cascada */
-.card-animated:nth-child(1) { animation-delay: 0.05s; }
-.card-animated:nth-child(2) { animation-delay: 0.1s; }
-.card-animated:nth-child(3) { animation-delay: 0.15s; }
-.card-animated:nth-child(4) { animation-delay: 0.2s; }
-.card-animated:nth-child(5) { animation-delay: 0.25s; }
-.card-animated:nth-child(6) { animation-delay: 0.3s; }
 
 </style>

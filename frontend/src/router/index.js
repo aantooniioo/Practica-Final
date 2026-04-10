@@ -6,6 +6,7 @@ import EmpleadosView from '../views/EmpleadosView.vue'
 import EditarEmpleadoView from '@/views/EditarEmpleadoView.vue'
 import AltaEmpleadoView from '../views/AltaEmpleadoView.vue'
 import ProyectosView from '@/views/ProyectosView.vue'
+import EditarProyectoView from '../views/EditarProyectoView.vue'
 import AltaProyectoView from '../views/AltaProyectoView.vue'
 import AsignacionView from '@/views/AsignacionView.vue'
 import AsignacionesListView from '@/views/AsignacionesListView.vue'
@@ -44,7 +45,7 @@ const routes = [
   {
     path: '/editar-proyecto/:idProyecto',
     name: 'editarProyecto',
-    component: AltaProyectoView
+    component: EditarProyectoView
   },
   {
     path: '/alta-proyecto',
