@@ -24,5 +24,5 @@ export function getEmpleadoById(id){
 }
 
 export function editarEmpleado(id, data){
-    return axios.put(`/empleados/${id}`, data);
+    return axios.put(`${API_URL}/${id}`, data);
 }

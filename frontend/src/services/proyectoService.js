@@ -13,3 +13,11 @@ export function crearProyecto(proyecto) {
 export function bajaProyecto(id) {
     return axios.put(`${API_URL}/baja/${id}`);
 }
+
+export function getProyectoById(id){
+    return axios.get(`${API_URL}/${id}`);
+}
+
+export function editarProyecto(id, data){
+    return axios.put(`${API_URL}/${id}`, data);
+}
