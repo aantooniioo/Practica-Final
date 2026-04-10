@@ -3,18 +3,22 @@
 
     <!-- HERO -->
     <v-card class="pa-6 mb-6 hero-card" data-aos="fade-up">
-      <h1 class="text-h4 font-weight-bold mb-2">Bienvenido</h1>
+      <h1 class="text-h4 font-weight-bold mb-2">
+        {{ $t('home.bienvenido') }}
+      </h1>
+
       <p class="text-subtitle-1 mb-4">
-        Sistema de gestión interna de Future Space
+        {{ $t('home.descripcion') }}
       </p>
 
+      <!-- botones con separación mejorada -->
       <div class="hero-buttons">
         <v-btn color="primary" @click="$router.push('/empleados')">
-          Empezar
+          {{ $t('home.empezar') }}
         </v-btn>
 
         <v-btn variant="outlined" @click="$router.push('/estadisticas')">
-          Ver estadísticas
+          {{ $t('home.ver_estadisticas') }}
         </v-btn>
       </div>
     </v-card>
@@ -23,21 +27,21 @@
     <v-row class="mb-6">
       <v-col cols="12" md="4" data-aos="fade-up" data-aos-delay="100">
         <v-card class="pa-4 kpi-card">
-          <span class="kpi-title">Empleados</span>
+          <span class="kpi-title">{{ $t('home.empleados') }}</span>
           <h2>{{ empleados }}</h2>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4" data-aos="fade-up" data-aos-delay="200">
         <v-card class="pa-4 kpi-card">
-          <span class="kpi-title">Proyectos</span>
+          <span class="kpi-title">{{ $t('home.proyectos') }}</span>
           <h2>{{ proyectos }}</h2>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4" data-aos="fade-up" data-aos-delay="300">
         <v-card class="pa-4 kpi-card">
-          <span class="kpi-title">Asignaciones</span>
+          <span class="kpi-title">{{ $t('home.asignaciones') }}</span>
           <h2>{{ asignaciones }}</h2>
         </v-card>
       </v-col>
@@ -48,21 +52,21 @@
       <v-col cols="12" md="4" data-aos="zoom-in">
         <v-card class="pa-4 action-card" @click="$router.push('/alta-empleado')">
           <v-icon size="32" class="mb-2">mdi-account-plus</v-icon>
-          <div class="action-title">Nuevo empleado</div>
+          <div class="action-title">{{ $t('home.nuevo_empleado') }}</div>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4" data-aos="zoom-in" data-aos-delay="100">
         <v-card class="pa-4 action-card" @click="$router.push('/alta-proyecto')">
           <v-icon size="32" class="mb-2">mdi-briefcase-plus</v-icon>
-          <div class="action-title">Nuevo proyecto</div>
+          <div class="action-title">{{ $t('home.nuevo_proyecto') }}</div>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="4" data-aos="zoom-in" data-aos-delay="200">
         <v-card class="pa-4 action-card" @click="$router.push('/asignacion')">
           <v-icon size="32" class="mb-2">mdi-link-variant</v-icon>
-          <div class="action-title">Asignar empleado</div>
+          <div class="action-title">{{ $t('home.asignar') }}</div>
         </v-card>
       </v-col>
     </v-row>
@@ -93,6 +97,7 @@
       <v-col cols="12" data-aos="fade-up">
         <v-card class="about-card">
 
+          <!-- imagen -->
           <div class="about-img-wrapper">
             <img
               src="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
@@ -100,19 +105,22 @@
             />
           </div>
 
+          <!-- texto -->
           <div class="about-text pa-6">
-            <h2 class="text-h5 mb-3">Sobre nosotros</h2>
+            <h2 class="text-h5 mb-3">
+              {{ $t('home.sobre') }}
+            </h2>
 
             <p class="mb-2">
-              Future Space es una empresa tecnológica especializada en soluciones innovadoras.
+              {{ $t('home.sobre_texto1') }}
             </p>
 
             <p class="mb-2">
-              Gestiona empleados, proyectos y asignaciones de forma centralizada.
+              {{ $t('home.sobre_texto2') }}
             </p>
 
             <p>
-              Plataforma moderna, intuitiva y profesional.
+              {{ $t('home.sobre_texto3') }}
             </p>
           </div>
 
@@ -122,6 +130,7 @@
 
     <!-- BLOQUES -->
     <v-row>
+
       <v-col cols="12" md="4" data-aos="fade-up" data-aos-delay="100">
         <v-card class="info-card">
           <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" />
@@ -151,6 +160,7 @@
           </div>
         </v-card>
       </v-col>
+
     </v-row>
 
   </v-container>
@@ -188,6 +198,7 @@ export default {
   },
 
   mounted() {
+    // animaciones al hacer scroll
     AOS.init({
       duration: 800,
       once: true
@@ -229,12 +240,8 @@ export default {
 /* BOTONES */
 .hero-buttons {
   display: flex;
-  gap: 16px;
+  gap: 20px; /* separación mejorada */
   flex-wrap: wrap;
-}
-
-.hero-buttons .v-btn {
-  min-width: 140px;
 }
 
 /* KPI */
@@ -242,24 +249,10 @@ export default {
   color: #F3F7FB;
 }
 
-.kpi-card::after {
-  content: "";
-  height: 4px;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(90deg, #026FC1, #028CF5);
-}
-
 /* ACCIONES */
 .action-card {
   cursor: pointer;
   text-align: center;
-}
-
-.action-card:hover {
-  transform: translateY(-12px) scale(1.03);
 }
 
 /* ABOUT */
@@ -274,8 +267,8 @@ export default {
 
 .about-img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-height: 400px;
+  object-fit:cover;
 }
 
 .about-text {
@@ -294,7 +287,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.55) contrast(1.1);
+  filter: brightness(0.55);
 }
 
 .carousel-overlay {
@@ -311,7 +304,6 @@ export default {
 
   .hero-buttons {
     flex-direction: column;
-    gap: 12px;
   }
 
   .about-card {

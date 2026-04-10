@@ -1,14 +1,13 @@
 <template>
   <v-container class="mt-6">
 
-    <!-- Tarjeta principal -->
     <v-card class="pa-5 elevation-4 card-pro card-animated">
 
       <!-- Cabecera -->
       <v-row align="center" justify="space-between" class="mb-4">
 
         <v-col cols="auto">
-          <h2 class="text-h5">Empleados</h2>
+          <h2 class="text-h5">{{ $t('empleados.titulo') }}</h2>
         </v-col>
 
         <v-col cols="auto">
@@ -16,7 +15,7 @@
             color="#3b82f6"
             elevation="2"
             @click="$router.push('/alta-empleado')">
-            Nuevo empleado
+            {{ $t('empleados.nuevo') }}
           </v-btn>
         </v-col>
 
@@ -25,7 +24,7 @@
       <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
-        label="Buscar empleado..."
+        :label="$t('empleados.buscar')"
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         clearable
@@ -37,16 +36,16 @@
 
         <thead class="bg-grey-darken-3">
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido 1</th>
-            <th>Apellido 2</th>
-            <th>Email</th>
-            <th>Teléfono 1</th>
-            <th>Teléfono 2</th>
-            <th>Estado</th>
-            <th>Formación</th>
-            <th class="text-center">Acciones</th>
+            <th>{{ $t('empleados.id') }}</th>
+            <th>{{ $t('empleados.nombre') }}</th>
+            <th>{{ $t('empleados.apellido1') }}</th>
+            <th>{{ $t('empleados.apellido2') }}</th>
+            <th>{{ $t('empleados.email') }}</th>
+            <th>{{ $t('empleados.telefono1') }}</th>
+            <th>{{ $t('empleados.telefono2') }}</th>
+            <th>{{ $t('empleados.estado') }}</th>
+            <th>{{ $t('empleados.formacion') }}</th>
+            <th class="text-center">{{ $t('empleados.acciones') }}</th>
           </tr>
         </thead>
 
@@ -55,7 +54,7 @@
           <!-- Sin datos -->
           <tr v-if="empleadosFiltrados.length === 0">
             <td colspan="10" class="text-center py-6">
-              No hay empleados registrados
+              {{ $t('empleados.no_datos') }}
             </td>
           </tr>
 
@@ -96,7 +95,7 @@
                 class="text-blue text-caption"
                 @click="$router.push(`/editar-empleado/${emp.idEmpleado}`)">
                 <v-icon start size="18">mdi-pencil</v-icon>
-                Editar
+                {{ $t('empleados.editar') }}
               </v-btn>
 
               <v-btn
@@ -104,7 +103,7 @@
                 class="text-red-lighten-2 text-caption"
                 @click="confirmarBaja(emp.idEmpleado)">
                 <v-icon start size="18">mdi-delete</v-icon>
-                Baja
+                {{ $t('empleados.baja') }}
               </v-btn>
 
             </td>
@@ -157,24 +156,22 @@ export default {
 
   methods: {
 
-    // Cargar empleados
     cargarEmpleados() {
       getEmpleados().then(res => {
         this.empleados = res.data;
       });
     },
 
-    // Confirmación SweetAlert
     confirmarBaja(id) {
 
       Swal.fire({
-        title: "¿Dar de baja?",
-        text: "El empleado pasará a estar inactivo",
+        title: this.$t('alertas.baja_titulo'),
+        text: this.$t('alertas.baja_texto'),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#ef4444",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, dar de baja"
+        cancelButtonText: this.$t('alertas.cancelar'),
+        confirmButtonText: this.$t('alertas.confirmar')
       }).then(result => {
 
         if (result.isConfirmed) {
@@ -184,7 +181,7 @@ export default {
 
               Swal.fire({
                 icon: "success",
-                title: "Empleado dado de baja",
+                title: this.$t('alertas.exito'),
                 timer: 1500,
                 showConfirmButton: false
               });
@@ -195,8 +192,8 @@ export default {
 
               Swal.fire({
                 icon: "error",
-                title: "Error",
-                text: error.response?.data || "Error inesperado"
+                title: this.$t('alertas.error'),
+                text: error.response?.data || this.$t('alertas.error_inesperado')
               });
 
             });

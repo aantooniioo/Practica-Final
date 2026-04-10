@@ -8,7 +8,7 @@
       <v-row align="center" justify="space-between" class="mb-4">
 
         <v-col cols="auto">
-          <h2 class="text-h5">Proyectos</h2>
+          <h2 class="text-h5">{{ $t("proyectos.titulo") }}</h2>
         </v-col>
 
         <v-col cols="auto">
@@ -16,7 +16,7 @@
             color="#3b82f6"
             elevation="2"
             @click="$router.push('/alta-proyecto')">
-            Nuevo proyecto
+            {{ $t("proyectos.nuevo") }}
           </v-btn>
         </v-col>
 
@@ -25,7 +25,7 @@
       <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
-        label="Buscar proyecto..."
+        :label="$t('proyectos.buscar')"
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         clearable
@@ -38,11 +38,11 @@
         <thead class="bg-grey-darken-3">
           <tr>
             <th>ID</th>
-            <th>Descripción</th>
-            <th>Inicio</th>
-            <th>Estado</th>
-            <th>Lugar</th>
-            <th class="text-center">Acciones</th>
+            <th>{{ $t("proyectos.descripcion") }}</th>
+            <th>{{ $t("proyectos.inicio") }}</th>
+            <th>{{ $t("proyectos.estado") }}</th>
+            <th>{{ $t("proyectos.lugar") }}</th>
+            <th class="text-center">{{ $t("proyectos.acciones") }}</th>
           </tr>
         </thead>
 
@@ -51,7 +51,7 @@
           <!-- Sin datos -->
           <tr v-if="proyectosFiltrados.length === 0">
             <td colspan="6" class="text-center py-6">
-              No hay proyectos registrados
+              {{ $t("proyectos.sin_datos") }}
             </td>
           </tr>
 
@@ -68,7 +68,7 @@
               <v-chip
                 size="small"
                 :color="p.fechaFin ? 'blue' : 'green'">
-                {{ p.fechaFin ? 'Finalizado' : 'En curso' }}
+                {{ p.fechaFin ? $t("proyectos.finalizado") : $t("proyectos.en_curso") }}
               </v-chip>
             </td>
 
@@ -82,7 +82,7 @@
                 class="text-blue text-caption"
                 @click="$router.push(`/editar-proyecto/${p.idProyecto}`)">
                 <v-icon start size="18">mdi-pencil</v-icon>
-                Editar
+                {{ $t("proyectos.editar") }}
               </v-btn>
 
               <v-btn
@@ -90,7 +90,7 @@
                 class="text-red-lighten-2 text-caption"
                 @click="confirmarBaja(p.idProyecto)">
                 <v-icon start size="18">mdi-delete</v-icon>
-                Baja
+                {{ $t("proyectos.baja") }}
               </v-btn>
 
             </td>
@@ -139,24 +139,22 @@ export default {
 
   methods: {
 
-    // Cargar proyectos
     cargarProyectos() {
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    // SweetAlert confirmación
     confirmarBaja(id) {
 
       Swal.fire({
-        title: "¿Dar de baja?",
-        text: "El proyecto dejará de estar activo",
+        title: this.$t("alertas.confirmar_baja_proyecto"),
+        text: this.$t("alertas.proyecto_inactivo"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#ef4444",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, dar de baja"
+        cancelButtonText: this.$t("botones.cancelar"),
+        confirmButtonText: this.$t("botones.confirmar_baja")
       }).then(result => {
 
         if (result.isConfirmed) {
@@ -166,7 +164,7 @@ export default {
 
               Swal.fire({
                 icon: "success",
-                title: "Proyecto dado de baja",
+                title: this.$t("alertas.proyecto_baja_ok"),
                 timer: 1500,
                 showConfirmButton: false
               });
@@ -177,8 +175,8 @@ export default {
 
               Swal.fire({
                 icon: "error",
-                title: "Error",
-                text: error.response?.data || "Error inesperado"
+                title: this.$t("alertas.error"),
+                text: error.response?.data || this.$t("alertas.error_generico")
               });
 
             });
