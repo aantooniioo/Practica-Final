@@ -1,0 +1,163 @@
+{
+  "menu": {
+    "inicio": "Inicio",
+    "empleados": "Empleados",
+    "proyectos": "Proyectos",
+    "asignar": "Asignar",
+    "asignaciones": "Asignaciones",
+    "estadisticas": "Estadísticas",
+    "perfil": "Mi perfil",
+    "configuracion": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+
+  "home": {
+    "bienvenido": "Bienvenido",
+    "descripcion": "Sistema de gestión interna de Future Space",
+    "empezar": "Empezar",
+    "ver_estadisticas": "Ver estadísticas",
+    "empleados": "Empleados",
+    "proyectos": "Proyectos",
+    "asignaciones": "Asignaciones",
+    "nuevo_empleado": "Nuevo empleado",
+    "nuevo_proyecto": "Nuevo proyecto",
+    "asignar": "Asignar empleado",
+    "sobre": "Sobre nosotros",
+    "sobre_texto1": "Future Space es una empresa tecnológica especializada en soluciones innovadoras.",
+    "sobre_texto2": "Gestiona empleados, proyectos y asignaciones de forma centralizada.",
+    "sobre_texto3": "Plataforma moderna, intuitiva y profesional."
+  },
+
+  "empleados": {
+    "titulo": "Empleados",
+    "nuevo": "Nuevo empleado",
+    "nombre": "Nombre",
+    "email": "Email",
+    "rol": "Rol",
+    "acciones": "Acciones",
+    "buscar": "Buscar empleado...",
+    "no_datos": "No hay empleados registrados",
+    "id": "ID",
+    "apellido1": "Apellido 1",
+    "apellido2": "Apellido 2",
+    "telefono1": "Teléfono 1",
+    "telefono2": "Teléfono 2",
+    "estado": "Estado",
+    "formacion": "Formación",
+    "editar": "Editar",
+    "baja": "Baja"
+  },
+
+  "alta_empleado": {
+    "titulo": "Alta de empleado",
+    "nombre": "Nombre",
+    "apellido1": "Apellido 1",
+    "apellido2": "Apellido 2",
+    "email": "Email",
+    "telefono1": "Teléfono 1",
+    "telefono2": "Teléfono 2",
+    "estado": "Estado civil",
+    "formacion": "Formación universitaria",
+    "guardar": "Guardar",
+    "cancelar": "Cancelar",
+    "exito": "Empleado creado",
+    "exito_texto": "Se ha registrado correctamente"
+  },
+
+  "editar_empleado": {
+    "titulo": "Editar empleado",
+    "nombre": "Nombre",
+    "apellido1": "Apellido 1",
+    "apellido2": "Apellido 2",
+    "email": "Email",
+    "telefono1": "Teléfono 1",
+    "telefono2": "Teléfono 2",
+    "estado": "Estado civil",
+    "formacion": "Formación universitaria",
+    "guardar": "Guardar cambios",
+    "cancelar": "Cancelar",
+    "exito": "Empleado actualizado",
+    "exito_texto": "Cambios guardados correctamente"
+  },
+
+  "proyectos": {
+    "titulo": "Proyectos",
+    "nuevo": "Nuevo proyecto",
+    "buscar": "Buscar proyecto...",
+    "descripcion": "Descripción",
+    "inicio": "Inicio",
+    "estado": "Estado",
+    "lugar": "Lugar",
+    "acciones": "Acciones",
+    "editar": "Editar",
+    "baja": "Baja",
+    "sin_datos": "No hay proyectos registrados",
+    "finalizado": "Finalizado",
+    "en_curso": "En curso"
+  },
+
+  "alta_proyecto": {
+    "titulo": "Alta de proyecto",
+    "descripcion": "Descripción",
+    "fecha_inicio": "Fecha inicio",
+    "lugar": "Lugar",
+    "guardar": "Guardar",
+    "cancelar": "Cancelar",
+    "exito": "Proyecto creado",
+    "exito_texto": "Se ha registrado correctamente"
+  },
+
+  "editar_proyecto": {
+    "titulo": "Editar proyecto",
+    "descripcion": "Descripción",
+    "fecha_inicio": "Fecha inicio",
+    "fecha_fin": "Fecha fin",
+    "lugar": "Lugar",
+    "guardar": "Guardar cambios",
+    "cancelar": "Cancelar"
+  },
+
+  "valores": {
+    "soltero": "Soltero",
+    "casado": "Casado",
+    "si": "Sí",
+    "no": "No"
+  },
+
+  "validaciones": {
+    "requerido": "Campo obligatorio",
+    "email": "Email inválido",
+    "telefono": "Teléfono inválido"
+  },
+
+  "general": {
+    "si": "Sí",
+    "no": "No"
+  },
+
+  "botones": {
+    "cancelar": "Cancelar",
+    "confirmar_baja": "Sí, dar de baja",
+    "aceptar": "Aceptar"
+  },
+
+  "alertas": {
+    "confirmar_eliminar": "¿Estás seguro?",
+    "no_reversible": "Esta acción no se puede deshacer",
+    "eliminado": "Eliminado",
+    "empleado_eliminado": "El empleado ha sido eliminado correctamente",
+
+    "baja_titulo": "¿Dar de baja empleado?",
+    "baja_texto": "El empleado dejará de estar activo",
+    "confirmar": "Sí, dar de baja",
+    "cancelar": "Cancelar",
+    "exito": "Empleado dado de baja",
+
+    "confirmar_baja_proyecto": "¿Dar de baja?",
+    "proyecto_inactivo": "El proyecto dejará de estar activo",
+    "proyecto_baja_ok": "Proyecto dado de baja",
+
+    "error": "Error",
+    "error_generico": "Error inesperado"
+  }
+}
