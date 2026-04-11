@@ -13,11 +13,11 @@
 
       <!-- botones con separación mejorada -->
       <div class="hero-buttons">
-        <v-btn color="primary" @click="$router.push('/empleados')">
+        <v-btn color="primary" variant="elevated" @click="$router.push('/empleados')">
           {{ $t('home.empezar') }}
         </v-btn>
 
-        <v-btn variant="outlined" @click="$router.push('/estadisticas')">
+        <v-btn color="teal" variant="elevated" @click="$router.push('/estadisticas')">
           {{ $t('home.ver_estadisticas') }}
         </v-btn>
       </div>
@@ -122,6 +122,10 @@
             <p>
               {{ $t('home.sobre_texto3') }}
             </p>
+
+            <p>
+              {{ $t('home.sobre_texto4') }}
+            </p>
           </div>
 
         </v-card>
@@ -198,7 +202,7 @@ export default {
   },
 
   mounted() {
-    // animaciones al hacer scroll
+    // Animaciones al hacer scroll
     AOS.init({
       duration: 800,
       once: true

@@ -4,60 +4,68 @@
     <!-- Tarjeta principal -->
     <v-card class="pa-5 elevation-4 card-pro card-animated">
 
-      <v-card-title>
-        <h2 class="text-h5">Asignar empleado a proyecto</h2>
+      <!-- TÍTULO RESPONSIVE PRO -->
+      <v-card-title class="titulo-responsive">
+        {{ $t('asignacion.titulo') }}
       </v-card-title>
 
       <v-card-text>
 
         <v-form>
 
-          <!-- Select empleados -->
-          <v-select
-            label="Empleado"
-            :items="empleados"
-            item-title="nombreCompleto"
-            item-value="idEmpleado"
-            v-model="idEmpleado"
-          >
-            <template #item="{ props, item }">
-              <v-list-item
-                v-bind="props"
-                :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
+          <v-row justify="center">
+
+            <!-- Empleado -->
+            <v-col cols="12" md="5">
+              <v-select
+                :label="$t('asignacion.empleado')"
+                :items="empleados"
+                item-title="nombreCompleto"
+                item-value="idEmpleado"
+                v-model="idEmpleado"
               >
-                <v-list-item-title>
+                <template #item="{ props, item }">
+                  <v-list-item
+                    v-bind="props"
+                    :disabled="yaAsignado(item?.raw?.idEmpleado, idProyecto)"
+                  >
+                    <v-list-item-title>
+                      {{ item?.raw?.nombreCompleto }}
+                      <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
+                        ({{ $t('asignacion.ya_asignado') }})
+                      </span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-select>
+            </v-col>
 
-                  {{ item?.raw?.nombreCompleto }}
+            <!-- Proyecto -->
+            <v-col cols="12" md="5">
+              <v-select
+                :label="$t('asignacion.proyecto')"
+                :items="proyectos"
+                item-title="descripcion"
+                item-value="idProyecto"
+                v-model="idProyecto"
+              />
+            </v-col>
 
-                  <span v-if="yaAsignado(item?.raw?.idEmpleado, idProyecto)">
-                    (ya asignado)
-                  </span>
+            <!-- Fecha -->
+            <v-col cols="12" md="5">
+              <v-text-field
+                :label="$t('asignacion.fecha')"
+                type="date"
+                v-model="fechaAlta"
+              />
+            </v-col>
 
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-          </v-select>
-
-          <!-- Select proyectos -->
-          <v-select
-            label="Proyecto"
-            :items="proyectos"
-            item-title="descripcion"
-            item-value="idProyecto"
-            v-model="idProyecto"
-          />
-
-          <!-- Fecha -->
-          <v-text-field
-            label="Fecha"
-            type="date"
-            v-model="fechaAlta"
-          />
+          </v-row>
 
           <!-- Botón -->
-          <v-card-actions>
+          <v-card-actions class="mt-4 justify-center">
             <v-btn color="primary" @click="asignar">
-              Asignar
+              {{ $t('asignacion.boton') }}
             </v-btn>
           </v-card-actions>
 
@@ -81,44 +89,43 @@ export default {
 
   data(){
     return{
-      empleados: [],
-      proyectos: [],
-      asignaciones: [],
-      idEmpleado: null,
-      idProyecto: null,
-      fechaAlta: null
+      empleados: [],        // Lista de empleados disponibles
+      proyectos: [],        // Lista de proyectos disponibles
+      asignaciones: [],     // Relación de asignaciones existentes
+      idEmpleado: null,     // Empleado seleccionado
+      idProyecto: null,     // Proyecto seleccionado
+      fechaAlta: null       // Fecha de asignación
     }
   },
 
   methods:{
-
-    // Cargar empleados
+    // Carga los empleados desde el backend
     cargarEmpleados(){
       getEmpleados().then(res => {
         this.empleados = res.data.map(e => ({
           ...e,
+          // Se construye el nombre completo para mostrarlo en el select
           nombreCompleto: (e.nombre || '') + " " + (e.apellido1 || '')
         }));
       });
     },
 
-    // Cargar proyectos
+    // Carga los proyectos desde el backend
     cargarProyectos(){
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    // Cargar asignaciones
+    // Carga las asignaciones existentes
     cargarAsignaciones(){
       getAsignaciones().then(res => {
         this.asignaciones = res.data;
       });
     },
 
-    // Comprobar si ya está asignado
+    // Comprueba si un empleado ya ha sido asignado a ese proyecto
     yaAsignado(idEmpleado, idProyecto){
-
       if(!idEmpleado || !idProyecto) return false;
 
       return this.asignaciones.some(a =>
@@ -126,25 +133,25 @@ export default {
       );
     },
 
-    // Asignar con SweetAlert
+    // Envía la asignación al backend
     asignar(){
 
-      // Validación campos
+      // Validación de campos obligatorios
       if(!this.idEmpleado || !this.idProyecto || !this.fechaAlta){
         Swal.fire({
           icon: "warning",
-          title: "Campos incompletos",
-          text: "Debes rellenar todos los campos"
+          title: this.$t('asignacion.alertas.campos'),
+          text: this.$t('asignacion.alertas.campos_texto')
         });
         return;
       }
-
-      // Validación duplicado
+      
+      // Evita duplicados
       if(this.yaAsignado(this.idEmpleado, this.idProyecto)){
         Swal.fire({
           icon: "error",
-          title: "Asignación duplicada",
-          text: "El empleado ya está asignado a este proyecto"
+          title: this.$t('asignacion.alertas.duplicado'),
+          text: this.$t('asignacion.alertas.duplicado_texto')
         });
         return;
       }
@@ -155,30 +162,32 @@ export default {
         fechaAlta: this.fechaAlta
       };
 
+      // Petición al backend
       asignarEmpleadoProyecto(datos)
         .then(()=>{
 
+          // Mensaje de éxito
           Swal.fire({
             icon: "success",
-            title: "Asignación realizada",
-            text: "El empleado ha sido asignado correctamente",
+            title: this.$t('asignacion.alertas.exito'),
+            text: this.$t('asignacion.alertas.exito_texto'),
             timer: 1500,
             showConfirmButton: false
           });
 
-          // Reset formulario
+          // Limpiar el formulario
           this.idEmpleado = null;
           this.idProyecto = null;
           this.fechaAlta = null;
 
+          // Recarga datos
           this.cargarAsignaciones();
-
         })
         .catch(error=>{
           Swal.fire({
             icon: "error",
-            title: "Error",
-            text: error.response?.data || "Error al asignar"
+            title: this.$t('alertas.error'),
+            text: error.response?.data || this.$t('alertas.error_generico')
           });
         });
     }
@@ -186,9 +195,29 @@ export default {
   },
 
   mounted(){
+    // Cargar inicial de datos
     this.cargarAsignaciones();
     this.cargarProyectos();
     this.cargarEmpleados();
   }
 }
 </script>
+
+<style scoped>
+
+/* ===== TÍTULO RESPONSIVE ===== */
+.titulo-responsive {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
+}
+
+@media (min-width: 960px) {
+  .titulo-responsive {
+    font-size: 26px;
+  }
+}
+
+</style>

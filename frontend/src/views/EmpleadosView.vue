@@ -1,15 +1,18 @@
 <template>
   <v-container class="mt-6">
 
+    <!-- Tarjeta principal del listado -->
     <v-card class="pa-5 elevation-4 card-pro card-animated">
 
-      <!-- Cabecera -->
+      <!-- Cabecera con título y botón -->
       <v-row align="center" justify="space-between" class="mb-4">
 
+        <!-- Título -->
         <v-col cols="auto">
           <h2 class="text-h5">{{ $t('empleados.titulo') }}</h2>
         </v-col>
 
+        <!-- Botón crear nuevo empleado -->
         <v-col cols="auto">
           <v-btn
             color="#3b82f6"
@@ -21,7 +24,7 @@
 
       </v-row>
 
-      <!-- Buscador -->
+      <!-- Campo de búsqueda -->
       <v-text-field
         v-model="busqueda"
         :label="$t('empleados.buscar')"
@@ -31,7 +34,7 @@
         class="mb-4"
       />
 
-      <!-- Tabla -->
+      <!-- Tabla de empleados -->
       <v-table density="comfortable">
 
         <thead class="bg-grey-darken-3">
@@ -51,14 +54,14 @@
 
         <tbody>
 
-          <!-- Sin datos -->
+          <!-- Mensaje cuando no hay datos -->
           <tr v-if="empleadosFiltrados.length === 0">
             <td colspan="10" class="text-center py-6">
               {{ $t('empleados.no_datos') }}
             </td>
           </tr>
 
-          <!-- Lista -->
+          <!-- Lista de empleados -->
           <tr v-for="emp in empleadosFiltrados" :key="emp.idEmpleado">
 
             <td>{{ emp.idEmpleado }}</td>
@@ -69,7 +72,7 @@
             <td>{{ emp.telefono1 }}</td>
             <td>{{ emp.telefono2 }}</td>
 
-            <!-- Estado -->
+            <!-- Estado civil formateado -->
             <td>
               <v-chip
                 size="small"
@@ -78,7 +81,7 @@
               </v-chip>
             </td>
 
-            <!-- Formación -->
+            <!-- Formación universitaria -->
             <td>
               <v-chip
                 size="small"
@@ -90,6 +93,7 @@
             <!-- Acciones -->
             <td class="text-center">
 
+              <!-- Botón editar -->
               <v-btn
                 variant="text"
                 class="text-blue text-caption"
@@ -98,6 +102,7 @@
                 {{ $t('empleados.editar') }}
               </v-btn>
 
+              <!-- Botón baja -->
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
@@ -126,12 +131,17 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
+      // Lista de empleados obtenida del backend
       empleados: [],
+
+      // Texto introducido en el buscador
       busqueda: ""
     };
   },
 
   computed: {
+
+    // Filtra empleados en base al texto de búsqueda
     empleadosFiltrados() {
 
       if (!this.busqueda) return this.empleados;
@@ -156,12 +166,14 @@ export default {
 
   methods: {
 
+    // Carga todos los empleados desde el backend
     cargarEmpleados() {
       getEmpleados().then(res => {
         this.empleados = res.data;
       });
     },
 
+    // Muestra confirmación antes de dar de baja
     confirmarBaja(id) {
 
       Swal.fire({
@@ -176,9 +188,11 @@ export default {
 
         if (result.isConfirmed) {
 
+          // Llama al backend para dar de baja
           bajaEmpleado(id)
             .then(() => {
 
+              // Mensaje de éxito
               Swal.fire({
                 icon: "success",
                 title: this.$t('alertas.exito'),
@@ -186,10 +200,12 @@ export default {
                 showConfirmButton: false
               });
 
+              // Recarga la lista
               this.cargarEmpleados();
             })
             .catch(error => {
 
+              // Mensaje de error
               Swal.fire({
                 icon: "error",
                 title: this.$t('alertas.error'),
@@ -203,12 +219,14 @@ export default {
       });
     },
 
+    // Convierte el código de estado civil en texto
     formatearEstadoCivil(v) {
       if (v === "S") return "Soltero";
       if (v === "C") return "Casado";
       return v;
     },
 
+    // Convierte el código de formación en texto
     formatearFormacion(v) {
       if (v === "S") return "Sí";
       if (v === "N") return "No";
@@ -217,6 +235,7 @@ export default {
 
   },
 
+  // Se ejecuta al montar la vista
   mounted() {
     this.cargarEmpleados();
   }

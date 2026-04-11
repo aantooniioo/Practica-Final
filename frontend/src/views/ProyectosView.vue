@@ -1,16 +1,18 @@
 <template>
   <v-container class="mt-6">
 
-    <!-- Tarjeta principal -->
+    <!-- Tarjeta principal del listado -->
     <v-card class="pa-5 elevation-4 card-pro card-animated">
 
-      <!-- Cabecera -->
+      <!-- Cabecera con título y botón -->
       <v-row align="center" justify="space-between" class="mb-4">
 
+        <!-- Título -->
         <v-col cols="auto">
           <h2 class="text-h5">{{ $t("proyectos.titulo") }}</h2>
         </v-col>
 
+        <!-- Botón crear nuevo proyecto -->
         <v-col cols="auto">
           <v-btn
             color="#3b82f6"
@@ -22,7 +24,7 @@
 
       </v-row>
 
-      <!-- Buscador -->
+      <!-- Campo de búsqueda -->
       <v-text-field
         v-model="busqueda"
         :label="$t('proyectos.buscar')"
@@ -32,7 +34,7 @@
         class="mb-4"
       />
 
-      <!-- Tabla -->
+      <!-- Tabla de proyectos -->
       <v-table density="comfortable">
 
         <thead class="bg-grey-darken-3">
@@ -48,14 +50,14 @@
 
         <tbody>
 
-          <!-- Sin datos -->
+          <!-- Mensaje cuando no hay datos -->
           <tr v-if="proyectosFiltrados.length === 0">
             <td colspan="6" class="text-center py-6">
               {{ $t("proyectos.sin_datos") }}
             </td>
           </tr>
 
-          <!-- Lista -->
+          <!-- Lista de proyectos -->
           <tr v-for="p in proyectosFiltrados" :key="p.idProyecto">
 
             <td>{{ p.idProyecto }}</td>
@@ -64,6 +66,7 @@
 
             <td>{{ p.fechaInicio }}</td>
 
+            <!-- Estado del proyecto -->
             <td>
               <v-chip
                 size="small"
@@ -77,6 +80,7 @@
             <!-- Acciones -->
             <td class="text-center">
 
+              <!-- Botón editar -->
               <v-btn
                 variant="text"
                 class="text-blue text-caption"
@@ -85,6 +89,7 @@
                 {{ $t("proyectos.editar") }}
               </v-btn>
 
+              <!-- Botón baja -->
               <v-btn
                 variant="text"
                 class="text-red-lighten-2 text-caption"
@@ -113,12 +118,17 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
+      // Lista de proyectos obtenida del backend
       proyectos: [],
+
+      // Texto introducido en el buscador
       busqueda: ""
     };
   },
 
   computed: {
+
+    // Filtra proyectos según el texto de búsqueda
     proyectosFiltrados() {
 
       if (!this.busqueda) return this.proyectos;
@@ -139,12 +149,14 @@ export default {
 
   methods: {
 
+    // Carga todos los proyectos desde el backend
     cargarProyectos() {
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
+    // Muestra confirmación antes de dar de baja
     confirmarBaja(id) {
 
       Swal.fire({
@@ -159,9 +171,11 @@ export default {
 
         if (result.isConfirmed) {
 
+          // Llamada al backend para dar de baja el proyecto
           bajaProyecto(id)
             .then(() => {
 
+              // Mensaje de éxito
               Swal.fire({
                 icon: "success",
                 title: this.$t("alertas.proyecto_baja_ok"),
@@ -169,10 +183,12 @@ export default {
                 showConfirmButton: false
               });
 
+              // Recarga la lista
               this.cargarProyectos();
             })
             .catch(error => {
 
+              // Mensaje de error
               Swal.fire({
                 icon: "error",
                 title: this.$t("alertas.error"),
@@ -188,6 +204,7 @@ export default {
 
   },
 
+  // Se ejecuta al montar la vista
   mounted() {
     this.cargarProyectos();
   }

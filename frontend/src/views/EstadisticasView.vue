@@ -1,61 +1,75 @@
 <template>
   <v-container class="mt-4">
 
+    <!-- Tarjeta principal -->
     <v-card class="pa-4 elevation-4">
 
-      <!-- HEADER -->
+      <!-- Cabecera con título y botón -->
       <v-row align="center" justify="space-between" class="mb-3">
-        <h2 class="text-h6 text-md-h5">Estadísticas</h2>
 
+        <!-- Título -->
+        <h2 class="text-h6 text-md-h5">
+          {{ $t('estadisticas.titulo') }}
+        </h2>
+
+        <!-- Botón para generar estadísticas -->
         <v-btn
           size="small"
           color="primary"
           @click="generarEstadisticas"
         >
-          Actualizar
+          {{ $t('estadisticas.actualizar') }}
         </v-btn>
       </v-row>
 
       <!-- KPIs -->
       <v-row dense class="mb-3">
 
+        <!-- Total empleados -->
         <v-col cols="4">
           <v-card class="kpi-card">
-            <div class="kpi-title">Emp.</div>
+            <div class="kpi-title">{{ $t('estadisticas.empleados') }}</div>
             <div class="kpi-value">{{ empleados }}</div>
           </v-card>
         </v-col>
 
+        <!-- Total proyectos -->
         <v-col cols="4">
           <v-card class="kpi-card">
-            <div class="kpi-title">Proy.</div>
+            <div class="kpi-title">{{ $t('estadisticas.proyectos') }}</div>
             <div class="kpi-value">{{ proyectos }}</div>
           </v-card>
         </v-col>
 
+        <!-- Total asignaciones -->
         <v-col cols="4">
           <v-card class="kpi-card">
-            <div class="kpi-title">Asig.</div>
+            <div class="kpi-title">{{ $t('estadisticas.asignaciones') }}</div>
             <div class="kpi-value">{{ asignaciones }}</div>
           </v-card>
         </v-col>
 
       </v-row>
 
-      <!-- GRÁFICAS -->
+      <!-- Gráficas -->
       <v-row dense>
 
+        <!-- Renderizado dinámico de gráficas -->
         <v-col cols="12" md="6" v-for="grafica in graficas" :key="grafica.src">
           <v-card class="grafica-card card-animated">
+
+            <!-- Título de la gráfica -->
             <v-card-title class="grafica-title">
-              {{ grafica.titulo }}
+              {{ $t(grafica.titulo) }}
             </v-card-title>
 
+            <!-- Imagen de la gráfica con cache busting -->
             <v-img
               :src="`${grafica.src}?t=${timestamp}`"
               contain
               max-height="220"
             />
+
           </v-card>
         </v-col>
 
@@ -73,30 +87,35 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
+      // Timestamp para forzar recarga de imágenes
       timestamp: new Date().getTime(),
 
+      // KPIs
       empleados: 0,
       proyectos: 0,
       asignaciones: 0,
 
+      // Configuración de gráficas
       graficas: [
-        { titulo: "Años empresa", src: "/graficas/anios_empresa.png" },
-        { titulo: "Altas", src: "/graficas/altas_anio.png" },
-        { titulo: "Estado proyectos", src: "/graficas/proyectos_estado.png" },
-        { titulo: "Duración", src: "/graficas/duracion_proyectos.png" },
-        { titulo: "Proyectos/empleado", src: "/graficas/proyectos_por_empleado.png" },
-        { titulo: "Top proyectos", src: "/graficas/top_proyectos.png" },
-        { titulo: "Sin asignación", src: "/graficas/sin_asignacion.png" }
+        { titulo: "estadisticas.graficas.anios", src: "/graficas/anios_empresa.png" },
+        { titulo: "estadisticas.graficas.altas", src: "/graficas/altas_anio.png" },
+        { titulo: "estadisticas.graficas.estado", src: "/graficas/proyectos_estado.png" },
+        { titulo: "estadisticas.graficas.duracion", src: "/graficas/duracion_proyectos.png" },
+        { titulo: "estadisticas.graficas.proyectos_empleado", src: "/graficas/proyectos_por_empleado.png" },
+        { titulo: "estadisticas.graficas.top", src: "/graficas/top_proyectos.png" },
+        { titulo: "estadisticas.graficas.sin_asignacion", src: "/graficas/sin_asignacion.png" }
       ]
     };
   },
 
   methods: {
 
+    // Llama al backend para regenerar las estadísticas
     generarEstadisticas() {
 
+      // Loader mientras se generan
       Swal.fire({
-        title: "Generando...",
+        title: this.$t('estadisticas.generando'),
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
       });
@@ -104,17 +123,32 @@ export default {
       axios.get("http://localhost:8080/estadisticas/generar")
         .then(() => {
 
-          Swal.fire("OK", "Actualizado", "success");
+          // Mensaje de éxito
+          Swal.fire(
+            this.$t('estadisticas.ok'),
+            this.$t('estadisticas.actualizado'),
+            "success"
+          );
 
+          // Fuerza recarga de imágenes
           this.timestamp = new Date().getTime();
+
+          // Recarga KPIs
           this.cargarKPIs();
 
         })
         .catch(() => {
-          Swal.fire("Error", "No se pudo generar", "error");
+
+          // Mensaje de error
+          Swal.fire(
+            this.$t('estadisticas.error'),
+            this.$t('estadisticas.error_texto'),
+            "error"
+          );
         });
     },
 
+    // Carga los valores de KPIs desde el backend
     cargarKPIs() {
 
       axios.get("http://localhost:8080/empleados")
@@ -129,76 +163,9 @@ export default {
 
   },
 
+  // Se ejecuta al montar la vista
   mounted() {
     this.cargarKPIs();
   }
 };
 </script>
-
-<style scoped>
-
-/* KPI */
-.kpi-card {
-  padding: 12px;
-  text-align: center;
-  background: #1e293b;
-  border-radius: 10px;
-}
-
-.kpi-title {
-  font-size: 11px;
-  color: #94a3b8;
-}
-
-.kpi-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: #38bdf8;
-}
-
-/* GRÁFICAS */
-.grafica-card {
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #1e293b;
-}
-
-.grafica-title {
-  font-size: 12px;
-  color: #e2e8f0;
-  padding-bottom: 6px;
-}
-
-/* RESPONSIVE */
-@media (min-width: 960px) {
-
-  .kpi-value {
-    font-size: 26px;
-  }
-
-  .grafica-title {
-    font-size: 14px;
-  }
-
-}
-
-.card-animated {
-    opacity: 0;
-    transform: translateY(15px);
-    animation: fadeUp 0.4s ease forwards;
-}
-
-@keyframes fadeUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Efecto en cascada */
-.card-animated:nth-child(1) { animation-delay: 0.05s; }
-.card-animated:nth-child(2) { animation-delay: 0.1s; }
-.card-animated:nth-child(3) { animation-delay: 0.15s; }
-.card-animated:nth-child(4) { animation-delay: 0.2s; }
-.card-animated:nth-child(5) { animation-delay: 0.25s; }
-</style>
