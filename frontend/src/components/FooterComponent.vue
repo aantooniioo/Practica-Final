@@ -27,7 +27,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* ESTO ES CLAVE PARA QUE EL TEXTO SE ALINEE A LA DERECHA EN MÓVIL */
+  flex-wrap: wrap; /* Esto sirve para que el texto esté alineado a la derecha en los dispositivos móviles */
   gap: 6px;
 }
 
