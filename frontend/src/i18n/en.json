@@ -1,4 +1,6 @@
 {
+  "_comentario": "English translations",
+
   "menu": {
     "inicio": "Home",
     "empleados": "Employees",
@@ -23,27 +25,27 @@
     "nuevo_proyecto": "New project",
     "asignar": "Assign employee",
     "sobre": "About us",
-    "sobre_texto1": "Future Space is a technology company specialized in innovative solutions.",
-    "sobre_texto2": "Manage employees, projects and assignments in a centralized way.",
-    "sobre_texto3": "Modern, intuitive and professional platform."
+    "sobre_texto1": "Future Space is a technology company specialized in innovative digital solutions",
+    "sobre_texto2": "We manage employees, projects and assignments in a centralized and efficient way",
+    "sobre_texto3": "Our platform is designed to improve organization, productivity and team collaboration",
+    "sobre_texto4": "It offers a modern, intuitive and scalable environment for professional management"
   },
 
   "empleados": {
+    "id": "ID",
     "titulo": "Employees",
     "nuevo": "New employee",
-    "nombre": "Name",
-    "email": "Email",
-    "rol": "Role",
-    "acciones": "Actions",
     "buscar": "Search employee...",
     "no_datos": "No employees found",
-    "id": "ID",
+    "nombre": "Name",
     "apellido1": "Last Name 1",
     "apellido2": "Last Name 2",
+    "email": "Email",
     "telefono1": "Phone 1",
     "telefono2": "Phone 2",
     "estado": "Status",
     "formacion": "Education",
+    "acciones": "Actions",
     "editar": "Edit",
     "baja": "Desactivate"
   },
@@ -57,11 +59,9 @@
     "telefono1": "Phone 1",
     "telefono2": "Phone 2",
     "estado": "Marital status",
-    "formacion": "University education",
+    "formacion": "Education",
     "guardar": "Save",
-    "cancelar": "Cancel",
-    "exito": "Employee created",
-    "exito_texto": "Successfully registered"
+    "cancelar": "Cancel"
   },
 
   "editar_empleado": {
@@ -73,11 +73,9 @@
     "telefono1": "Phone 1",
     "telefono2": "Phone 2",
     "estado": "Marital status",
-    "formacion": "University education",
+    "formacion": "Education",
     "guardar": "Save changes",
-    "cancelar": "Cancel",
-    "exito": "Employee updated",
-    "exito_texto": "Changes saved successfully"
+    "cancelar": "Cancel"
   },
 
   "proyectos": {
@@ -92,8 +90,8 @@
     "editar": "Edit",
     "baja": "Desactivate",
     "sin_datos": "No projects found",
-    "finalizado": "Desactivated",
-    "en_curso": "Active"
+    "en_curso": "In progress",
+    "finalizado": "Desactivated"
   },
 
   "alta_proyecto": {
@@ -102,9 +100,7 @@
     "fecha_inicio": "Start date",
     "lugar": "Location",
     "guardar": "Save",
-    "cancelar": "Cancel",
-    "exito": "Project created",
-    "exito_texto": "Successfully registered"
+    "cancelar": "Cancel"
   },
 
   "editar_proyecto": {
@@ -117,11 +113,38 @@
     "cancelar": "Cancel"
   },
 
-  "valores": {
-    "soltero": "Single",
-    "casado": "Married",
-    "si": "Yes",
-    "no": "No"
+  "asignacion": {
+    "titulo": "Assign employee to project",
+    "empleado": "Employee",
+    "proyecto": "Project",
+    "fecha": "Date",
+    "boton": "Assign"
+  },
+
+  "asignaciones": {
+    "titulo": "Assignments",
+    "buscar": "Search assignment...",
+    "empleado": "Employee",
+    "proyecto": "Project",
+    "fecha": "Date",
+    "sin_datos": "No assignments found"
+  },
+
+  "estadisticas": {
+    "titulo": "Statistics",
+    "actualizar": "Refresh",
+    "empleados": "Emp.",
+    "proyectos": "Proj.",
+    "asignaciones": "Assign.",
+    "graficas": {
+      "anios": "Years in company",
+      "altas": "Hires",
+      "estado": "Project status",
+      "duracion": "Duration",
+      "proyectos_empleado": "Projects per employee",
+      "top": "Top projects",
+      "sin_asignacion": "Without assignment"
+    }
   },
 
   "validaciones": {
@@ -130,34 +153,26 @@
     "telefono": "Invalid phone number"
   },
 
-  "general": {
-    "si": "Yes",
-    "no": "No"
-  },
-
   "botones": {
     "cancelar": "Cancel",
-    "confirmar_baja": "Yes, desactivate",
-    "aceptar": "Accept"
+    "confirmar_baja": "Yes, desactivate"
   },
 
   "alertas": {
-    "confirmar_eliminar": "Are you sure?",
-    "no_reversible": "This action cannot be undone",
-    "eliminado": "Deleted",
-    "empleado_eliminado": "The employee has been deleted successfully",
-
-    "baja_titulo": "Desactivate employee?",
-    "baja_texto": "The employee will become inactive",
-    "confirmar": "Yes, desactivate",
-    "cancelar": "Cancel",
-    "exito": "Employee desactivated",
-
-    "confirmar_baja_proyecto": "Desactivate project?",
-    "proyecto_inactivo": "The project will become inactive",
-    "proyecto_baja_ok": "Project desactivated",
-
     "error": "Error",
-    "error_generico": "Unexpected error"
+    "error_generico": "Unexpected error",
+    "baja_titulo": "Desactivate?",
+    "baja_texto": "This action will desactivate the record",
+    "proyecto_inactivo": "The project will be desactivated",
+    "confirmar_baja_proyecto": "Desactivate project?",
+    "confirmar": "Yes",
+    "cancelar": "Cancel"
+  },
+
+  "valores": {
+    "soltero": "Single",
+    "casado": "Married",
+    "si": "Yes",
+    "no": "No"
   }
 }

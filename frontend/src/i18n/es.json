@@ -1,4 +1,7 @@
 {
+    
+  "_comentario": "Traducciones en español",
+
   "menu": {
     "inicio": "Inicio",
     "empleados": "Empleados",
@@ -23,27 +26,27 @@
     "nuevo_proyecto": "Nuevo proyecto",
     "asignar": "Asignar empleado",
     "sobre": "Sobre nosotros",
-    "sobre_texto1": "Future Space es una empresa tecnológica especializada en soluciones innovadoras.",
-    "sobre_texto2": "Gestiona empleados, proyectos y asignaciones de forma centralizada.",
-    "sobre_texto3": "Plataforma moderna, intuitiva y profesional."
+    "sobre_texto1": "Future Space es una empresa tecnológica especializada en soluciones digitales innovadoras",
+    "sobre_texto2": "Gestiona empleados, proyectos y asignaciones de forma centralizada y eficiente",
+    "sobre_texto3": "La plataforma está diseñada para mejorar la organización, la productividad y el trabajo en equipo",
+    "sobre_texto4": "Ofrece un entorno moderno, intuitivo y escalable para la gestión profesional"
   },
 
   "empleados": {
+    "id": "ID",
     "titulo": "Empleados",
     "nuevo": "Nuevo empleado",
-    "nombre": "Nombre",
-    "email": "Email",
-    "rol": "Rol",
-    "acciones": "Acciones",
     "buscar": "Buscar empleado...",
-    "no_datos": "No hay empleados registrados",
-    "id": "ID",
+    "no_datos": "No hay empleados",
+    "nombre": "Nombre",
     "apellido1": "Apellido 1",
     "apellido2": "Apellido 2",
+    "email": "Email",
     "telefono1": "Teléfono 1",
     "telefono2": "Teléfono 2",
     "estado": "Estado",
     "formacion": "Formación",
+    "acciones": "Acciones",
     "editar": "Editar",
     "baja": "Baja"
   },
@@ -57,11 +60,9 @@
     "telefono1": "Teléfono 1",
     "telefono2": "Teléfono 2",
     "estado": "Estado civil",
-    "formacion": "Formación universitaria",
+    "formacion": "Formación",
     "guardar": "Guardar",
-    "cancelar": "Cancelar",
-    "exito": "Empleado creado",
-    "exito_texto": "Se ha registrado correctamente"
+    "cancelar": "Cancelar"
   },
 
   "editar_empleado": {
@@ -73,11 +74,9 @@
     "telefono1": "Teléfono 1",
     "telefono2": "Teléfono 2",
     "estado": "Estado civil",
-    "formacion": "Formación universitaria",
+    "formacion": "Formación",
     "guardar": "Guardar cambios",
-    "cancelar": "Cancelar",
-    "exito": "Empleado actualizado",
-    "exito_texto": "Cambios guardados correctamente"
+    "cancelar": "Cancelar"
   },
 
   "proyectos": {
@@ -91,9 +90,9 @@
     "acciones": "Acciones",
     "editar": "Editar",
     "baja": "Baja",
-    "sin_datos": "No hay proyectos registrados",
-    "finalizado": "Finalizado",
-    "en_curso": "En curso"
+    "sin_datos": "No hay proyectos",
+    "en_curso": "En curso",
+    "finalizado": "Finalizado"
   },
 
   "alta_proyecto": {
@@ -102,9 +101,7 @@
     "fecha_inicio": "Fecha inicio",
     "lugar": "Lugar",
     "guardar": "Guardar",
-    "cancelar": "Cancelar",
-    "exito": "Proyecto creado",
-    "exito_texto": "Se ha registrado correctamente"
+    "cancelar": "Cancelar"
   },
 
   "editar_proyecto": {
@@ -117,11 +114,38 @@
     "cancelar": "Cancelar"
   },
 
-  "valores": {
-    "soltero": "Soltero",
-    "casado": "Casado",
-    "si": "Sí",
-    "no": "No"
+  "asignacion": {
+    "titulo": "Asignar empleado a proyecto",
+    "empleado": "Empleado",
+    "proyecto": "Proyecto",
+    "fecha": "Fecha",
+    "boton": "Asignar"
+  },
+
+  "asignaciones": {
+    "titulo": "Asignaciones",
+    "buscar": "Buscar asignación...",
+    "empleado": "Empleado",
+    "proyecto": "Proyecto",
+    "fecha": "Fecha",
+    "sin_datos": "No hay asignaciones"
+  },
+
+  "estadisticas": {
+    "titulo": "Estadísticas",
+    "actualizar": "Actualizar",
+    "empleados": "Emp.",
+    "proyectos": "Proy.",
+    "asignaciones": "Asig.",
+    "graficas": {
+      "anios": "Años empresa",
+      "altas": "Altas",
+      "estado": "Estado proyectos",
+      "duracion": "Duración",
+      "proyectos_empleado": "Proyectos por empleado",
+      "top": "Top proyectos",
+      "sin_asignacion": "Sin asignación"
+    }
   },
 
   "validaciones": {
@@ -130,34 +154,26 @@
     "telefono": "Teléfono inválido"
   },
 
-  "general": {
-    "si": "Sí",
-    "no": "No"
-  },
-
   "botones": {
     "cancelar": "Cancelar",
-    "confirmar_baja": "Sí, dar de baja",
-    "aceptar": "Aceptar"
+    "confirmar_baja": "Sí, dar de baja"
   },
 
   "alertas": {
-    "confirmar_eliminar": "¿Estás seguro?",
-    "no_reversible": "Esta acción no se puede deshacer",
-    "eliminado": "Eliminado",
-    "empleado_eliminado": "El empleado ha sido eliminado correctamente",
-
-    "baja_titulo": "¿Dar de baja empleado?",
-    "baja_texto": "El empleado dejará de estar activo",
-    "confirmar": "Sí, dar de baja",
-    "cancelar": "Cancelar",
-    "exito": "Empleado dado de baja",
-
-    "confirmar_baja_proyecto": "¿Dar de baja?",
-    "proyecto_inactivo": "El proyecto dejará de estar activo",
-    "proyecto_baja_ok": "Proyecto dado de baja",
-
     "error": "Error",
-    "error_generico": "Error inesperado"
+    "error_generico": "Error inesperado",
+    "baja_titulo": "¿Dar de baja?",
+    "baja_texto": "Esta acción desactivará el registro",
+    "proyecto_inactivo": "El proyecto quedará inactivo",
+    "confirmar_baja_proyecto": "¿Dar de baja el proyecto?",
+    "confirmar": "Sí",
+    "cancelar": "Cancelar"
+  },
+
+  "valores": {
+    "soltero": "Soltero",
+    "casado": "Casado",
+    "si": "Si",
+    "no": "No"
   }
 }
