@@ -19,7 +19,8 @@ const routes = [
   // Redirección inicial
   {
     path: '/',
-    redirect: '/empleados'
+    name: 'home',
+    component: HomeView
   },
 
   // Empleados
