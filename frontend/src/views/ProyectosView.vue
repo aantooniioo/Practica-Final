@@ -2,21 +2,20 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal del listado -->
-    <v-card class="pa-5 elevation-4 card-pro card-animated">
+    <v-card class="pa-5 elevation-4 card-pro card-animated" data-aos="fade-up">
 
-      <!-- Cabecera con título y botón -->
+      <!-- Cabecera -->
       <v-row align="center" justify="space-between" class="mb-4">
 
-        <!-- Título -->
         <v-col cols="auto">
           <h2 class="text-h5">{{ $t("proyectos.titulo") }}</h2>
         </v-col>
 
-        <!-- Botón crear nuevo proyecto -->
         <v-col cols="auto">
           <v-btn
             color="#3b82f6"
             elevation="2"
+            class="btn-main"
             @click="$router.push('/alta-proyecto')">
             {{ $t("proyectos.nuevo") }}
           </v-btn>
@@ -24,7 +23,7 @@
 
       </v-row>
 
-      <!-- Campo de búsqueda -->
+      <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
         :label="$t('proyectos.buscar')"
@@ -34,39 +33,42 @@
         class="mb-4"
       />
 
-      <!-- Tabla de proyectos -->
+      <!-- TABLA -->
       <v-table density="comfortable">
 
         <thead class="bg-grey-darken-3">
           <tr>
-            <th>ID</th>
+            <th style="width: 60px;">ID</th>
             <th>{{ $t("proyectos.descripcion") }}</th>
-            <th>{{ $t("proyectos.inicio") }}</th>
-            <th>{{ $t("proyectos.estado") }}</th>
-            <th>{{ $t("proyectos.lugar") }}</th>
-            <th class="text-center">{{ $t("proyectos.acciones") }}</th>
+            <th style="width: 120px;">{{ $t("proyectos.inicio") }}</th>
+            <th style="width: 120px;">{{ $t("proyectos.estado") }}</th>
+            <th style="width: 140px;">{{ $t("proyectos.lugar") }}</th>
+            <th class="text-center" style="width: 180px;">
+              {{ $t("proyectos.acciones") }}
+            </th>
           </tr>
         </thead>
 
         <tbody>
 
-          <!-- Mensaje cuando no hay datos -->
+          <!-- Sin datos -->
           <tr v-if="proyectosFiltrados.length === 0">
             <td colspan="6" class="text-center py-6">
               {{ $t("proyectos.sin_datos") }}
             </td>
           </tr>
 
-          <!-- Lista de proyectos -->
-          <tr v-for="p in proyectosFiltrados" :key="p.idProyecto">
+          <!-- Lista -->
+          <tr
+            v-for="p in proyectosFiltrados"
+            :key="p.idProyecto"
+            class="row-hover"
+          >
 
             <td>{{ p.idProyecto }}</td>
-
-            <td>{{ p.descripcion }}</td>
-
+            <td class="descripcion">{{ p.descripcion }}</td>
             <td>{{ p.fechaInicio }}</td>
 
-            <!-- Estado del proyecto -->
             <td>
               <v-chip
                 size="small"
@@ -77,22 +79,20 @@
 
             <td>{{ p.lugar }}</td>
 
-            <!-- Acciones -->
-            <td class="text-center">
+            <!-- ACCIONES -->
+            <td class="text-center d-flex justify-center align-center gap-2">
 
-              <!-- Botón editar -->
               <v-btn
                 variant="text"
-                class="text-blue text-caption"
+                class="text-blue text-caption btn-action"
                 @click="$router.push(`/editar-proyecto/${p.idProyecto}`)">
                 <v-icon start size="18">mdi-pencil</v-icon>
                 {{ $t("proyectos.editar") }}
               </v-btn>
 
-              <!-- Botón baja -->
               <v-btn
                 variant="text"
-                class="text-red-lighten-2 text-caption"
+                class="text-red-lighten-2 text-caption btn-action"
                 @click="confirmarBaja(p.idProyecto)">
                 <v-icon start size="18">mdi-delete</v-icon>
                 {{ $t("proyectos.baja") }}
@@ -114,21 +114,22 @@
 <script>
 import { getProyectos, bajaProyecto } from "../services/proyectoService";
 import Swal from "sweetalert2";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default {
   data() {
     return {
-      // Lista de proyectos obtenida del backend
       proyectos: [],
-
-      // Texto introducido en el buscador
       busqueda: ""
     };
   },
 
   computed: {
 
-    // Filtra proyectos según el texto de búsqueda
+    /**
+     * Filtrado dinámico de proyectos
+     */
     proyectosFiltrados() {
 
       if (!this.busqueda) return this.proyectos;
@@ -149,14 +150,18 @@ export default {
 
   methods: {
 
-    // Carga todos los proyectos desde el backend
+    /**
+     * Carga proyectos desde backend
+     */
     cargarProyectos() {
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    // Muestra confirmación antes de dar de baja
+    /**
+     * Confirmación de baja de proyecto
+     */
     confirmarBaja(id) {
 
       Swal.fire({
@@ -171,11 +176,9 @@ export default {
 
         if (result.isConfirmed) {
 
-          // Llamada al backend para dar de baja el proyecto
           bajaProyecto(id)
             .then(() => {
 
-              // Mensaje de éxito
               Swal.fire({
                 icon: "success",
                 title: this.$t("alertas.proyecto_baja_ok"),
@@ -183,12 +186,10 @@ export default {
                 showConfirmButton: false
               });
 
-              // Recarga la lista
               this.cargarProyectos();
             })
             .catch(error => {
 
-              // Mensaje de error
               Swal.fire({
                 icon: "error",
                 title: this.$t("alertas.error"),
@@ -204,9 +205,102 @@ export default {
 
   },
 
-  // Se ejecuta al montar la vista
   mounted() {
     this.cargarProyectos();
+
+    AOS.init({
+      duration: 800,
+      once: true
+    });
   }
 };
 </script>
+
+<style scoped>
+
+/* =========================
+   FILAS HOVER
+========================= */
+
+.row-hover {
+  transition: all 0.2s ease;
+}
+
+.row-hover:hover {
+  background-color: rgba(2,111,193,0.1);
+  transform: scale(1.01);
+}
+
+
+.btn-main {
+  transition: all 0.25s ease;
+}
+
+.btn-main:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(2,111,193,0.4);
+}
+
+.btn-main:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   BOTONES ACCIÓN
+========================= */
+
+.btn-action {
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================
+   TABLA SIN SCROLL
+========================= */
+
+.v-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.v-table th,
+.v-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.descripcion {
+  white-space: normal;
+}
+
+/* ===== ELIMINAR SCROLL DE VUETIFY ===== */
+:deep(.v-table__wrapper) {
+  overflow-x: hidden !important;
+}
+
+/* por si acaso también este */
+:deep(.v-table) {
+  overflow: hidden !important;
+}
+
+/* =========================
+   HOVER CARD GLOBAL
+========================= */
+
+.v-card {
+  transition: all 0.25s ease;
+}
+
+.v-card:hover {
+  transform: translateY(-10px);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.7),
+    0 0 15px rgba(2,111,193,0.4);
+}
+
+</style>
