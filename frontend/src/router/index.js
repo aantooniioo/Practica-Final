@@ -12,6 +12,7 @@ import AltaProyectoView from '@/views/AltaProyectoView.vue'
 import AsignacionView from '@/views/AsignacionView.vue'
 import AsignacionesListView from '@/views/AsignacionesListView.vue'
 import EstadisticasView from '@/views/EstadisticasView.vue'
+import ComingSoonView from '@/views/ComingSoonView.vue'
 
 // Define las rutas de la aplicación
 const routes = [
@@ -84,14 +85,33 @@ const routes = [
     path: '/estadisticas',
     name: 'estadisticas',
     component: EstadisticasView
-  }
+  },
 
+// Próximamente
+{
+  path: '/coming-soon',
+  name: 'ComingSoon',
+  component: ComingSoonView
+}
 ]
 
 // Crea el router
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+
+  scrollBehavior(to, from, savedPosition) {
+    // Si viene de botón de atrás o de adelante
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    // Siempre arriba del todo
+    return { 
+      top: 0,
+      behavior: 'smooth'
+    };
+  }
 })
 
 // Exporta el router

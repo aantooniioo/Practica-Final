@@ -97,9 +97,12 @@
 
         <v-container fluid class="mt-4">
 
-          <transition name="fade-slide" mode="out-in">
-            <router-view />
-          </transition>
+          <!-- TRANSICIÓN -->
+          <router-view v-slot="{ Component }">
+            <transition name="fade-slide" mode="out-in">
+              <component :is="Component" />
+            </transition>
+          </router-view>
 
         </v-container>
 
@@ -124,12 +127,11 @@ export default {
       drawer: true,
       mini: false,
       isMobile: false,
-      logo // lo usamos directamente en el template
+      logo
     };
   },
 
   computed: {
-    // Menú preparado para i18n
     menu() {
       return [
         { title: this.$t ? this.$t('menu.inicio') : "Inicio", path: "/", icon: "mdi-view-dashboard" },
@@ -171,7 +173,6 @@ export default {
       }
     },
 
-    // Cambio de idioma (solo actúa si i18n está activo)
     cambiarIdioma(lang) {
       if (this.$i18n) {
         this.$i18n.locale = lang;
