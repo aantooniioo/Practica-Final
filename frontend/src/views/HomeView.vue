@@ -11,7 +11,7 @@
         {{ $t('home.descripcion') }}
       </p>
 
-      <!-- botones con separación mejorada -->
+      <!-- Botones con separación mejorada -->
       <div class="hero-buttons">
         <v-btn color="primary" variant="elevated" @click="$router.push('/empleados')">
           {{ $t('home.empezar') }}
@@ -105,7 +105,7 @@
             />
           </div>
 
-          <!-- texto -->
+          <!-- Texto -->
           <div class="about-text pa-6">
             <h2 class="text-h5 mb-3">
               {{ $t('home.sobre') }}
@@ -139,8 +139,8 @@
         <v-card class="info-card">
           <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" />
           <div class="pa-4">
-            <h3>Trabajo en equipo</h3>
-            <p>Colaboración eficiente entre empleados.</p>
+            <h3>{{ $t('home.cards.titulo1') }}</h3>
+            <p>{{ $t('home.cards.texto1') }}</p>
           </div>
         </v-card>
       </v-col>
@@ -149,8 +149,8 @@
         <v-card class="info-card">
           <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984" />
           <div class="pa-4">
-            <h3>Gestión centralizada</h3>
-            <p>Control total desde un único sistema.</p>
+            <h3>{{ $t('home.cards.titulo2') }}</h3>
+            <p>{{ $t('home.cards.texto2') }}</p>
           </div>
         </v-card>
       </v-col>
@@ -159,8 +159,8 @@
         <v-card class="info-card">
           <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" />
           <div class="pa-4">
-            <h3>Innovación</h3>
-            <p>Herramientas modernas adaptadas al futuro.</p>
+            <h3>{{ $t('home.cards.titulo3') }}</h3>
+            <p>{{ $t('home.cards.texto3') }}</p>
           </div>
         </v-card>
       </v-col>
@@ -179,30 +179,38 @@ export default {
     return {
       empleados: 1,
       proyectos: 1,
-      asignaciones: 1,
-
-      slides: [
-        {
-          title: "Centralización",
-          text: "Todo en un mismo lugar",
-          image: "https://images.unsplash.com/photo-1551434678-e076c223a692"
-        },
-        {
-          title: "Entorno profesional",
-          text: "Diseñado para empresa",
-          image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
-        },
-        {
-          title: "Gestión eficiente",
-          text: "Control total de recursos",
-          image: "https://images.unsplash.com/photo-1552664730-d307ca884978"
-        }
-      ]
+      asignaciones: 1
     };
   },
 
+  computed: {
+
+    // Genera los slides usando traducciones i18n
+    // Permite cambiar idioma dinámicamente sin modificar el componente
+    slides() {
+      return [
+        {
+          title: this.$t('home.carousel.titulo1'),
+          text: this.$t('home.carousel.texto1'),
+          image: "https://images.unsplash.com/photo-1551434678-e076c223a692"
+        },
+        {
+          title: this.$t('home.carousel.titulo2'),
+          text: this.$t('home.carousel.texto2'),
+          image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+        },
+        {
+          title: this.$t('home.carousel.titulo3'),
+          text: this.$t('home.carousel.texto3'),
+          image: "https://images.unsplash.com/photo-1552664730-d307ca884978"
+        }
+      ];
+    }
+
+  },
+
   mounted() {
-    // Animaciones al hacer scroll
+    // Inicializa animaciones al hacer scroll
     AOS.init({
       duration: 800,
       once: true
@@ -244,7 +252,7 @@ export default {
 /* BOTONES */
 .hero-buttons {
   display: flex;
-  gap: 20px; /* separación mejorada */
+  gap: 20px;
   flex-wrap: wrap;
 }
 
