@@ -2,18 +2,21 @@
   <v-container>
 
     <!-- Contenedor principal del formulario -->
-    <v-card class="pa-4 formulario-card card-pro card-animated">
+    <v-card
+      class="pa-4 formulario-card card-pro card-animated"
+      data-aos="fade-up"
+    >
 
-      <!-- Título del formulario -->
+      <!-- Título -->
       <v-card-title>{{ $t("alta_proyecto.titulo") }}</v-card-title>
 
-      <!-- Formulario con validación -->
+      <!-- Formulario -->
       <v-form v-model="formValido" ref="form">
 
         <v-row>
 
-          <!-- Campo descripción -->
-          <v-col cols="12" md="8">
+          <!-- Descripción -->
+          <v-col cols="12" md="8" data-aos="fade-up" data-aos-delay="100">
             <v-text-field
               :label="$t('alta_proyecto.descripcion')"
               v-model="proyecto.descripcion"
@@ -21,8 +24,8 @@
             />
           </v-col>
 
-          <!-- Campo fecha de inicio -->
-          <v-col cols="12" md="5">
+          <!-- Fecha inicio -->
+          <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="150">
             <v-text-field
               :label="$t('alta_proyecto.fecha_inicio')"
               type="date"
@@ -31,8 +34,8 @@
             />
           </v-col>
 
-          <!-- Campo lugar -->
-          <v-col cols="12" md="5">
+          <!-- Lugar -->
+          <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="200">
             <v-text-field
               :label="$t('alta_proyecto.lugar')"
               v-model="proyecto.lugar"
@@ -42,16 +45,25 @@
 
         </v-row>
 
-        <!-- Botones de acción -->
+        <!-- Botones -->
         <v-card-actions class="mt-4">
 
-          <!-- Botón guardar -->
-          <v-btn color="green" :disabled="!formValido" @click="guardar">
+          <!-- Guardar -->
+          <v-btn
+            color="green"
+            class="btn-main"
+            :disabled="!formValido"
+            @click="guardar"
+          >
             {{ $t("alta_proyecto.guardar") }}
           </v-btn>
 
-          <!-- Botón cancelar -->
-          <v-btn color="grey" @click="$router.push('/proyectos')">
+          <!-- Cancelar -->
+          <v-btn
+            color="grey"
+            class="btn-main"
+            @click="$router.push('/proyectos')"
+          >
             {{ $t("alta_proyecto.cancelar") }}
           </v-btn>
 
@@ -66,17 +78,15 @@
 <script>
 import { crearProyecto } from "../services/proyectoService";
 import Swal from "sweetalert2";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default {
   data(){
     return{
-      // Objeto que contiene los datos del nuevo proyecto
       proyecto:{},
-
-      // Estado de validación del formulario
       formValido:false,
 
-      // Reglas de validación reutilizables
       rules:{
         requerido: v => !!v || this.$t("validaciones.requerido")
       }
@@ -85,17 +95,16 @@ export default {
 
   methods:{
 
-    // Valida el formulario y envía los datos al backend
+    /**
+     * Guarda proyecto tras validar formulario
+     */
     guardar(){
 
-      // Valida todos los campos antes de continuar
       if (!this.$refs.form.validate()) return;
 
-      // Llamada al servicio para crear el proyecto
       crearProyecto(this.proyecto)
         .then(()=>{
 
-          // Muestra mensaje de éxito
           Swal.fire({
             icon: "success",
             title: this.$t("alta_proyecto.exito"),
@@ -104,13 +113,11 @@ export default {
             showConfirmButton: false
           });
 
-          // Redirige al listado de proyectos
           this.$router.push("/proyectos");
 
         })
         .catch(error=>{
 
-          // Muestra mensaje de error
           Swal.fire({
             icon: "error",
             title: this.$t("alertas.error"),
@@ -120,14 +127,49 @@ export default {
         });
 
     }
+  },
+
+  mounted(){
+
+    /**
+     * Inicializa animaciones tipo dashboard
+     */
+    AOS.init({
+      duration: 800,
+      once: true
+    });
   }
 }
 </script>
 
 <style scoped>
-/* Estilo del contenedor del formulario */
+
+/* Contenedor centrado */
 .formulario-card {
   max-width: 900px;
   margin: 0 auto;
 }
+
+/* Hover tipo dashboard */
+.v-card:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.7),
+    0 0 15px rgba(2,111,193,0.4);
+}
+
+/* Botones suaves */
+.btn-main {
+  transition: all 0.2s ease;
+}
+
+.btn-main:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 20px rgba(2,111,193,0.4);
+}
+
+.btn-main:active {
+  transform: scale(0.97);
+}
+
 </style>
