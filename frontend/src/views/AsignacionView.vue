@@ -2,9 +2,12 @@
   <v-container class="mt-6">
 
     <!-- Tarjeta principal -->
-    <v-card class="pa-5 elevation-4 card-pro card-animated">
+    <v-card
+      class="pa-5 elevation-4 card-pro card-animated"
+      data-aos="fade-up"
+    >
 
-      <!-- TÍTULO RESPONSIVE PRO -->
+      <!-- TÍTULO -->
       <v-card-title class="titulo-responsive">
         {{ $t('asignacion.titulo') }}
       </v-card-title>
@@ -16,7 +19,7 @@
           <v-row justify="center">
 
             <!-- Empleado -->
-            <v-col cols="12" md="5">
+            <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="100">
               <v-select
                 :label="$t('asignacion.empleado')"
                 :items="empleados"
@@ -41,7 +44,7 @@
             </v-col>
 
             <!-- Proyecto -->
-            <v-col cols="12" md="5">
+            <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="150">
               <v-select
                 :label="$t('asignacion.proyecto')"
                 :items="proyectos"
@@ -52,7 +55,7 @@
             </v-col>
 
             <!-- Fecha -->
-            <v-col cols="12" md="5">
+            <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="200">
               <v-text-field
                 :label="$t('asignacion.fecha')"
                 type="date"
@@ -64,7 +67,11 @@
 
           <!-- Botón -->
           <v-card-actions class="mt-4 justify-center">
-            <v-btn color="primary" @click="asignar">
+            <v-btn
+              color="green"
+              class="btn-main"
+              @click="asignar"
+            >
               {{ $t('asignacion.boton') }}
             </v-btn>
           </v-card-actions>
@@ -83,48 +90,45 @@ import { getEmpleados } from "../services/empleadoService";
 import { getProyectos } from "../services/proyectoService";
 import { asignarEmpleadoProyecto, getAsignaciones } from "../services/empleadoProyectoService";
 import Swal from "sweetalert2";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default {
   name: "AsignacionView",
 
   data(){
     return{
-      empleados: [],        // Lista de empleados disponibles
-      proyectos: [],        // Lista de proyectos disponibles
-      asignaciones: [],     // Relación de asignaciones existentes
-      idEmpleado: null,     // Empleado seleccionado
-      idProyecto: null,     // Proyecto seleccionado
-      fechaAlta: null       // Fecha de asignación
+      empleados: [],
+      proyectos: [],
+      asignaciones: [],
+      idEmpleado: null,
+      idProyecto: null,
+      fechaAlta: null
     }
   },
 
   methods:{
-    // Carga los empleados desde el backend
     cargarEmpleados(){
       getEmpleados().then(res => {
         this.empleados = res.data.map(e => ({
           ...e,
-          // Se construye el nombre completo para mostrarlo en el select
           nombreCompleto: (e.nombre || '') + " " + (e.apellido1 || '')
         }));
       });
     },
 
-    // Carga los proyectos desde el backend
     cargarProyectos(){
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    // Carga las asignaciones existentes
     cargarAsignaciones(){
       getAsignaciones().then(res => {
         this.asignaciones = res.data;
       });
     },
 
-    // Comprueba si un empleado ya ha sido asignado a ese proyecto
     yaAsignado(idEmpleado, idProyecto){
       if(!idEmpleado || !idProyecto) return false;
 
@@ -133,10 +137,8 @@ export default {
       );
     },
 
-    // Envía la asignación al backend
     asignar(){
 
-      // Validación de campos obligatorios
       if(!this.idEmpleado || !this.idProyecto || !this.fechaAlta){
         Swal.fire({
           icon: "warning",
@@ -146,7 +148,6 @@ export default {
         return;
       }
       
-      // Evita duplicados
       if(this.yaAsignado(this.idEmpleado, this.idProyecto)){
         Swal.fire({
           icon: "error",
@@ -162,11 +163,9 @@ export default {
         fechaAlta: this.fechaAlta
       };
 
-      // Petición al backend
       asignarEmpleadoProyecto(datos)
         .then(()=>{
 
-          // Mensaje de éxito
           Swal.fire({
             icon: "success",
             title: this.$t('asignacion.alertas.exito'),
@@ -175,12 +174,10 @@ export default {
             showConfirmButton: false
           });
 
-          // Limpiar el formulario
           this.idEmpleado = null;
           this.idProyecto = null;
           this.fechaAlta = null;
 
-          // Recarga datos
           this.cargarAsignaciones();
         })
         .catch(error=>{
@@ -195,29 +192,52 @@ export default {
   },
 
   mounted(){
-    // Cargar inicial de datos
     this.cargarAsignaciones();
     this.cargarProyectos();
     this.cargarEmpleados();
+
+    AOS.init({
+      duration: 800,
+      once: true
+    });
   }
 }
 </script>
 
 <style scoped>
 
-/* ===== TÍTULO RESPONSIVE ===== */
 .titulo-responsive {
   font-weight: 700;
   font-size: 20px;
   line-height: 1.3;
-  white-space: normal;
-  word-break: break-word;
 }
 
 @media (min-width: 960px) {
   .titulo-responsive {
     font-size: 26px;
   }
+}
+
+/* Hover card tipo dashboard */
+.v-card:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.7),
+    0 0 15px rgba(2,111,193,0.4);
+}
+
+/* Botón suave */
+.btn-main {
+  transition: all 0.2s ease;
+}
+
+.btn-main:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 20px rgba(2,111,193,0.4);
+}
+
+.btn-main:active {
+  transform: scale(0.97);
 }
 
 </style>
