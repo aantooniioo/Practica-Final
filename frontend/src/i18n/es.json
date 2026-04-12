@@ -1,5 +1,4 @@
 {
-    
   "_comentario": "Traducciones en español",
 
   "menu": {
@@ -25,11 +24,30 @@
     "nuevo_empleado": "Nuevo empleado",
     "nuevo_proyecto": "Nuevo proyecto",
     "asignar": "Asignar empleado",
+
     "sobre": "Sobre nosotros",
     "sobre_texto1": "Future Space es una empresa tecnológica especializada en soluciones digitales innovadoras",
     "sobre_texto2": "Gestiona empleados, proyectos y asignaciones de forma centralizada y eficiente",
     "sobre_texto3": "La plataforma está diseñada para mejorar la organización, la productividad y el trabajo en equipo",
-    "sobre_texto4": "Ofrece un entorno moderno, intuitivo y escalable para la gestión profesional"
+    "sobre_texto4": "Ofrece un entorno moderno, intuitivo y escalable para la gestión profesional",
+
+    "carousel": {
+      "titulo1": "Centralización",
+      "texto1": "Todo en un mismo lugar",
+      "titulo2": "Entorno profesional",
+      "texto2": "Diseñado para empresa",
+      "titulo3": "Gestión eficiente",
+      "texto3": "Control total de recursos"
+    },
+
+    "cards": {
+      "titulo1": "Trabajo en equipo",
+      "texto1": "Colaboración eficiente entre empleados.",
+      "titulo2": "Gestión centralizada",
+      "texto2": "Control total desde un único sistema.",
+      "titulo3": "Innovación",
+      "texto3": "Herramientas modernas adaptadas al futuro."
+    }
   },
 
   "empleados": {
@@ -62,7 +80,10 @@
     "estado": "Estado civil",
     "formacion": "Formación",
     "guardar": "Guardar",
-    "cancelar": "Cancelar"
+    "cancelar": "Cancelar",
+    "exito": "Exito",
+    "exito_texto": "Empleado creado correctamente"
+
   },
 
   "editar_empleado": {
@@ -101,14 +122,16 @@
     "fecha_inicio": "Fecha inicio",
     "lugar": "Lugar",
     "guardar": "Guardar",
-    "cancelar": "Cancelar"
+    "cancelar": "Cancelar",
+    "exito": "Proyecto creado",
+    "exito_texto": "Proyecto creado correctamente"
   },
 
   "editar_proyecto": {
     "titulo": "Editar proyecto",
     "descripcion": "Descripción",
     "fecha_inicio": "Fecha inicio",
-    "fecha_fin": "Fecha fin",
+    "fecha_fin": "Fecha fin (Opcional)",
     "lugar": "Lugar",
     "guardar": "Guardar cambios",
     "cancelar": "Cancelar"
@@ -119,7 +142,17 @@
     "empleado": "Empleado",
     "proyecto": "Proyecto",
     "fecha": "Fecha",
-    "boton": "Asignar"
+    "boton": "Asignar",
+    "alertas": {
+        "campos": "Faltan datos",
+        "campos_texto": "Todos los campos son obligatorios",
+        "exito": "Asignación creada",
+        "exito_texto": "Asignación creada correctamente",
+        "error": "Error",
+        "error_texto": "No se pudo crear la asignación",
+        "duplicado": "Error",
+        "duplicado_texto": "El empleado ya esta asignado a ese proyecto"
+    }
   },
 
   "asignaciones": {
@@ -137,6 +170,13 @@
     "empleados": "Emp.",
     "proyectos": "Proy.",
     "asignaciones": "Asig.",
+
+    "generando": "Generando...",
+    "ok": "Completado correctamente",
+    "actualizado": "Estadísticas actualizadas correctamente",
+    "error": "Error",
+    "error_texto": "No se pudieron generar las estadísticas",
+
     "graficas": {
       "anios": "Años empresa",
       "altas": "Altas",
@@ -167,7 +207,8 @@
     "proyecto_inactivo": "El proyecto quedará inactivo",
     "confirmar_baja_proyecto": "¿Dar de baja el proyecto?",
     "confirmar": "Sí",
-    "cancelar": "Cancelar"
+    "cancelar": "Cancelar",
+    "proyecto_baja_ok": "Proyecto dado de baja correctamente"
   },
 
   "valores": {
@@ -175,5 +216,31 @@
     "casado": "Casado",
     "si": "Si",
     "no": "No"
+  },
+
+  "footer": {
+    "slogan": "Donde el futuro se hace presente",
+    "sobre": "Sobre Future",
+    "quienes": "Quiénes somos",
+    "casos": "Casos de éxito",
+    "internacional": "Internacional",
+    "contacto": "Contáctanos",
+    "mundo": "Mundo Future",
+    "conocenos": "Conócenos",
+    "cv": "Envíanos tu CV",
+    "empleo": "Ofertas de empleo",
+    "tendencias": "Tendencias",
+    "blog": "Blog",
+    "webinars": "Webinars",
+    "charlas": "Nuestras charlas",
+    "canal": "Canal del informante",
+    "acceso": "Acceso al canal",
+    "politica": "Política interna",
+    "procedimiento": "Procedimiento de gestión"
+  },
+  "coming": {
+    "titulo": "Página no disponible",
+    "descripcion": "Esta sección todavía no está disponible o está en desarrollo",
+    "volver": "Volver al inicio"
   }
 }
