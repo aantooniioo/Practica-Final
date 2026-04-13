@@ -1,0 +1,13 @@
+# Usa Java 17
+FROM eclipse-temurin:25
+
+# Carpeta dentro del contenedor
+WORKDIR /app
+
+# Copia el .jar generado
+COPY target/*.jar app.jar
+
+# Ejecuta la aplicación
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+# sh -c "sleep 10 && java -jar app.jar"
