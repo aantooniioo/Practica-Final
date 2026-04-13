@@ -16,4 +16,9 @@ public interface EmpleadoProyectoRepository
 
     // Devuelve el número de empleados asignados a un proyecto
     int countByIdProyecto(Integer idProyecto);
+
+    /**
+     * Elimina una asignación concreta mediante sus identificadores
+     */
+    void deleteByIdEmpleadoAndIdProyecto(Integer idEmpleado, Integer idProyecto);
 }

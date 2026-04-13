@@ -21,7 +21,6 @@ public class EmpleadoController {
     @Autowired
     private EmpleadoProyectoRepository empleadoProyectoRepository;
 
-    // Obtiene todos los empleados activos (sin fecha de baja)
     @GetMapping
     public List<Empleado> obtenerTodos(){
         return empleadoRepository.findByFechaBajaIsNull()
@@ -30,7 +29,6 @@ public class EmpleadoController {
                 .toList();
     }
 
-    // Obtiene un empleado por su id
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Integer id){
 
@@ -43,29 +41,86 @@ public class EmpleadoController {
         return ResponseEntity.ok(emp);
     }
 
-    // Crea un nuevo empleado con validaciones básicas
     @PostMapping
     public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado){
 
-        // Validar nombre obligatorio
-        if(empleado.getNombre() == null || empleado.getNombre().isEmpty()){
-            return ResponseEntity.badRequest().body("El nombre es obligatorio");
-        }
+        try {
 
-        // Validar primer apellido obligatorio
-        if(empleado.getApellido1() == null || empleado.getApellido1().isEmpty()){
-            return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
-        }
+            if(empleado.getNombre() == null || empleado.getNombre().isEmpty()){
+                return ResponseEntity.badRequest().body("El nombre es obligatorio");
+            }
 
-        // Validar email obligatorio
-        if(empleado.getEmail() == null || empleado.getEmail().isEmpty()){
-            return ResponseEntity.badRequest().body("El email es obligatorio");
-        }
+            if(empleado.getApellido1() == null || empleado.getApellido1().isEmpty()){
+                return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
+            }
 
-        return ResponseEntity.ok(empleadoRepository.save(empleado));
+            if(empleado.getEmail() == null || empleado.getEmail().isEmpty()){
+                return ResponseEntity.badRequest().body("El email es obligatorio");
+            }
+
+            // VALORES POR DEFECTO
+
+            if(empleado.getApellido2() == null){
+                empleado.setApellido2("");
+            }
+
+            if(empleado.getTelefono1() == null){
+                empleado.setTelefono1("000000000");
+            }
+
+            if(empleado.getTelefono2() == null){
+                empleado.setTelefono2("000000000");
+            }
+
+            if(empleado.getEstadoCivil() == null){
+                empleado.setEstadoCivil("S");
+            }
+
+            if(empleado.getFormacionUniversitaria() == null){
+                empleado.setFormacionUniversitaria("N");
+            }
+
+            if(empleado.getFechaAlta() == null){
+                empleado.setFechaAlta(LocalDate.now());
+            }
+
+            if(empleado.getFechaNacimiento() == null){
+                empleado.setFechaNacimiento(LocalDate.of(2000, 1, 1));
+            }
+
+            /**
+             * Genera automáticamente el email corporativo evitando duplicados
+             */
+            String base =
+                    empleado.getNombre().substring(0,1).toLowerCase() +
+                            empleado.getApellido1().substring(0,1).toLowerCase() +
+                            empleado.getApellido2().toLowerCase();
+
+            String emailGenerado = base + "@futurespace.es";
+
+            int contador = 1;
+
+            // Comprueba si el email ya existe y añade numeración si es necesario
+            while(empleadoRepository.existsByEmail(emailGenerado)){
+                emailGenerado = base + contador + "@futurespace.es";
+                contador++;
+            }
+
+            // Asigna el email generado al empleado
+            empleado.setEmail(emailGenerado);
+
+            Empleado nuevo = empleadoRepository.save(empleado);
+
+            return ResponseEntity.ok(nuevo);
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(500)
+                    .body("Error al crear empleado: " + e.getMessage());
+        }
     }
 
-    // Actualiza los datos de un empleado existente
     @PutMapping("/{id}")
     public ResponseEntity<?> editarEmpleado(@PathVariable Integer id, @RequestBody Empleado datos){
 
@@ -75,22 +130,18 @@ public class EmpleadoController {
             return ResponseEntity.notFound().build();
         }
 
-        // Validar nombre obligatorio
         if(datos.getNombre() == null || datos.getNombre().isEmpty()){
             return ResponseEntity.badRequest().body("El nombre es obligatorio");
         }
 
-        // Validar primer apellido obligatorio
         if(datos.getApellido1() == null || datos.getApellido1().isEmpty()){
             return ResponseEntity.badRequest().body("El primer apellido es obligatorio");
         }
 
-        // Validar email obligatorio
         if(datos.getEmail() == null || datos.getEmail().isEmpty()){
             return ResponseEntity.badRequest().body("El email es obligatorio");
         }
 
-        // Actualiza los campos del empleado
         emp.setNombre(datos.getNombre());
         emp.setApellido1(datos.getApellido1());
         emp.setApellido2(datos.getApellido2());
@@ -105,11 +156,9 @@ public class EmpleadoController {
         return ResponseEntity.ok(emp);
     }
 
-    // Da de baja un empleado si no tiene asignaciones
     @PutMapping("/baja/{id}")
     public ResponseEntity<?> darDeBaja(@PathVariable Integer id){
 
-        // Comprueba si el empleado tiene proyectos asignados
         int asignaciones = empleadoProyectoRepository.countByIdEmpleado(id);
 
         if(asignaciones > 0){

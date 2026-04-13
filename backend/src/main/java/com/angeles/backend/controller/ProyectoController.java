@@ -57,6 +57,11 @@ public class ProyectoController {
             return ResponseEntity.badRequest().body("La fecha de inicio es obligatoria");
         }
 
+        // Validar fecha fin
+        if(proyecto.getFechaFin() == null){
+            proyecto.setFechaFin(null);
+        }
+
         // Validar lugar obligatorio
         if(proyecto.getLugar() == null || proyecto.getLugar().isEmpty()){
             return ResponseEntity.badRequest().body("El lugar es obligatorio");

@@ -3,17 +3,15 @@ package com.angeles.backend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
-// Representa un empleado de la empresa
 @Entity
 @Table(name = "EM_EMPLEADOS")
 public class Empleado {
 
-    // Identificador del empleado
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_EMPLEADO")
     private Integer idEmpleado;
 
-    // Datos personales
     @Column(name = "TX_NIF")
     private String nif;
 
@@ -23,38 +21,62 @@ public class Empleado {
     @Column(name = "TX_APELLIDO1", nullable = false)
     private String apellido1;
 
-    @Column(name = "TX_APELLIDO2", nullable = false)
+    @Column(name = "TX_APELLIDO2")
     private String apellido2;
 
-    @Column(name = "F_NACIMIENTO", nullable = false)
+    // NO OBLIGATORIO PARA EVITAR ERROR
+    @Column(name = "F_NACIMIENTO")
     private LocalDate fechaNacimiento;
 
-    // Datos de contacto
     @Column(name = "N_TELEFONO1", nullable = false)
     private String telefono1;
 
-    @Column(name = "N_TELEFONO2", nullable = false)
+    @Column(name = "N_TELEFONO2")
     private String telefono2;
 
     @Column(name = "TX_EMAIL", nullable = false)
     private String email;
 
-    // Fechas de gestión
-    @Column(name = "F_ALTA", nullable = false)
+    // NO OBLIGATORIO -> LO GENERAMOS
+    @Column(name = "F_ALTA")
     private LocalDate fechaAlta;
 
     @Column(name = "F_BAJA")
     private LocalDate fechaBaja;
 
-    // Información adicional
     @Column(name = "CX_EDOCIVIL", nullable = false)
     private String estadoCivil;
 
     @Column(name = "B_FORMACIONU", nullable = false)
     private String formacionUniversitaria;
 
-    // Constructor vacío requerido por JPA
     public Empleado() {}
+
+    // METODO AUTOMÁTICO
+    @PrePersist
+    public void prePersist() {
+
+        if (this.fechaAlta == null) {
+            this.fechaAlta = LocalDate.now();
+        }
+
+        // Valores por defecto para evitar null
+        if (this.apellido2 == null) {
+            this.apellido2 = "";
+        }
+
+        if (this.telefono2 == null) {
+            this.telefono2 = "000000000";
+        }
+
+        if (this.estadoCivil == null) {
+            this.estadoCivil = "S";
+        }
+
+        if (this.formacionUniversitaria == null) {
+            this.formacionUniversitaria = "N";
+        }
+    }
 
     // Getters y setters
 
