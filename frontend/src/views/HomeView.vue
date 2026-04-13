@@ -184,9 +184,6 @@ export default {
   },
 
   computed: {
-
-    // Genera los slides usando traducciones i18n
-    // Permite cambiar idioma dinámicamente sin modificar el componente
     slides() {
       return [
         {
@@ -206,15 +203,35 @@ export default {
         }
       ];
     }
-
   },
 
   mounted() {
-    // Inicializa animaciones al hacer scroll
     AOS.init({
       duration: 800,
       once: true
     })
+    
+    this.fetchCounts();
+  },
+
+  methods: {
+    async fetchCounts() {
+      try {
+        const resEmpleados = await fetch('http://localhost:8080/empleados');
+        const dataEmpleados = await resEmpleados.json();
+        this.empleados = dataEmpleados.length;
+
+        const resProyectos = await fetch('http://localhost:8080/proyectos');
+        const dataProyectos = await resProyectos.json();
+        this.proyectos = dataProyectos.length;
+
+        const resAsignaciones = await fetch('http://localhost:8080/asignaciones');
+        const dataAsignaciones = await resAsignaciones.json();
+        this.asignaciones = dataAsignaciones.length;
+      } catch (error) {
+        console.error('Error fetching counts:', error);
+      }
+    }
   }
 };
 </script>
