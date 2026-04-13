@@ -53,7 +53,7 @@
   "empleados": {
     "id": "ID",
     "titulo": "Employees",
-    "nuevo": "New employee",
+    "nuevo": "Register Employee",
     "buscar": "Search employee...",
     "no_datos": "No employees found",
     "nombre": "Name",
@@ -61,28 +61,31 @@
     "apellido2": "Last Name 2",
     "email": "Email",
     "telefono1": "Phone 1",
-    "telefono2": "Phone 2",
+    "telefono2": "Phone 2 (Optional)",
     "estado": "Status",
     "formacion": "Education",
     "acciones": "Actions",
     "editar": "Edit",
-    "baja": "Desactivate"
+    "editado": "Employee updated successfully",
+    "baja": "Desactivate",
+    "baja_ok": "Employee desactivated successfully"
   },
 
   "alta_empleado": {
-    "titulo": "Create employee",
+    "titulo": "Register employee",
     "nombre": "Name",
     "apellido1": "Last Name 1",
     "apellido2": "Last Name 2",
+    "dni": "ID Number",
     "email": "Email",
     "telefono1": "Phone 1",
-    "telefono2": "Phone 2",
+    "telefono2": "Phone 2 (Optional)",
     "estado": "Marital status",
     "formacion": "Education",
     "guardar": "Save",
     "cancelar": "Cancel",
-    "exito": "Employee created",
-    "exito_texto": "Employee created successfully"
+    "exito": "Done!",
+    "exito_texto": "Employee registered successfully"
   },
 
   "editar_empleado": {
@@ -92,10 +95,12 @@
     "apellido2": "Last Name 2",
     "email": "Email",
     "telefono1": "Phone 1",
-    "telefono2": "Phone 2",
+    "telefono2": "Phone 2 (Optional)",
+    "fecha_nacimiento": "Date of birth",
     "estado": "Marital status",
     "formacion": "Education",
     "guardar": "Save changes",
+    "confirmar_edicion": "Do you want to save the changes?",
     "cancelar": "Cancel"
   },
 
@@ -109,20 +114,25 @@
     "lugar": "Location",
     "acciones": "Actions",
     "editar": "Edit",
+    "editado_ok": "Project updated successfully",
     "baja": "Desactivate",
+    "baja_confirmacion": "Do you want to desactivate the project?",
+    "baja_ok": "Project successfully desactivated",
     "sin_datos": "No projects found",
     "en_curso": "In progress",
-    "finalizado": "Desactivated"
+    "finalizado": "Finished"
   },
 
   "alta_proyecto": {
     "titulo": "Create project",
     "descripcion": "Description",
     "fecha_inicio": "Start date",
+    "fecha_fin": "End date (Optional)",
     "lugar": "Location",
     "guardar": "Save",
     "cancelar": "Cancel",
-    "exito": "Successfully",
+    "confirmacion": "Do you want to save the changes?",
+    "exito": "Done!",
     "exito_texto": "Project updated successfully"
   },
 
@@ -133,34 +143,45 @@
     "fecha_fin": "End date (Optional)",
     "lugar": "Location",
     "guardar": "Save changes",
-    "cancelar": "Cancel"
+    "cancelar": "Cancel",
+    "confirmacion": "Do you want to save the changes?"
   },
 
   "asignacion": {
     "titulo": "Assign employee to project",
     "empleado": "Employee",
+    "empleados": "Employee",
     "proyecto": "Project",
     "fecha": "Date",
     "boton": "Assign",
+    "seleccionados": "Selected employee/s",
+      "eliminar_confirmacion": "Do you want to remove the assignment to that project?",
+    "eliminado_ok": "Assignment removed successfully",
     "alertas": {
         "campos": "Missing data",
         "campos_texto": "All fields are required",
-        "exito": "Assignment created",
+        "exito": "Done!",
         "exito_texto": "Assignment created successfully",
         "error": "Error",
         "error_texto": "Couldn't create assignment",
         "duplicado": "Error",
         "duplicado_texto": "The employee is already assigned to that project"
-    }
+    },
+    "confirmacion": "Do you want to assign the employee to the project?"
   },
 
   "asignaciones": {
     "titulo": "Assignments",
     "buscar": "Search assignment...",
     "empleado": "Employee",
+    "empleados": "Employee",
     "proyecto": "Project",
     "fecha": "Date",
-    "sin_datos": "No assignments found"
+    "sin_datos": "No assignments found",
+    "acciones": "Actions",
+    "editar": "Edit",
+    "eliminar": " Remove",
+    "eliminado_ok": "Assignment removed successfully"
   },
 
   "estadisticas": {
@@ -171,7 +192,7 @@
     "asignaciones": "Assign.",
 
     "generando": "Updating...",
-    "ok": "Statistics generated successfully",
+    "ok": "Done!",
     "actualizado": "Statistics updated successfully",
     "error": "Error",
     "error_texto": "Couldn't generate updated statistics",
@@ -188,9 +209,12 @@
   },
 
   "validaciones": {
-    "requerido": "Required field",
-    "email": "Invalid email",
-    "telefono": "Invalid phone number"
+    "requerido": "Required field!",
+    "dni_formato": "Invalid ID number format!",
+    "dni_incorrecto": "Invalid ID number!",
+    "email": "Invalid email!",
+    "email_requerido": "Email is required!",
+    "telefono": "Invalid phone number!"
   },
 
   "botones": {
@@ -200,13 +224,16 @@
 
   "alertas": {
     "error": "Error",
-    "error_generico": "Unexpected error",
+    "error_inesperado": "Unexpected error",
+    "error_generico": "Something went wrong",
     "baja_titulo": "Desactivate?",
-    "baja_texto": "This action will desactivate the record",
+    "baja_texto": "This action will desactivate the project",
     "proyecto_inactivo": "The project will be desactivated",
     "confirmar_baja_proyecto": "Desactivate project?",
     "confirmar": "Yes",
-    "cancelar": "Cancel"
+    "cancelar": "Cancel",
+    "exito": "Done!",
+    "exito_texto": "Project desactivated successfully"
   },
 
   "valores": {

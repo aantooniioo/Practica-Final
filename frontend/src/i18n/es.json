@@ -53,20 +53,22 @@
   "empleados": {
     "id": "ID",
     "titulo": "Empleados",
-    "nuevo": "Nuevo empleado",
+    "nuevo": "Dar de Alta Empleado",
     "buscar": "Buscar empleado...",
     "no_datos": "No hay empleados",
     "nombre": "Nombre",
     "apellido1": "Apellido 1",
     "apellido2": "Apellido 2",
-    "email": "Email",
+    "email": "Correo electrónico",
     "telefono1": "Teléfono 1",
-    "telefono2": "Teléfono 2",
+    "telefono2": "Teléfono 2 (Opcional)",
     "estado": "Estado",
     "formacion": "Formación",
     "acciones": "Acciones",
     "editar": "Editar",
-    "baja": "Baja"
+    "editado": "Empleado actualizado correctamente",
+    "baja": "Dar de Baja",
+    "baja_ok": "Empleado dado de baja correctamente"
   },
 
   "alta_empleado": {
@@ -74,9 +76,10 @@
     "nombre": "Nombre",
     "apellido1": "Apellido 1",
     "apellido2": "Apellido 2",
-    "email": "Email",
+    "dni": "DNI",
+    "email": "Correo electrónico",
     "telefono1": "Teléfono 1",
-    "telefono2": "Teléfono 2",
+    "telefono2": "Teléfono 2 (Opcional)",
     "estado": "Estado civil",
     "formacion": "Formación",
     "guardar": "Guardar",
@@ -91,12 +94,14 @@
     "nombre": "Nombre",
     "apellido1": "Apellido 1",
     "apellido2": "Apellido 2",
-    "email": "Email",
+    "email": "Correo electrónico",
     "telefono1": "Teléfono 1",
-    "telefono2": "Teléfono 2",
+    "telefono2": "Teléfono 2 (Opcional)",
+    "fecha_nacimiento": "Fecha de nacimiento",
     "estado": "Estado civil",
     "formacion": "Formación",
     "guardar": "Guardar cambios",
+    "confirmar_edicion": "¿Desea guardar los cambios?",
     "cancelar": "Cancelar"
   },
 
@@ -110,7 +115,10 @@
     "lugar": "Lugar",
     "acciones": "Acciones",
     "editar": "Editar",
-    "baja": "Baja",
+    "editado_ok": "Proyecto actualizado correctamente",
+    "baja": "Dar de Baja",
+    "baja_confirmacion": "¿Desea dar de baja el proyecto?",
+    "baja_ok": "Proyecto dado de baja correctamente",
     "sin_datos": "No hay proyectos",
     "en_curso": "En curso",
     "finalizado": "Finalizado"
@@ -120,10 +128,12 @@
     "titulo": "Alta de proyecto",
     "descripcion": "Descripción",
     "fecha_inicio": "Fecha inicio",
+    "fecha_fin": "Fecha fin (Opcional)",
     "lugar": "Lugar",
     "guardar": "Guardar",
     "cancelar": "Cancelar",
-    "exito": "Proyecto creado",
+    "confirmacion": "¿Desea crear el proyecto?",
+    "exito": "¡Listo!",
     "exito_texto": "Proyecto creado correctamente"
   },
 
@@ -134,35 +144,47 @@
     "fecha_fin": "Fecha fin (Opcional)",
     "lugar": "Lugar",
     "guardar": "Guardar cambios",
-    "cancelar": "Cancelar"
+    "cancelar": "Cancelar",
+    "confirmacion": "¿Desea guardar los cambios?"
   },
 
   "asignacion": {
     "titulo": "Asignar empleado a proyecto",
     "empleado": "Empleado",
+    "empleados": "Empleado",
     "proyecto": "Proyecto",
     "fecha": "Fecha",
     "boton": "Asignar",
+    "seleccionados": "Empleados seleccionado/s",
+    "eliminar_confirmacion": "¿Desea eliminar la asignación a dicho proyecto?",
+    "eliminado_ok": "Asignación eliminada correctamente",
     "alertas": {
         "campos": "Faltan datos",
         "campos_texto": "Todos los campos son obligatorios",
-        "exito": "Asignación creada",
+        "exito": "¡Listo!",
         "exito_texto": "Asignación creada correctamente",
         "error": "Error",
         "error_texto": "No se pudo crear la asignación",
         "duplicado": "Error",
         "duplicado_texto": "El empleado ya esta asignado a ese proyecto"
-    }
+    },
+    "confirmacion": "¿Desea asignar el empleado al proyecto?"
   },
 
   "asignaciones": {
     "titulo": "Asignaciones",
     "buscar": "Buscar asignación...",
     "empleado": "Empleado",
+    "empleados": "Empleado",
     "proyecto": "Proyecto",
     "fecha": "Fecha",
-    "sin_datos": "No hay asignaciones"
+    "sin_datos": "No hay asignaciones",
+    "acciones": "Acciones",
+    "editar": " Editar",
+    "eliminar": " Eliminar",
+    "eliminado_ok": "Asignación eliminada correctamente"
   },
+
 
   "estadisticas": {
     "titulo": "Estadísticas",
@@ -172,7 +194,7 @@
     "asignaciones": "Asig.",
 
     "generando": "Generando...",
-    "ok": "Completado correctamente",
+    "ok": "¡Listo!",
     "actualizado": "Estadísticas actualizadas correctamente",
     "error": "Error",
     "error_texto": "No se pudieron generar las estadísticas",
@@ -189,9 +211,13 @@
   },
 
   "validaciones": {
-    "requerido": "Campo obligatorio",
-    "email": "Email inválido",
-    "telefono": "Teléfono inválido"
+    "requerido": "¡Campo obligatorio!",
+    "dni_formato": "¡Formato DNI inválido!",
+    "dni_incorrecto": "¡DNI incorrecto!",
+    "email": "¡Correo electrónico inválido!",
+    "email_requerido": "¡El email es obligatorio!",
+    "telefono": "¡Teléfono inválido!"
+
   },
 
   "botones": {
@@ -201,20 +227,22 @@
 
   "alertas": {
     "error": "Error",
-    "error_generico": "Error inesperado",
+    "error_inesperado": "Error inesperado",
+    "error_generico": "Ha ocurrido un error inesperado",
     "baja_titulo": "¿Dar de baja?",
     "baja_texto": "Esta acción desactivará el registro",
     "proyecto_inactivo": "El proyecto quedará inactivo",
     "confirmar_baja_proyecto": "¿Dar de baja el proyecto?",
     "confirmar": "Sí",
     "cancelar": "Cancelar",
+    "exito": "¡Listo!",
     "proyecto_baja_ok": "Proyecto dado de baja correctamente"
   },
 
   "valores": {
     "soltero": "Soltero",
     "casado": "Casado",
-    "si": "Si",
+    "si": "Sí",
     "no": "No"
   },
 
