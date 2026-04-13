@@ -1,22 +1,18 @@
 <template>
   <v-container>
 
-    <!-- Contenedor principal del formulario -->
     <v-card
       class="pa-4 formulario-card card-pro card-animated"
       data-aos="fade-up"
     >
 
-      <!-- Título -->
       <v-card-title>{{ $t("editar_proyecto.titulo") }}</v-card-title>
 
-      <!-- Formulario -->
       <v-form v-model="formValido" ref="form">
 
         <v-row>
 
-          <!-- Descripción -->
-          <v-col cols="12" data-aos="fade-up" data-aos-delay="100">
+          <v-col cols="12">
             <v-text-field
               :label="$t('editar_proyecto.descripcion')"
               v-model="proyecto.descripcion"
@@ -24,8 +20,7 @@
             />
           </v-col>
 
-          <!-- Fecha inicio -->
-          <v-col cols="8" md="6" data-aos="fade-up" data-aos-delay="150">
+          <v-col cols="8" md="6">
             <v-text-field
               :label="$t('editar_proyecto.fecha_inicio')"
               type="date"
@@ -34,17 +29,32 @@
             />
           </v-col>
 
-          <!-- Fecha fin -->
-          <v-col cols="8" md="6" data-aos="fade-up" data-aos-delay="200">
-            <v-text-field
-              :label="$t('editar_proyecto.fecha_fin')"
-              type="date"
-              v-model="proyecto.fechaFin"
-            />
+          <!-- Fecha fin + botón limpiar -->
+          <v-col cols="8" md="6">
+
+            <div style="display:flex; gap:8px; align-items:center;">
+
+              <v-text-field
+                style="flex:1"
+                :label="$t('editar_proyecto.fecha_fin')"
+                type="date"
+                v-model="proyecto.fechaFin"
+              />
+
+              <v-btn
+                icon
+                size="small"
+                color="red"
+                @click="limpiarFechaFin"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+
+            </div>
+
           </v-col>
 
-          <!-- Lugar -->
-          <v-col cols="12" data-aos="fade-up" data-aos-delay="250">
+          <v-col cols="12">
             <v-text-field
               :label="$t('editar_proyecto.lugar')"
               v-model="proyecto.lugar"
@@ -54,10 +64,8 @@
 
         </v-row>
 
-        <!-- Botones -->
         <v-card-actions class="mt-4">
 
-          <!-- Guardar -->
           <v-btn
             color="green"
             class="btn-main"
@@ -67,9 +75,8 @@
             {{ $t("editar_proyecto.guardar") }}
           </v-btn>
 
-          <!-- Cancelar -->
           <v-btn
-            color="grey"
+            color="red"
             class="btn-main"
             @click="$router.push('/proyectos')"
           >
@@ -86,6 +93,7 @@
 
 <script>
 import { getProyectoById, editarProyecto } from "../services/proyectoService";
+import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -103,9 +111,11 @@ export default {
 
   methods:{
 
-    /**
-     * Carga los datos del proyecto desde backend
-     */
+    // Limpia la fecha de fin del proyecto
+    limpiarFechaFin(){
+      this.proyecto.fechaFin = null;
+    },
+
     cargarProyecto(){
 
       const id = this.$route.params.idProyecto;
@@ -116,28 +126,48 @@ export default {
         });
     },
 
-    /**
-     * Guarda cambios del proyecto
-     */
     guardar(){
 
       if (!this.$refs.form.validate()) return;
 
-      editarProyecto(this.$route.params.idProyecto, this.proyecto)
-        .then(()=>{
-          this.$router.push("/proyectos");
-        });
+      Swal.fire({
+        title: this.$t("alertas.confirmar"),
+        text: this.$t("editar_proyecto.confirmacion"),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#22c55e",
+        cancelButtonText: this.$t("alertas.cancelar"),
+        confirmButtonText: this.$t("alertas.confirmar")
+      }).then(result => {
+
+        if (result.isConfirmed) {
+
+          editarProyecto(this.$route.params.idProyecto, this.proyecto)
+            .then(()=>{
+
+              Swal.fire({
+                icon: "success",
+                title: this.$t("alertas.exito"),
+                text: this.$t("proyectos.editado_ok"),
+                timer: 1500,
+                showConfirmButton: false
+              });
+
+              this.$router.push("/proyectos");
+
+            });
+
+        }
+
+      });
+
     }
 
   },
 
   mounted(){
-
     this.cargarProyecto();
 
-    /**
-     * Inicializa animaciones tipo dashboard
-     */
     AOS.init({
       duration: 800,
       once: true

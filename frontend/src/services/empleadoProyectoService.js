@@ -1,13 +1,32 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/asignaciones";
+// URL base del backend
+const API = "http://localhost:8080/asignaciones";
 
-// Asignar empleado a proyecto
-export function asignarEmpleadoProyecto(data){
-    return axios.post(API_URL, data);
-}
+/**
+ * Obtiene todas las asignaciones
+ */
+export const getAsignaciones = () => {
+  return axios.get(API);
+};
 
-// Obtener asignaciones de empleado por id
-export function getAsignaciones(id) {
-    return axios.get("http://localhost:8080/asignaciones");
-}
+/**
+ * Asigna un empleado a un proyecto
+ */
+export const asignarEmpleadoProyecto = (datos) => {
+  return axios.post(API, datos);
+};
+
+/**
+ * Elimina una asignación concreta
+ */
+export const eliminarAsignacion = (idEmpleado, idProyecto) => {
+  return axios.delete(`${API}/${idEmpleado}/${idProyecto}`);
+};
+
+/**
+ * Edita la fecha de una asignación
+ */
+export const editarAsignacion = (idEmpleado, idProyecto, datos) => {
+  return axios.put(`${API}/${idEmpleado}/${idProyecto}`, datos);
+};

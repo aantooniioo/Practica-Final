@@ -9,7 +9,10 @@
         <!-- ===== BLOQUE LOGO + FRASE ===== -->
         <v-col cols="12" md="3">
 
-          <h3 class="footer-logo">FutureSpace</h3>
+          <img
+            :src="logo"
+            alt="Future Space"
+            class="footer-logo-img">
 
           <p class="footer-slogan">
             {{ $t("footer.slogan") }}
@@ -148,10 +151,12 @@
 </template>
 
 <script>
+import logo from '@/assets/images/Logo_blanco_Future-2.png'
 export default {
 
   data() {
     return {
+      logo,
       // Controla si el botón aparece o no
       mostrarBoton: false
     };
@@ -208,6 +213,14 @@ export default {
   font-weight: bold;
   font-size: 20px;
   margin-bottom: 10px;
+}
+
+/* ===== LOGO IMAGEN ===== */
+.footer-logo-img {
+    height: 40px;
+    margin-bottom: 10px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(56,189,248,0.3));
 }
 
 /* ===== SLOGAN ===== */

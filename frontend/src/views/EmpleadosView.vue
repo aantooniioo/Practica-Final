@@ -38,7 +38,6 @@
 
         <thead class="bg-grey-darken-3">
           <tr>
-            <th style="white-space: nowrap;">{{ $t('empleados.id') }}</th>
             <th>{{ $t('empleados.nombre') }}</th>
             <th style="white-space: nowrap;">{{ $t('empleados.apellido1') }}</th>
             <th style="white-space: nowrap;">{{ $t('empleados.apellido2') }}</th>
@@ -54,7 +53,7 @@
         <tbody>
 
           <tr v-if="empleadosFiltrados.length === 0">
-            <td colspan="10" class="text-center py-6">
+            <td colspan="9" class="text-center py-6">
               {{ $t('empleados.no_datos') }}
             </td>
           </tr>
@@ -65,7 +64,6 @@
             class="row-hover"
           >
 
-            <td>{{ emp.idEmpleado }}</td>
             <td>{{ emp.nombre }}</td>
             <td>{{ emp.apellido1 }}</td>
             <td>{{ emp.apellido2 }}</td>
@@ -130,12 +128,17 @@ import "aos/dist/aos.css";
 export default {
   data() {
     return {
+      // Lista de empleados cargados desde backend
       empleados: [],
+
+      // Texto del buscador
       busqueda: ""
     };
   },
 
   computed: {
+
+    // Filtra empleados según el texto introducido
     empleadosFiltrados() {
       if (!this.busqueda) return this.empleados;
 
@@ -158,12 +161,14 @@ export default {
 
   methods: {
 
+    // Carga todos los empleados activos desde el backend
     cargarEmpleados() {
       getEmpleados().then(res => {
         this.empleados = res.data;
       });
     },
 
+    // Muestra confirmación antes de dar de baja un empleado
     confirmarBaja(id) {
 
       Swal.fire({
@@ -176,26 +181,39 @@ export default {
         confirmButtonText: this.$t('alertas.confirmar')
       }).then(result => {
 
+        // Si el usuario confirma, se ejecuta la baja
         if (result.isConfirmed) {
 
           bajaEmpleado(id)
             .then(() => {
 
+              // Muestra mensaje de éxito tras dar de baja
               Swal.fire({
                 icon: "success",
                 title: this.$t('alertas.exito'),
+                text: this.$t('empleados.baja_ok'),
                 timer: 1500,
                 showConfirmButton: false
               });
 
+              // Recarga la lista de empleados
               this.cargarEmpleados();
             })
             .catch(error => {
 
+              // Obtiene mensaje de error del backend o usa uno genérico
+              const mensaje =
+                error.response?.data?.message ||
+                error.response?.data ||
+                this.$t('alertas.error_inesperado');
+
+              // Muestra mensaje de error
               Swal.fire({
                 icon: "error",
                 title: this.$t('alertas.error'),
-                text: error.response?.data || this.$t('alertas.error_inesperado')
+                text: typeof mensaje === "string"
+                  ? mensaje
+                  : this.$t('alertas.error_inesperado')
               });
 
             });
@@ -205,23 +223,27 @@ export default {
       });
     },
 
+    // Convierte código de estado civil a texto
     formatearEstadoCivil(v) {
-      if (v === "S") return "Soltero";
-      if (v === "C") return "Casado";
+      if (v === "S") return this.$t('valores.soltero');
+      if (v === "C") return this.$t('valores.casado');
       return v;
     },
 
+    // Convierte código de formación a texto
     formatearFormacion(v) {
-      if (v === "S") return "Sí";
-      if (v === "N") return "No";
+      if (v === "S") return this.$t('valores.si');
+      if (v === "N") return this.$t('valores.no');
       return v;
     }
 
   },
 
   mounted() {
+    // Carga inicial de datos
     this.cargarEmpleados();
 
+    // Inicializa animaciones tipo dashboard
     AOS.init({
       duration: 800,
       once: true

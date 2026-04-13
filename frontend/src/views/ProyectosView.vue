@@ -1,10 +1,8 @@
 <template>
   <v-container class="mt-6">
 
-    <!-- Tarjeta principal del listado -->
     <v-card class="pa-5 elevation-4 card-pro card-animated" data-aos="fade-up">
 
-      <!-- Cabecera -->
       <v-row align="center" justify="space-between" class="mb-4">
 
         <v-col cols="auto">
@@ -23,7 +21,6 @@
 
       </v-row>
 
-      <!-- Buscador -->
       <v-text-field
         v-model="busqueda"
         :label="$t('proyectos.buscar')"
@@ -33,54 +30,48 @@
         class="mb-4"
       />
 
-      <!-- TABLA -->
       <v-table density="comfortable">
 
         <thead class="bg-grey-darken-3">
           <tr>
-            <th style="width: 60px;">ID</th>
             <th>{{ $t("proyectos.descripcion") }}</th>
-            <th style="width: 120px;">{{ $t("proyectos.inicio") }}</th>
-            <th style="width: 120px;">{{ $t("proyectos.estado") }}</th>
-            <th style="width: 140px;">{{ $t("proyectos.lugar") }}</th>
-            <th class="text-center" style="width: 180px;">
-              {{ $t("proyectos.acciones") }}
-            </th>
+            <th>{{ $t("proyectos.inicio") }}</th>
+            <th>{{ $t("proyectos.estado") }}</th>
+            <th>{{ $t("proyectos.lugar") }}</th>
+            <th class="text-center">{{ $t("proyectos.acciones") }}</th>
           </tr>
         </thead>
 
         <tbody>
 
-          <!-- Sin datos -->
           <tr v-if="proyectosFiltrados.length === 0">
-            <td colspan="6" class="text-center py-6">
+            <td colspan="5" class="text-center py-6">
               {{ $t("proyectos.sin_datos") }}
             </td>
           </tr>
 
-          <!-- Lista -->
           <tr
             v-for="p in proyectosFiltrados"
             :key="p.idProyecto"
             class="row-hover"
           >
 
-            <td>{{ p.idProyecto }}</td>
-            <td class="descripcion">{{ p.descripcion }}</td>
+
+            <td>{{ p.descripcion }}</td>
             <td>{{ p.fechaInicio }}</td>
 
+            <!-- Estado corregido -->
             <td>
               <v-chip
                 size="small"
-                :color="p.fechaFin ? 'blue' : 'green'">
-                {{ p.fechaFin ? $t("proyectos.finalizado") : $t("proyectos.en_curso") }}
+                :color="esFinalizado(p) ? 'blue' : 'green'">
+                {{ esFinalizado(p) ? $t("proyectos.finalizado") : $t("proyectos.en_curso") }}
               </v-chip>
             </td>
 
             <td>{{ p.lugar }}</td>
 
-            <!-- ACCIONES -->
-            <td class="text-center d-flex justify-center align-center gap-2">
+            <td class="text-center d-flex justify-center gap-2">
 
               <v-btn
                 variant="text"
@@ -127,9 +118,6 @@ export default {
 
   computed: {
 
-    /**
-     * Filtrado dinámico de proyectos
-     */
     proyectosFiltrados() {
 
       if (!this.busqueda) return this.proyectos;
@@ -137,7 +125,6 @@ export default {
       const texto = this.busqueda.toLowerCase();
 
       return this.proyectos.filter(p => {
-
         const contenido = `
           ${p.descripcion || ""}
           ${p.lugar || ""}
@@ -150,28 +137,32 @@ export default {
 
   methods: {
 
-    /**
-     * Carga proyectos desde backend
-     */
     cargarProyectos() {
       getProyectos().then(res => {
         this.proyectos = res.data;
       });
     },
 
-    /**
-     * Confirmación de baja de proyecto
-     */
+    // Determina correctamente si el proyecto ha finalizado
+    esFinalizado(p){
+      if(!p.fechaFin) return false;
+
+      const hoy = new Date();
+      const fin = new Date(p.fechaFin);
+
+      return fin < hoy;
+    },
+
     confirmarBaja(id) {
 
       Swal.fire({
-        title: this.$t("alertas.confirmar_baja_proyecto"),
-        text: this.$t("alertas.proyecto_inactivo"),
+        title: this.$t("alertas.baja_titulo"),
+        text: this.$t("proyectos.baja_confirmacion"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#ef4444",
-        cancelButtonText: this.$t("botones.cancelar"),
-        confirmButtonText: this.$t("botones.confirmar_baja")
+        cancelButtonText: this.$t("alertas.cancelar"),
+        confirmButtonText: this.$t("alertas.confirmar")
       }).then(result => {
 
         if (result.isConfirmed) {
@@ -181,21 +172,12 @@ export default {
 
               Swal.fire({
                 icon: "success",
-                title: this.$t("alertas.proyecto_baja_ok"),
+                title: this.$t("alertas.exito"),
                 timer: 1500,
                 showConfirmButton: false
               });
 
               this.cargarProyectos();
-            })
-            .catch(error => {
-
-              Swal.fire({
-                icon: "error",
-                title: this.$t("alertas.error"),
-                text: error.response?.data || this.$t("alertas.error_generico")
-              });
-
             });
 
         }

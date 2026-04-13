@@ -1,24 +1,20 @@
 <template>
   <v-container>
 
-    <!-- Contenedor principal del formulario -->
     <v-card
       class="pa-4 formulario-card card-pro card-animated"
       data-aos="fade-up"
     >
 
-      <!-- Título -->
       <v-card-title>
         {{ $t("editar_empleado.titulo") }}
       </v-card-title>
 
-      <!-- Formulario -->
       <v-form v-model="formValido" ref="form">
 
         <v-row>
 
-          <!-- Nombre -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="100">
+          <v-col cols="12" md="6">
             <v-text-field
               :label="$t('editar_empleado.nombre')"
               v-model="empleado.nombre"
@@ -26,8 +22,7 @@
             />
           </v-col>
 
-          <!-- Apellido 1 -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="150">
+          <v-col cols="12" md="6">
             <v-text-field
               :label="$t('editar_empleado.apellido1')"
               v-model="empleado.apellido1"
@@ -35,79 +30,91 @@
             />
           </v-col>
 
-          <!-- Apellido 2 -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="200">
+          <v-col cols="12" md="6">
             <v-text-field
               :label="$t('editar_empleado.apellido2')"
               v-model="empleado.apellido2"
             />
           </v-col>
 
-          <!-- Email -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="250">
+          <v-col cols="12" md="6">
             <v-text-field
-              :label="$t('editar_empleado.email')"
-              v-model="empleado.email"
-              :rules="[rules.requerido]"
+              :label="$t('alta_empleado.dni')"
+              v-model="empleado.nif"
+              :rules="[rules.dni]"
             />
           </v-col>
 
-          <!-- Teléfono 1 -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="300">
+          <v-col cols="12" md="6">
+            <v-text-field
+              :label="$t('editar_empleado.email')"
+              v-model="empleado.email"
+              :rules="[rules.requerido, rules.email]"
+            />
+          </v-col>
+
+          <v-col cols="12" md="6">
             <v-text-field
               :label="$t('editar_empleado.telefono1')"
               v-model="empleado.telefono1"
             />
           </v-col>
 
-          <!-- Teléfono 2 -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="350">
+          <v-col cols="12" md="6">
             <v-text-field
               :label="$t('editar_empleado.telefono2')"
               v-model="empleado.telefono2"
             />
           </v-col>
 
+          <v-col cols="12" md="6">
+            <v-text-field
+              :label="$t('editar_empleado.fecha_nacimiento')"
+              type="date"
+              v-model="empleado.fechaNacimiento"
+              :rules="[rules.requerido]"
+            />
+          </v-col>
+
           <!-- Estado civil -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="400">
+          <v-col cols="12" md="6">
             <v-select
               :label="$t('editar_empleado.estado')"
-              v-model="empleado.estadoCivil"
-              :items="estados"
+              v-model="empleado.estado"
+              :items="estadosCiviles"
               item-title="title"
               item-value="value"
+              :rules="[rules.requerido]"
             />
           </v-col>
 
           <!-- Formación -->
-          <v-col cols="12" md="6" data-aos="fade-up" data-aos-delay="450">
+          <v-col cols="12" md="6">
             <v-select
               :label="$t('editar_empleado.formacion')"
-              v-model="empleado.formacionUniversitaria"
+              v-model="empleado.formacion"
               :items="formaciones"
               item-title="title"
               item-value="value"
+              :rules="[rules.requerido]"
             />
           </v-col>
 
         </v-row>
 
-        <!-- Botones -->
         <v-card-actions class="mt-4">
 
-          <!-- Guardar -->
-          <v-btn
-            color="green"
-            class="btn-main"
+          <v-btn 
+            color="green" 
+            class="btn-main" 
             @click="guardar"
           >
             {{ $t("editar_empleado.guardar") }}
           </v-btn>
 
-          <!-- Cancelar -->
-          <v-btn
-            color="grey"
-            class="btn-main"
+          <v-btn 
+            color="red" 
+            class="btn-main" 
             @click="$router.push('/empleados')"
           >
             {{ $t("editar_empleado.cancelar") }}
@@ -124,6 +131,7 @@
 
 <script>
 import { getEmpleadoById, editarEmpleado } from "../services/empleadoService";
+import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -133,29 +141,53 @@ export default {
       empleado: {},
       formValido: false,
 
-      estados: [
-        { title: this.$t('valores.soltero'), value: "S" },
-        { title: this.$t('valores.casado'), value: "C" }
-      ],
-
-      formaciones: [
-        { title: this.$t('valores.si'), value: "S" },
-        { title: this.$t('valores.no'), value: "N" }
-      ],
-
       rules: {
-        requerido: v => !!v || this.$t("validaciones.requerido")
+        requerido: v => !!v || this.$t("validaciones.requerido"),
+
+        email: v => {
+          if (!v) return this.$t('validaciones.email_requerido');
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || this.$t('validaciones.email');
+        },
+
+        dni: v => {
+          if (!v) return true;
+
+          const regex = /^[0-9]{8}[A-Z]$/;
+          if (!regex.test(v)) return this.$t('validaciones.dni_formato');
+
+          const letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+          const numero = parseInt(v.substring(0, 8), 10);
+          const letra = v.charAt(8);
+
+          return letras[numero % 23] === letra || this.$t('validaciones.dni_incorrecto');
+        }
       }
     }
   },
 
+  computed:{
+
+    // Genera estados de forma reactiva para permitir cambio de idioma
+    estadosCiviles(){
+      return [
+        { title: this.$t('valores.soltero'), value:"S" },
+        { title: this.$t('valores.casado'), value:"C" }
+      ];
+    },
+
+    // Genera formaciones de forma reactiva
+    formaciones(){
+      return [
+        { title: this.$t('valores.si'), value:"S" },
+        { title: this.$t('valores.no'), value:"N" }
+      ];
+    }
+
+  },
+
   methods: {
 
-    /**
-     * Carga datos del empleado desde backend
-     */
     cargarEmpleado(){
-
       const id = this.$route.params.idEmpleado;
 
       getEmpleadoById(id)
@@ -164,28 +196,43 @@ export default {
         });
     },
 
-    /**
-     * Guarda cambios del empleado
-     */
     guardar(){
 
       if (!this.$refs.form.validate()) return;
 
-      editarEmpleado(this.$route.params.idEmpleado, this.empleado)
-        .then(() => {
-          this.$router.push("/empleados");
-        });
+      Swal.fire({
+        title: this.$t('alertas.confirmar'),
+        text: this.$t('editar_empleado.confirmar_edicion'),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: this.$t('alertas.confirmar'),
+        cancelButtonText: this.$t('alertas.cancelar')
+      }).then(result => {
+
+        if (!result.isConfirmed) return;
+
+        editarEmpleado(this.$route.params.idEmpleado, this.empleado)
+          .then(() => {
+
+            Swal.fire({
+              icon: "success",
+              title: this.$t("alertas.exito"),
+              text: this.$t("empleados.editado"),
+              timer: 1500,
+              showConfirmButton: false
+            });
+
+            this.$router.push("/empleados");
+          });
+
+      });
     }
 
   },
 
   mounted(){
-
     this.cargarEmpleado();
 
-    /**
-     * Inicializa animaciones tipo dashboard
-     */
     AOS.init({
       duration: 800,
       once: true
@@ -193,35 +240,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-/* Contenedor centrado */
-.formulario-card {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-/* Hover tipo dashboard */
-.v-card:hover {
-  transform: translateY(-10px);
-  box-shadow:
-    0 18px 40px rgba(0,0,0,0.7),
-    0 0 15px rgba(2,111,193,0.4);
-}
-
-/* Botones con animación suave */
-.btn-main {
-  transition: all 0.2s ease;
-}
-
-.btn-main:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 8px 20px rgba(2,111,193,0.4);
-}
-
-.btn-main:active {
-  transform: scale(0.97);
-}
-
-</style>

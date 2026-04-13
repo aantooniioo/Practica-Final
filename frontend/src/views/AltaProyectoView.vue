@@ -1,22 +1,18 @@
 <template>
   <v-container>
 
-    <!-- Contenedor principal del formulario -->
     <v-card
       class="pa-4 formulario-card card-pro card-animated"
       data-aos="fade-up"
     >
 
-      <!-- Título -->
       <v-card-title>{{ $t("alta_proyecto.titulo") }}</v-card-title>
 
-      <!-- Formulario -->
       <v-form v-model="formValido" ref="form">
 
         <v-row>
 
-          <!-- Descripción -->
-          <v-col cols="12" md="8" data-aos="fade-up" data-aos-delay="100">
+          <v-col cols="12" md="8">
             <v-text-field
               :label="$t('alta_proyecto.descripcion')"
               v-model="proyecto.descripcion"
@@ -24,8 +20,7 @@
             />
           </v-col>
 
-          <!-- Fecha inicio -->
-          <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="150">
+          <v-col cols="12" md="5">
             <v-text-field
               :label="$t('alta_proyecto.fecha_inicio')"
               type="date"
@@ -34,8 +29,16 @@
             />
           </v-col>
 
-          <!-- Lugar -->
-          <v-col cols="12" md="5" data-aos="fade-up" data-aos-delay="200">
+          <!-- Fecha fin opcional -->
+          <v-col cols="12" md="5">
+            <v-text-field
+              :label="$t('alta_proyecto.fecha_fin')"
+              type="date"
+              v-model="proyecto.fechaFin"
+            />
+          </v-col>
+
+          <v-col cols="12" md="5">
             <v-text-field
               :label="$t('alta_proyecto.lugar')"
               v-model="proyecto.lugar"
@@ -45,10 +48,8 @@
 
         </v-row>
 
-        <!-- Botones -->
         <v-card-actions class="mt-4">
 
-          <!-- Guardar -->
           <v-btn
             color="green"
             class="btn-main"
@@ -58,9 +59,8 @@
             {{ $t("alta_proyecto.guardar") }}
           </v-btn>
 
-          <!-- Cancelar -->
           <v-btn
-            color="grey"
+            color="red"
             class="btn-main"
             @click="$router.push('/proyectos')"
           >
@@ -95,45 +95,50 @@ export default {
 
   methods:{
 
-    /**
-     * Guarda proyecto tras validar formulario
-     */
     guardar(){
 
       if (!this.$refs.form.validate()) return;
 
-      crearProyecto(this.proyecto)
-        .then(()=>{
+      // Si fecha fin está vacía, se envía como null
+      if(!this.proyecto.fechaFin){
+        this.proyecto.fechaFin = null;
+      }
 
-          Swal.fire({
-            icon: "success",
-            title: this.$t("alta_proyecto.exito"),
-            text: this.$t("alta_proyecto.exito_texto"),
-            timer: 1500,
-            showConfirmButton: false
-          });
+      Swal.fire({
+        title: this.$t("alertas.confirmar"),
+        text: this.$t("alta_proyecto.confirmacion"),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#22c55e",
+        cancelButtonText: this.$t("alertas.cancelar"),
+        confirmButtonText: this.$t("alertas.confirmar")
+      }).then(result => {
 
-          this.$router.push("/proyectos");
+        if (result.isConfirmed) {
 
-        })
-        .catch(error=>{
+          crearProyecto(this.proyecto)
+            .then(()=>{
 
-          Swal.fire({
-            icon: "error",
-            title: this.$t("alertas.error"),
-            text: error.response?.data || this.$t("alertas.error_generico")
-          });
+              Swal.fire({
+                icon: "success",
+                title: this.$t("alta_proyecto.exito"),
+                text: this.$t("alta_proyecto.exito_texto"),
+                timer: 1500,
+                showConfirmButton: false
+              });
 
-        });
+              this.$router.push("/proyectos");
+
+            });
+
+        }
+
+      });
 
     }
   },
 
   mounted(){
-
-    /**
-     * Inicializa animaciones tipo dashboard
-     */
     AOS.init({
       duration: 800,
       once: true
@@ -144,13 +149,11 @@ export default {
 
 <style scoped>
 
-/* Contenedor centrado */
 .formulario-card {
   max-width: 900px;
   margin: 0 auto;
 }
 
-/* Hover tipo dashboard */
 .v-card:hover {
   transform: translateY(-10px);
   box-shadow:
@@ -158,7 +161,6 @@ export default {
     0 0 15px rgba(2,111,193,0.4);
 }
 
-/* Botones suaves */
 .btn-main {
   transition: all 0.2s ease;
 }
