@@ -155,6 +155,19 @@ Utiliza Docker Compose para orquestar:
 - Contenedor del frontend (nginx)
 - Contenedor de MySQL
 
+## Documentacion
+
+La presentacion de la practica esta disponible en:
+- `/docs/Presentacion_Practica_Final.pptx`
+
+Incluye:
+- Requisitos funcionales
+- Tecnologias utilizadas
+- Arquitectura del proyecto
+- Estructura del codigo
+- Demostracion de funcionalidades
+- Pantallazos de la aplicacion
+
 ## Autor
 
 Antonio Angeles Blazquez
