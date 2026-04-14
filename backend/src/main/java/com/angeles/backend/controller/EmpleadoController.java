@@ -145,9 +145,11 @@ public class EmpleadoController {
         emp.setNombre(datos.getNombre());
         emp.setApellido1(datos.getApellido1());
         emp.setApellido2(datos.getApellido2());
+        emp.setNif(datos.getNif());
         emp.setEmail(datos.getEmail());
         emp.setTelefono1(datos.getTelefono1());
         emp.setTelefono2(datos.getTelefono2());
+        emp.setFechaNacimiento(datos.getFechaNacimiento());
         emp.setEstadoCivil(datos.getEstadoCivil());
         emp.setFormacionUniversitaria(datos.getFormacionUniversitaria());
 
