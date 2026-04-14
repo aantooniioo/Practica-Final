@@ -10,8 +10,8 @@ ALTER TABLE pr_proyectos AUTO_INCREMENT = 1;
 INSERT INTO em_empleados 
 (TX_NIF, TX_NOMBRE, TX_APELLIDO1, TX_APELLIDO2, F_NACIMIENTO, N_TELEFONO1, N_TELEFONO2, TX_EMAIL, F_ALTA, CX_EDOCIVIL, B_FORMACIONU)
 VALUES
-('03493911G', 'Antonio', 'Angeles', 'Blazquez', '2005-09-08', '600000000', '600000001', 'aangeles@futurespace.es', '2026-03-02', 'S', 'N'),
-('00000000A', 'Alejandro', 'Blazquez', 'Santos', '1978-05-23', '700000000', '700000001', 'absantos@futurespace.es', '2020-03-02', 'C', 'S'),
+('03493911G', 'Antonio', 'Ángeles', 'Blázquez', '2005-09-08', '600000000', '600000001', 'aangeles@futurespace.es', '2026-03-02', 'S', 'N'),
+('00000000A', 'Alejandro', 'Blázquez', 'Santos', '1978-05-23', '700000000', '700000001', 'absantos@futurespace.es', '2020-03-02', 'C', 'S'),
 ('34567890V', 'Juan', 'Martinez', 'Ruiz', '1998-03-12', '600111113', '600222224', 'jmruiz@futurespace.es', '2025-01-10', 'S', 'N'),
 ('45678901G', 'Laura', 'Fernandez', 'Diaz', '1995-07-21', '600111114', '600222225', 'lfdiaz@futurespace.es', '2025-02-15', 'C', 'S'),
 ('56789012H', 'Carlos', 'Gomez', 'Moreno', '1992-11-05', '600111115', '600222226', 'cgmoreno@futurespace.es', '2025-03-01', 'S', 'N'),
@@ -30,14 +30,14 @@ INSERT INTO pr_proyectos (TX_DESCRIPCION, F_INICIO, F_FIN, TX_LUGAR)
 VALUES
 ('Sistema ERP interno', '2026-01-10', NULL, 'Madrid'),
 ('App movil clientes', '2026-02-15', NULL, 'Barcelona'),
-('Migracion a cloud', '2025-09-01', '2026-02-01', 'Valencia'),
+('Migración a cloud', '2025-09-01', '2026-02-01', 'Valencia'),
 ('Portal web corporativo', '2026-03-01', NULL, 'Remoto'),
-('Optimizacion base de datos', '2025-11-10', '2026-01-20', 'Sevilla'),
-('Dashboard analitica', '2026-02-01', NULL, 'Bilbao'),
+('Optimización base de datos', '2025-11-10', '2026-01-20', 'Sevilla'),
+('Dashboard analítica', '2026-02-01', NULL, 'Bilbao'),
 ('Sistema de tickets', '2025-10-01', '2025-12-20', 'Madrid'),
-('Integracion API externa', '2026-03-15', NULL, 'Remoto'),
+('Integración API externa', '2026-03-15', NULL, 'Remoto'),
 ('Plataforma e-learning', '2025-08-01', '2025-12-10', 'Valencia'),
-('Automatizacion procesos', '2026-01-25', NULL, 'Barcelona');
+('Automatización procesos', '2026-01-25', NULL, 'Barcelona');
 
 INSERT INTO pr_empleados_proyecto 
 (ID_PROYECTO, ID_EMPLEADO, F_ALTA)
