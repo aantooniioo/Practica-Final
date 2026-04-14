@@ -84,6 +84,7 @@
     "formacion": "Formación",
     "guardar": "Guardar",
     "cancelar": "Cancelar",
+    "confirmar_creacion": "¿Desea dar de alta el empleado?",
     "exito": "Exito",
     "exito_texto": "Empleado creado correctamente"
 

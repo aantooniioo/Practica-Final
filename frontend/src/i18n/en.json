@@ -84,6 +84,7 @@
     "formacion": "Education",
     "guardar": "Save",
     "cancelar": "Cancel",
+    "confirmar_creacion": "Do you want to register the employee?",
     "exito": "Done!",
     "exito_texto": "Employee registered successfully"
   },
