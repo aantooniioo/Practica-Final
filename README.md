@@ -1,4 +1,4 @@
-# Practica Final - Gestión de Empleados y Proyectos
+# Práctica Final - Gestión de Empleados y Proyectos
 
 Sistema web de gestión de empleados y proyectos empresariales desarrollado como práctica final del ciclo de Desarrollo de Aplicaciones Web.
 
