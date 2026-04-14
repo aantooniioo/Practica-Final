@@ -14,11 +14,10 @@ public class EstadisticasController {
 
         try {
 
-            // Ruta al ejecutable de Python y al script
-            // Nota: Estas rutas están configuradas para entorno local
+            // En Docker, python3 está en /usr/bin/python3
             ProcessBuilder pb = new ProcessBuilder(
-                    "C:/Users/aangeles/AppData/Local/Python/pythoncore-3.14-64/python.exe",
-                    "C:/Users/aangeles/OneDrive - Future Space/Practicas_Antonio/Practica_Final/python/analisis.py"
+                    "/usr/bin/python3",
+                    "/app/src/main/resources/analisis.py"
             );
 
             // Redirige los errores al mismo flujo de salida
@@ -45,7 +44,7 @@ public class EstadisticasController {
             // Muestra el error en consola para depuración
             e.printStackTrace();
 
-            return ResponseEntity.status(500).body("Error interno del servidor");
+            return ResponseEntity.status(500).body("Error interno del servidor: " + e.getMessage());
         }
     }
 }

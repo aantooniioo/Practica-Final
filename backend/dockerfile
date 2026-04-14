@@ -1,13 +1,26 @@
 # Usa Java 17
 FROM eclipse-temurin:25
 
+# Instalar Python y dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar librerías de Python necesarias
+RUN pip3 install --break-system-packages pandas matplotlib mysql-connector-python
+
 # Carpeta dentro del contenedor
 WORKDIR /app
+
+# Crear la carpeta de gráficas con permisos de escritura
+RUN mkdir -p /app/src/main/resources/static/graficas && chmod 777 /app/src/main/resources/static/graficas
 
 # Copia el .jar generado
 COPY target/*.jar app.jar
 
+# Copia el script de Python
+COPY src/main/resources/analisis.py /app/src/main/resources/analisis.py
+
 # Ejecuta la aplicación
 ENTRYPOINT ["java","-jar","/app/app.jar"]
-
-# sh -c "sleep 10 && java -jar app.jar"
